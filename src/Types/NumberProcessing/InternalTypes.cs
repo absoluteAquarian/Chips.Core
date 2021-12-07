@@ -4,8 +4,8 @@ using Chips.Core.Utility;
 #pragma warning disable CS0162
 namespace Chips.Core.Types.NumberProcessing{
 	[TextTemplateGenerated]
-    public struct SByte_T : INumber, IInteger{
-        private SByte value;
+	public struct SByte_T : INumber, IInteger{
+		private SByte value;
 
 		public object Value => value;
 
@@ -17,7 +17,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (SByte)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(SByte) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -205,8 +205,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct Int16_T : INumber, IInteger{
-        private Int16 value;
+	public struct Int16_T : INumber, IInteger{
+		private Int16 value;
 
 		public object Value => value;
 
@@ -218,7 +218,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Int16)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int16) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -406,8 +406,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct Int32_T : INumber, IInteger{
-        private Int32 value;
+	public struct Int32_T : INumber, IInteger{
+		private Int32 value;
 
 		public object Value => value;
 
@@ -416,7 +416,7 @@ namespace Chips.Core.Types.NumberProcessing{
 		}
 
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int32) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -604,8 +604,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct Int64_T : INumber, IInteger{
-        private Int64 value;
+	public struct Int64_T : INumber, IInteger{
+		private Int64 value;
 
 		public object Value => value;
 
@@ -617,7 +617,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Int64)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int64) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -805,8 +805,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct Byte_T : INumber, IInteger{
-        private Byte value;
+	public struct Byte_T : INumber, IInteger{
+		private Byte value;
 
 		public object Value => value;
 
@@ -818,7 +818,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Byte)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Byte) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -1006,8 +1006,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct UInt16_T : INumber, IInteger{
-        private UInt16 value;
+	public struct UInt16_T : INumber, IInteger{
+		private UInt16 value;
 
 		public object Value => value;
 
@@ -1019,7 +1019,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (UInt16)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt16) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -1201,8 +1201,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct UInt32_T : INumber, IInteger{
-        private UInt32 value;
+	public struct UInt32_T : INumber, IInteger{
+		private UInt32 value;
 
 		public object Value => value;
 
@@ -1214,7 +1214,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (UInt32)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt32) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
@@ -1396,8 +1396,8 @@ namespace Chips.Core.Types.NumberProcessing{
     }
 
 	[TextTemplateGenerated]
-    public struct UInt64_T : INumber, IInteger{
-        private UInt64 value;
+	public struct UInt64_T : INumber, IInteger{
+		private UInt64 value;
 
 		public object Value => value;
 
@@ -1409,7 +1409,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (UInt64)value;
 		}
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt64) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);

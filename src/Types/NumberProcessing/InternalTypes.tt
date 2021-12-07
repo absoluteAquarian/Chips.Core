@@ -17,8 +17,8 @@ namespace Chips.Core.Types.NumberProcessing{
 <# foreach (var type in iTypes){ 
 #>
 	[TextTemplateGenerated]
-    public struct <#= type.Name #>_T : INumber, IInteger{
-        private <#= type.Name #> value;
+	public struct <#= type.Name #>_T : INumber, IInteger{
+		private <#= type.Name #> value;
 
 		public object Value => value;
 
@@ -34,7 +34,7 @@ namespace Chips.Core.Types.NumberProcessing{
 <#
 } #>
 
-        public INumber Add(INumber number){
+		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(<#= type.Name #>) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
