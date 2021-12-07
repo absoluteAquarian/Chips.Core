@@ -202,7 +202,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			SByte_T convert = ValueConverter.CastToSByte_T(iNum);
 			return new SByte_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct Int16_T : INumber, IInteger{
@@ -403,7 +403,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int16_T convert = ValueConverter.CastToInt16_T(iNum);
 			return new Int16_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct Int32_T : INumber, IInteger{
@@ -601,7 +601,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int32_T convert = ValueConverter.CastToInt32_T(iNum);
 			return new Int32_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct Int64_T : INumber, IInteger{
@@ -802,7 +802,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int64_T convert = ValueConverter.CastToInt64_T(iNum);
 			return new Int64_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct Byte_T : INumber, IInteger{
@@ -1003,7 +1003,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			Byte_T convert = ValueConverter.CastToByte_T(iNum);
 			return new Byte_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct UInt16_T : INumber, IInteger{
@@ -1198,7 +1198,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt16_T convert = ValueConverter.CastToUInt16_T(iNum);
 			return new UInt16_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct UInt32_T : INumber, IInteger{
@@ -1393,7 +1393,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt32_T convert = ValueConverter.CastToUInt32_T(iNum);
 			return new UInt32_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
 	public struct UInt64_T : INumber, IInteger{
@@ -1588,11 +1588,11 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt64_T convert = ValueConverter.CastToUInt64_T(iNum);
 			return new UInt64_T(value ^ convert.value);
 		}
-    }
+	}
 
 	[TextTemplateGenerated]
-    public struct Single_T : INumber, IFloat{
-        private Single value;
+	public struct Single_T : INumber, IFloat{
+		private Single value;
 
 		public object Value => value;
 
@@ -1669,8 +1669,8 @@ namespace Chips.Core.Types.NumberProcessing{
 	}
 	
 	[TextTemplateGenerated]
-    public struct Double_T : INumber, IFloat{
-        private Double value;
+	public struct Double_T : INumber, IFloat{
+		private Double value;
 
 		public object Value => value;
 
@@ -1750,8 +1750,8 @@ namespace Chips.Core.Types.NumberProcessing{
 	}
 	
 	[TextTemplateGenerated]
-    public struct Decimal_T : INumber, IFloat{
-        private Decimal value;
+	public struct Decimal_T : INumber, IFloat{
+		private Decimal value;
 
 		public object Value => value;
 

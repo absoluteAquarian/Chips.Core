@@ -226,15 +226,15 @@ namespace Chips.Core.Types.NumberProcessing{
 			<#= type.Name #>_T convert = ValueConverter.CastTo<#= type.Name #>_T(iNum);
 			return new <#= type.Name #>_T(value ^ convert.value);
 		}
-    }
+	}
 
 <#
 } #>
 <# foreach (var type in fTypes){ 
 #>
 	[TextTemplateGenerated]
-    public struct <#= type.Name #>_T : INumber, IFloat{
-        private <#= type.Name #> value;
+	public struct <#= type.Name #>_T : INumber, IFloat{
+		private <#= type.Name #> value;
 
 		public object Value => value;
 
