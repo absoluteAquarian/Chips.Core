@@ -1,5 +1,6 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Utility;
+using System;
 
 #pragma warning disable CS0162
 namespace Chips.Core.Types.NumberProcessing{
@@ -16,6 +17,9 @@ namespace Chips.Core.Types.NumberProcessing{
 		public SByte_T(Int32 value){
 			this.value = (SByte)value;
 		}
+
+		public INumber Abs()
+			=> new SByte_T(value > 0 ? value : -value);
 
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -218,6 +222,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Int16)value;
 		}
 
+		public INumber Abs()
+			=> new Int16_T(value > 0 ? value : -value);
+
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int16) < sizeof(int)){
@@ -415,6 +422,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = value;
 		}
 
+
+		public INumber Abs()
+			=> new Int32_T(value > 0 ? value : -value);
 
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -617,6 +627,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Int64)value;
 		}
 
+		public INumber Abs()
+			=> new Int64_T(value > 0 ? value : -value);
+
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int64) < sizeof(int)){
@@ -817,6 +830,9 @@ namespace Chips.Core.Types.NumberProcessing{
 		public Byte_T(Int32 value){
 			this.value = (Byte)value;
 		}
+
+		public INumber Abs()
+			=> new Byte_T(value > 0 ? value : -value);
 
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1019,6 +1035,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (UInt16)value;
 		}
 
+		public INumber Abs()
+			=> new UInt16_T(value);
+
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt16) < sizeof(int)){
@@ -1213,6 +1232,9 @@ namespace Chips.Core.Types.NumberProcessing{
 		public UInt32_T(Int32 value){
 			this.value = (UInt32)value;
 		}
+
+		public INumber Abs()
+			=> new UInt32_T(value);
 
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1409,6 +1431,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (UInt64)value;
 		}
 
+		public INumber Abs()
+			=> new UInt64_T(value);
+
 		public INumber Add(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt64) < sizeof(int)){
@@ -1600,6 +1625,14 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = value;
 		}
 
+		public INumber Abs()
+			=> new Single_T((Single)Math.Abs(value));
+
+		public IFloat Acos()
+			=> new Single_T((Single)Math.Acos(value));
+
+		public IFloat Acosh()
+			=> new Single_T((Single)Math.Acosh(value));
 
 		public INumber Add(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1613,6 +1646,42 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Single_T(value + convert.value);
 		}
 
+		public IFloat Asin()
+			=> new Single_T((Single)Math.Asin(value));
+
+		public IFloat Asinh()
+			=> new Single_T((Single)Math.Asinh(value));
+
+		public IFloat Atan()
+			=> new Single_T((Single)Math.Atan(value));
+
+		public IFloat Atan2(IFloat divisor){
+			if(divisor is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(targetSize < sizeof(Single))
+				number = ValueConverter.CastToSingle_T(number);
+			else if(targetSize > sizeof(Single))
+				return divisor.Atan2(this);
+
+			Single_T convert = ValueConverter.CastToSingle_T(number);
+			return new Single_T((Single)Math.Atan2(value, convert.value));
+		}
+
+		public IFloat Atanh()
+			=> new Single_T((Single)Math.Asinh(value));
+
+		public INumber Ceiling()
+			=> new Single_T((Single)Math.Ceiling(value));
+
+		public IFloat Cos()
+			=> new Single_T((Single)Math.Cos(value));
+
+		public IFloat Cosh()
+			=> new Single_T((Single)Math.Cosh(value));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1625,8 +1694,23 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Single_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public INumber Floor()
+			=> new Single_T((Single)Math.Floor(value));
+
 		public IInteger GetBits()
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+
+		public IFloat Inverse()
+			=> (new Single_T(1f).Divide(this) as IFloat)!;
+
+		public IFloat Ln()
+			=> new Single_T((Single)Math.Log(value));
+
+		public IFloat Log10()
+			=> new Single_T((Single)Math.Log10(value));
+
+		public IFloat Log2()
+			=> new Single_T((Single)Math.Log2(value));
 
 		public INumber Multiply(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1643,6 +1727,21 @@ namespace Chips.Core.Types.NumberProcessing{
 		public INumber Negate()
 			=> new Single_T(-value);
 
+		public IFloat Pow(IFloat exponent){
+			if(exponent is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+			
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(number is IInteger || targetSize < sizeof(Single))
+				number = ValueConverter.CastToSingle_T(number);
+			else if(targetSize > sizeof(Single))
+				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
+
+			Single_T convert = ValueConverter.CastToSingle_T(number);
+			return new Single_T(value * convert.value);
+		}
+
 		public INumber Remainder(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1655,6 +1754,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Single_T(value % convert.value);
 		}
 
+		public IFloat Root(IFloat root)
+			=> Pow(root.Inverse());
+
+		public IFloat Sin()
+			=> new Single_T((Single)Math.Sin(value));
+
+		public IFloat Sinh()
+			=> new Single_T((Single)Math.Sinh(value));
+
+		public IFloat Sqrt()
+			=> new Single_T((Single)Math.Sqrt(value));
+
 		public INumber Subtract(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1666,6 +1777,12 @@ namespace Chips.Core.Types.NumberProcessing{
 			Single_T convert = ValueConverter.CastToSingle_T(number);
 			return new Single_T(value - convert.value);
 		}
+
+		public IFloat Tan()
+			=> new Single_T((Single)Math.Tan(value));
+
+		public IFloat Tanh()
+			=> new Single_T((Single)Math.Tanh(value));
 	}
 	
 	[TextTemplateGenerated]
@@ -1682,6 +1799,15 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Double)value;
 		}
 
+		public INumber Abs()
+			=> new Double_T((Double)Math.Abs(value));
+
+		public IFloat Acos()
+			=> new Double_T((Double)Math.Acos(value));
+
+		public IFloat Acosh()
+			=> new Double_T((Double)Math.Acosh(value));
+
 		public INumber Add(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1693,6 +1819,42 @@ namespace Chips.Core.Types.NumberProcessing{
 			Double_T convert = ValueConverter.CastToDouble_T(number);
 			return new Double_T(value + convert.value);
 		}
+
+		public IFloat Asin()
+			=> new Double_T((Double)Math.Asin(value));
+
+		public IFloat Asinh()
+			=> new Double_T((Double)Math.Asinh(value));
+
+		public IFloat Atan()
+			=> new Double_T((Double)Math.Atan(value));
+
+		public IFloat Atan2(IFloat divisor){
+			if(divisor is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(targetSize < sizeof(Double))
+				number = ValueConverter.CastToDouble_T(number);
+			else if(targetSize > sizeof(Double))
+				return divisor.Atan2(this);
+
+			Double_T convert = ValueConverter.CastToDouble_T(number);
+			return new Double_T((Double)Math.Atan2(value, convert.value));
+		}
+
+		public IFloat Atanh()
+			=> new Double_T((Double)Math.Asinh(value));
+
+		public INumber Ceiling()
+			=> new Double_T((Double)Math.Ceiling(value));
+
+		public IFloat Cos()
+			=> new Double_T((Double)Math.Cos(value));
+
+		public IFloat Cosh()
+			=> new Double_T((Double)Math.Cosh(value));
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1706,8 +1868,23 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Double_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public INumber Floor()
+			=> new Double_T((Double)Math.Floor(value));
+
 		public IInteger GetBits()
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+
+		public IFloat Inverse()
+			=> (new Double_T(1f).Divide(this) as IFloat)!;
+
+		public IFloat Ln()
+			=> new Double_T((Double)Math.Log(value));
+
+		public IFloat Log10()
+			=> new Double_T((Double)Math.Log10(value));
+
+		public IFloat Log2()
+			=> new Double_T((Double)Math.Log2(value));
 
 		public INumber Multiply(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1724,6 +1901,21 @@ namespace Chips.Core.Types.NumberProcessing{
 		public INumber Negate()
 			=> new Double_T(-value);
 
+		public IFloat Pow(IFloat exponent){
+			if(exponent is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+			
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(number is IInteger || targetSize < sizeof(Double))
+				number = ValueConverter.CastToDouble_T(number);
+			else if(targetSize > sizeof(Double))
+				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
+
+			Double_T convert = ValueConverter.CastToDouble_T(number);
+			return new Double_T(value * convert.value);
+		}
+
 		public INumber Remainder(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1736,6 +1928,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Double_T(value % convert.value);
 		}
 
+		public IFloat Root(IFloat root)
+			=> Pow(root.Inverse());
+
+		public IFloat Sin()
+			=> new Double_T((Double)Math.Sin(value));
+
+		public IFloat Sinh()
+			=> new Double_T((Double)Math.Sinh(value));
+
+		public IFloat Sqrt()
+			=> new Double_T((Double)Math.Sqrt(value));
+
 		public INumber Subtract(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1747,6 +1951,12 @@ namespace Chips.Core.Types.NumberProcessing{
 			Double_T convert = ValueConverter.CastToDouble_T(number);
 			return new Double_T(value - convert.value);
 		}
+
+		public IFloat Tan()
+			=> new Double_T((Double)Math.Tan(value));
+
+		public IFloat Tanh()
+			=> new Double_T((Double)Math.Tanh(value));
 	}
 	
 	[TextTemplateGenerated]
@@ -1763,6 +1973,15 @@ namespace Chips.Core.Types.NumberProcessing{
 			this.value = (Decimal)value;
 		}
 
+		public INumber Abs()
+			=> new Decimal_T((Decimal)Math.Abs(value));
+
+		public IFloat Acos()
+			=> new Decimal_T(DecimalMath.DecimalEx.ACos(value));
+
+		public IFloat Acosh()
+			=> throw new InvalidOperationException("Performing \"acosh\" on <f128> values is not supported");
+
 		public INumber Add(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1774,6 +1993,42 @@ namespace Chips.Core.Types.NumberProcessing{
 			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
 			return new Decimal_T(value + convert.value);
 		}
+
+		public IFloat Asin()
+			=> new Decimal_T(DecimalMath.DecimalEx.ASin(value));
+
+		public IFloat Asinh()
+			=> throw new InvalidOperationException("Performing \"asinh\" on <f128> values is not supported");
+
+		public IFloat Atan()
+			=> new Decimal_T(DecimalMath.DecimalEx.ATan(value));
+
+		public IFloat Atan2(IFloat divisor){
+			if(divisor is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(targetSize < sizeof(Decimal))
+				number = ValueConverter.CastToDecimal_T(number);
+			else if(targetSize > sizeof(Decimal))
+				return divisor.Atan2(this);
+
+			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
+			return new Decimal_T(DecimalMath.DecimalEx.ATan2(value, convert.value));
+		}
+
+		public IFloat Atanh()
+			=> throw new InvalidOperationException("Performing \"atanh\" on <f128> values is not supported");
+
+		public INumber Ceiling()
+			=> new Decimal_T((Decimal)Math.Ceiling(value));
+
+		public IFloat Cos()
+			=> new Decimal_T(DecimalMath.DecimalEx.Cos(value));
+
+		public IFloat Cosh()
+			=> throw new InvalidOperationException("Performing \"cosh\" on <f128> values is not supported");
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1787,8 +2042,23 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Decimal_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public INumber Floor()
+			=> new Decimal_T((Decimal)Math.Floor(value));
+
 		public IInteger GetBits()
 			=> throw new InvalidOperationException("Retrieving the bits on an <f128> instance is not supported");
+
+		public IFloat Inverse()
+			=> (new Decimal_T(1f).Divide(this) as IFloat)!;
+
+		public IFloat Ln()
+			=> new Decimal_T(DecimalMath.DecimalEx.Log(value));
+
+		public IFloat Log10()
+			=> new Decimal_T(DecimalMath.DecimalEx.Log10(value));
+
+		public IFloat Log2()
+			=> new Decimal_T(DecimalMath.DecimalEx.Log2(value));
 
 		public INumber Multiply(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1805,6 +2075,21 @@ namespace Chips.Core.Types.NumberProcessing{
 		public INumber Negate()
 			=> new Decimal_T(-value);
 
+		public IFloat Pow(IFloat exponent){
+			if(exponent is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+			
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(number is IInteger || targetSize < sizeof(Decimal))
+				number = ValueConverter.CastToDecimal_T(number);
+			else if(targetSize > sizeof(Decimal))
+				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
+
+			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
+			return new Decimal_T(value * convert.value);
+		}
+
 		public INumber Remainder(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1817,6 +2102,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Decimal_T(value % convert.value);
 		}
 
+		public IFloat Root(IFloat root)
+			=> Pow(root.Inverse());
+
+		public IFloat Sin()
+			=> new Decimal_T(DecimalMath.DecimalEx.Sin(value));
+
+		public IFloat Sinh()
+			=> throw new InvalidOperationException("Performing \"sinh\" on <f128> values is not supported");
+
+		public IFloat Sqrt()
+			=> new Decimal_T(DecimalMath.DecimalEx.Sqrt(value));
+
 		public INumber Subtract(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -1828,6 +2125,12 @@ namespace Chips.Core.Types.NumberProcessing{
 			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
 			return new Decimal_T(value - convert.value);
 		}
+
+		public IFloat Tan()
+			=> new Decimal_T(DecimalMath.DecimalEx.Tan(value));
+
+		public IFloat Tanh()
+			=> throw new InvalidOperationException("Performing \"tanh\" on <f128> values is not supported");
 	}
 	
 }

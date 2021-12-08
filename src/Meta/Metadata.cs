@@ -1,5 +1,7 @@
-﻿using Chips.Core.Types;
+﻿using Chips.Core.Specifications;
+using Chips.Core.Types;
 using Chips.Core.Utility;
+using System.Reflection;
 
 namespace Chips.Core.Meta{
 	internal static unsafe class Metadata{
@@ -83,5 +85,20 @@ namespace Chips.Core.Meta{
 		public static string[]? programArgs;
 
 		internal static IOHandle[]? ioHandles;
+
+		public static readonly OpcodeTable? op;
+
+		static Metadata(){
+			op = new OpcodeTable();
+			
+			foreach(var field in typeof(Opcodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(Opcode))){
+				Opcode opcode = (field.GetValue(null) as Opcode)!;
+
+				if(op[opcode.code] is not null)
+					throw new Exception($"Opcode 0x{opcode.code} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{op[opcode.code].descriptor}\"");
+
+				op[opcode.code] = opcode;
+			}
+		}
 	}
 }

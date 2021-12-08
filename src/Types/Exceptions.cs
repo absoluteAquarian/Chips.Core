@@ -12,6 +12,8 @@ namespace Chips.Core.Types{
 	public class InvalidOpcodeArgumentException : Exception{
 		public InvalidOpcodeArgumentException(int argument, string reason, Opcode.FunctionContext context) : base($"Argument {argument} was invalid." +
 			$"\nReason: {reason}" +
-			$"\n  in \"{context.sourceFile}\" on line {context.sourceLine}"){ }
+			(!string.IsNullOrEmpty(context.sourceFile) && context.sourceLine >= 0
+				? $"\n  in \"{context.sourceFile}\" on line {context.sourceLine}"
+				: "")){ }
 	}
 }

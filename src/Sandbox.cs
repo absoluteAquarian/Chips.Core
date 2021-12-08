@@ -21,10 +21,7 @@ namespace Chips.Core{
 				if(ex.InnerException != null)
 					ex = ex.InnerException;
 
-				string message = ex.ToString();
-				//Remove the part saying the name since it's said below
-				message = message[(message.IndexOf(":") + 2)..];
-				Console.WriteLine($"{ex.GetType().Name} thrown in compiled code:\n   {message}");
+				Console.WriteLine($"{ex.GetType().Name} thrown: {ex.Message}\nCompiled stacktrace:\n{ex.StackTrace}");
 			}finally{
 				for(int i = 0; i < HANDLES; i++)
 					(Metadata.ioHandles[i].handle as IDisposable)?.Dispose();

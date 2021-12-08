@@ -11,6 +11,7 @@
 }; #>
 using Chips.Core.Meta;
 using Chips.Core.Utility;
+using System;
 
 #pragma warning disable CS0162
 namespace Chips.Core.Types.NumberProcessing{
@@ -31,6 +32,16 @@ namespace Chips.Core.Types.NumberProcessing{
 		public <#= type.Name #>_T(Int32 value){
 			this.value = (<#= type.Name #>)value;
 		}
+<#
+} #>
+
+		public INumber Abs()
+<# if(!type.Name.StartsWith("U")){
+#>
+			=> new <#= type.Name #>_T(value > 0 ? value : -value);
+<# }else{
+#>
+			=> new <#= type.Name #>_T(value);
 <#
 } #>
 
@@ -247,6 +258,29 @@ namespace Chips.Core.Types.NumberProcessing{
 		public <#= type.Name #>_T(Single value){
 			this.value = (<#= type.Name #>)value;
 		}
+
+<#
+} #>
+		public INumber Abs()
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Abs(value));
+
+		public IFloat Acos()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Acos(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.ACos(value));
+<#
+} #>
+
+		public IFloat Acosh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Acosh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"acosh\" on <f128> values is not supported");
 <#
 } #>
 
@@ -262,6 +296,91 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new <#= type.Name #>_T(value + convert.value);
 		}
 
+		public IFloat Asin()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Asin(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.ASin(value));
+<#
+} #>
+
+		public IFloat Asinh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Asinh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"asinh\" on <f128> values is not supported");
+<#
+} #>
+
+		public IFloat Atan()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Atan(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.ATan(value));
+<#
+} #>
+
+		public IFloat Atan2(IFloat divisor){
+			if(divisor is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(targetSize < sizeof(<#= type.Name #>))
+				number = ValueConverter.CastTo<#= type.Name #>_T(number);
+			else if(targetSize > sizeof(<#= type.Name #>))
+				return divisor.Atan2(this);
+
+			<#= type.Name #>_T convert = ValueConverter.CastTo<#= type.Name #>_T(number);
+<# if(type.Name != "Decimal"){
+#>
+			return new <#= type.Name #>_T((<#= type.Name #>)Math.Atan2(value, convert.value));
+<# }else{
+#>
+			return new <#= type.Name #>_T(DecimalMath.DecimalEx.ATan2(value, convert.value));
+<#
+} #>
+		}
+
+		public IFloat Atanh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Asinh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"atanh\" on <f128> values is not supported");
+<#
+} #>
+
+		public INumber Ceiling()
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Ceiling(value));
+
+		public IFloat Cos()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Cos(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Cos(value));
+<#
+} #>
+
+		public IFloat Cosh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Cosh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"cosh\" on <f128> values is not supported");
+<#
+} #>
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -274,6 +393,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new <#= type.Name #>_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public INumber Floor()
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Floor(value));
+
 		public IInteger GetBits()
 <# if(type.Name == "Decimal"){
 #>
@@ -281,6 +403,39 @@ namespace Chips.Core.Types.NumberProcessing{
 <# }else{
 #>
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+<#
+} #>
+
+		public IFloat Inverse()
+			=> (new <#= type.Name #>_T(1f).Divide(this) as IFloat)!;
+
+		public IFloat Ln()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Log(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Log(value));
+<#
+} #>
+
+		public IFloat Log10()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Log10(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Log10(value));
+<#
+} #>
+
+		public IFloat Log2()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Log2(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Log2(value));
 <#
 } #>
 
@@ -299,6 +454,21 @@ namespace Chips.Core.Types.NumberProcessing{
 		public INumber Negate()
 			=> new <#= type.Name #>_T(-value);
 
+		public IFloat Pow(IFloat exponent){
+			if(exponent is not INumber number)
+				throw new InvalidOperationException("Number was not a floating-point value");
+			
+			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
+
+			if(number is IInteger || targetSize < sizeof(<#= type.Name #>))
+				number = ValueConverter.CastTo<#= type.Name #>_T(number);
+			else if(targetSize > sizeof(<#= type.Name #>))
+				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
+
+			<#= type.Name #>_T convert = ValueConverter.CastTo<#= type.Name #>_T(number);
+			return new <#= type.Name #>_T(value * convert.value);
+		}
+
 		public INumber Remainder(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -311,6 +481,39 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new <#= type.Name #>_T(value % convert.value);
 		}
 
+		public IFloat Root(IFloat root)
+			=> Pow(root.Inverse());
+
+		public IFloat Sin()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Sin(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Sin(value));
+<#
+} #>
+
+		public IFloat Sinh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Sinh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"sinh\" on <f128> values is not supported");
+<#
+} #>
+
+		public IFloat Sqrt()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Sqrt(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Sqrt(value));
+<#
+} #>
+
 		public INumber Subtract(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -322,6 +525,26 @@ namespace Chips.Core.Types.NumberProcessing{
 			<#= type.Name #>_T convert = ValueConverter.CastTo<#= type.Name #>_T(number);
 			return new <#= type.Name #>_T(value - convert.value);
 		}
+
+		public IFloat Tan()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Tan(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Tan(value));
+<#
+} #>
+
+		public IFloat Tanh()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Tanh(value));
+<# }else{
+#>
+			=> throw new InvalidOperationException("Performing \"tanh\" on <f128> values is not supported");
+<#
+} #>
 	}
 	
 <#

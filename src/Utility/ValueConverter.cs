@@ -2,6 +2,23 @@
 
 namespace Chips.Core.Utility{
 	internal static partial class ValueConverter{
+		public static class Constants{
+			public const float E_Single = 2.7182818284590451f;
+			public const double E_Double = Math.E;
+			public const decimal E_Decimal = DecimalMath.DecimalEx.E;
+
+			public static IFloat GetConst_E(Type t){
+				if(t == typeof(float))
+					return new Single_T(E_Single);
+				else if(t == typeof(double))
+					return new Double_T(E_Double);
+				else if(t == typeof(decimal))
+					return new Decimal_T(E_Decimal);
+
+				throw new InvalidOperationException("Function expects a floating-point type");
+			}
+		}
+
 		public static long? AsSignedInteger(object? obj)
 			=> obj as sbyte? ?? obj as short? ?? obj as int? ?? obj as long?;
 

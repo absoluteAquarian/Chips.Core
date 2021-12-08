@@ -2,6 +2,8 @@
 	public interface INumber{
 		object Value{ get; }
 
+		INumber Abs();
+
 		INumber Add(INumber number);
 
 		INumber Divide(INumber number, bool inverseLogic = false);
