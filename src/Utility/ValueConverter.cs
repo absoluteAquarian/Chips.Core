@@ -50,7 +50,7 @@ namespace Chips.Core.Utility{
 				_ => throw new Exception("Operation can only be performed on floating-point types") 
 			};
 
-		public static INumber UnboxToUnderlyingType(object? o)
+		public static INumber BoxToUnderlyingType(object? o)
 			=> o switch{
 				int i => new Int32_T(i),
 				sbyte s => new SByte_T(s),
@@ -64,7 +64,7 @@ namespace Chips.Core.Utility{
 				double d => new Double_T(d),
 				decimal dm => new Decimal_T(dm),
 				null => throw new ArgumentNullException(nameof(o)),
-				_ => throw new InvalidOperationException($"Cannot unbox <{(TypeTracking.GetChipsType(o, throwOnNotFound: false) ?? "unknown")}> to an internal calculations type")
+				_ => throw new InvalidOperationException($"Cannot box <{(TypeTracking.GetChipsType(o, throwOnNotFound: false) ?? "unknown")}> to an internal calculations type")
 			};
 	}
 }

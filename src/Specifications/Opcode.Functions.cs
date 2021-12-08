@@ -8,7 +8,7 @@ namespace Chips.Core.Specifications{
 		internal static class Functions{
 			#region Functions - A
 			public static void Abs(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
 
 				Metadata.Registers.A.Data = a.Abs().Value;
@@ -17,7 +17,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Acos(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Acos() as INumber)!.Value;
@@ -26,7 +26,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Acsh(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Acosh() as INumber)!.Value;
@@ -35,9 +35,9 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Add(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
-				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not INumber arg)
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
 				Metadata.Registers.A.Data = a.Add(arg).Value;
@@ -52,9 +52,9 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void And(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
-				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not IInteger arg)
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IInteger arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not an integer", context);
 
 				Metadata.Registers.A.Data = (a.And(arg) as INumber)!.Value;
@@ -63,9 +63,9 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Art(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
-				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not IFloat arg)
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IFloat arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a floating-point number", context);
 
 				Metadata.Registers.A.Data = (a.Root(arg) as INumber)!.Value;
@@ -74,7 +74,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Asin(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Asin() as INumber)!.Value;
@@ -83,7 +83,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Asl(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
 				Metadata.Registers.A.Data = (a.ArithmeticShiftLeft() as INumber)!.Value;
@@ -92,7 +92,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Asnh(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Asinh() as INumber)!.Value;
@@ -101,7 +101,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Asr(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
 				Metadata.Registers.A.Data = (a.ArithmeticShiftRight() as INumber)!.Value;
@@ -110,7 +110,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Atan(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Atan() as INumber)!.Value;
@@ -119,7 +119,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Atnh(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Atanh() as INumber)!.Value;
@@ -128,9 +128,9 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Atnt(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
-				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not IFloat arg)
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IFloat arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a floating-point number", context);
 
 				Metadata.Registers.A.Data = (a.Atan2(arg) as INumber)!.Value;
@@ -144,7 +144,7 @@ namespace Chips.Core.Specifications{
 				=> throw new InvalidOperationException("Branching opcodes should not be invoked directly");
 
 			public static void Blg(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.Log2() as INumber)!.Value;
@@ -153,7 +153,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Bin(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
 				Metadata.Registers.S.Data = a.BinaryRepresentation(false);
@@ -162,7 +162,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Binz(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
 				Metadata.Registers.S.Data = a.BinaryRepresentation(true);
@@ -171,9 +171,9 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Bit(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
-				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not Byte_T arg)
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not Byte_T arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a <u8>", context);
 
 				Metadata.Registers.A.Data = (a.GetBit((byte)arg.Value) as INumber)!.Value;
@@ -182,7 +182,7 @@ namespace Chips.Core.Specifications{
 			}
 
 			public static void Bits(FunctionContext context){
-				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
 				Metadata.Registers.A.Data = (a.GetBits() as INumber)!.Value;
