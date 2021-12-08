@@ -10,6 +10,8 @@
 
 		IInteger ArithmeticRotateRight();
 
+		string BinaryRepresentation(bool leadingZeroes);
+
 		IInteger GetBit(byte bit);
 
 		IInteger Not();

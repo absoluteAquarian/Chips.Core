@@ -107,6 +107,20 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new <#= type.Name #>_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+<# if(type.Name != "UInt64"){
+#>
+			string bin = Convert.ToString(value, 2);
+<# }else{
+#>
+			string bin = Convert.ToString((long)value, 2);
+<#
+} #>
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(<#= type.Name #>) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(<#= type.Name #>) < sizeof(int)){

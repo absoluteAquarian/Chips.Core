@@ -83,6 +83,13 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new SByte_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(SByte) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(SByte) < sizeof(int)){
@@ -287,6 +294,13 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new Int16_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(Int16) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int16) < sizeof(int)){
@@ -487,6 +501,13 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger ArithmeticShiftRight()
 			=> new Int32_T(value >> 1);
+
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(Int32) * 8, '0');
+			return bin;
+		}
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -692,6 +713,13 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new Int64_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(Int64) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int64) < sizeof(int)){
@@ -895,6 +923,13 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger ArithmeticShiftRight()
 			=> new Byte_T(value >> 1);
+
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(Byte) * 8, '0');
+			return bin;
+		}
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1100,6 +1135,13 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new UInt16_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(UInt16) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt16) < sizeof(int)){
@@ -1298,6 +1340,13 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IInteger ArithmeticShiftRight()
 			=> new UInt32_T(value >> 1);
 
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString(value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(UInt32) * 8, '0');
+			return bin;
+		}
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt32) < sizeof(int)){
@@ -1495,6 +1544,13 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger ArithmeticShiftRight()
 			=> new UInt64_T(value >> 1);
+
+		public string BinaryRepresentation(bool leadingZeroes){
+			string bin = Convert.ToString((long)value, 2);
+			if(leadingZeroes)
+				bin = bin.PadLeft(sizeof(UInt64) * 8, '0');
+			return bin;
+		}
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler

@@ -94,10 +94,14 @@ namespace Chips.Core.Meta{
 			foreach(var field in typeof(Opcodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(Opcode))){
 				Opcode opcode = (field.GetValue(null) as Opcode)!;
 
-				if(op[opcode.code] is not null)
-					throw new Exception($"Opcode 0x{opcode.code} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{op[opcode.code].descriptor}\"");
+				if(opcode.parent?.table is null && op[opcode.code] is not null)
+					throw new Exception($"Opcode 0x{opcode.code :X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{op[opcode.code].descriptor}\"");
 
-				op[opcode.code] = opcode;
+				if(opcode.parent?.table is not null && opcode.parent.table[opcode.code] is not null)
+					throw new Exception($"Opcode 0x{opcode.parent.code :X2}{opcode.code :X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{opcode.parent.table[opcode.code].descriptor}\"");
+
+				var table = opcode.parent?.table ?? op;
+				table[opcode.code] = opcode;
 			}
 		}
 	}

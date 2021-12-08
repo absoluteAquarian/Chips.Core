@@ -138,6 +138,58 @@ namespace Chips.Core.Specifications{
 				CheckZeroFlag(Metadata.Registers.A.Data, checkFloats: true);
 			}
 			#endregion
+
+			#region Functions - B
+			public static void Br(FunctionContext context)
+				=> throw new InvalidOperationException("Branching opcodes should not be invoked directly");
+
+			public static void Blg(FunctionContext context){
+				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = (a.Log2() as INumber)!.Value;
+
+				CheckZeroFlag(Metadata.Registers.A.Data, checkFloats: true);
+			}
+
+			public static void Bin(FunctionContext context){
+				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+
+				Metadata.Registers.S.Data = a.BinaryRepresentation(false);
+
+				CheckZeroFlag(Metadata.Registers.S.Data, checkStrings: true);
+			}
+
+			public static void Binz(FunctionContext context){
+				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+
+				Metadata.Registers.S.Data = a.BinaryRepresentation(true);
+
+				CheckZeroFlag(Metadata.Registers.S.Data, checkStrings: true);
+			}
+
+			public static void Bit(FunctionContext context){
+				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+				if(ValueConverter.UnboxToUnderlyingType(context.args[0]) is not Byte_T arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a <u8>", context);
+
+				Metadata.Registers.A.Data = (a.GetBit((byte)arg.Value) as INumber)!.Value;
+
+				CheckZeroFlag(Metadata.Registers.A.Data, checkIntegers: true);
+			}
+
+			public static void Bits(FunctionContext context){
+				if(ValueConverter.UnboxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = (a.GetBits() as INumber)!.Value;
+
+				CheckZeroFlag(Metadata.Registers.A.Data, checkFloats: true);
+			}
+			#endregion
 		}
 	}
 }

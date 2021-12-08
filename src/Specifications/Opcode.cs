@@ -23,7 +23,7 @@ namespace Chips.Core.Specifications{
 		public bool IsParent => table is not null;
 
 		internal OpcodeTable? table;
-		private Opcode? parent;
+		internal Opcode? parent;
 
 		internal readonly delegate*<FunctionContext, void> func;
 
@@ -58,9 +58,9 @@ namespace Chips.Core.Specifications{
 
 			var type = obj.GetType();
 
-			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive && ((ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0) || (type == typeof(char) && (char)obj == (char)0));
+			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive && ((ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0) || (obj is char c && c == 0));
 			bool zeroFlagSucess_Float = checkFloats && type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d;
-			bool zeroFlagSuccess_Collections = checkCollections && (obj is Array array && array.Length == 0) || (obj is List list && list.Count > 0) || (obj is ArithmeticSet set && !set.IsEmptySet);
+			bool zeroFlagSuccess_Collections = checkCollections && ((obj is Array array && array.Length == 0) || (obj is List list && list.Count == 0) || (obj is ArithmeticSet set && set.IsEmptySet));
 			bool zeroFlagSuccess_String = checkStrings && obj is string str && str == "";
 
 			if(zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)
