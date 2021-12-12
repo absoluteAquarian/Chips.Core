@@ -367,12 +367,12 @@ BYTECODE | OPCODE
  5E 07   | dtay <obj> ................. adds <obj> years to A.  A must be a <~date> instance
  5E 0F   | dtay <var> ................. adds <var> years to A.  A must be a <~date> instance
  5E 10   | dtd ........................ gets the Days value from A and puts it into A.  A must be a <~date> instance
- 5E 22   | dte ........................ pushes DateTime.UnixEpoch to the Stack
+ 5E 22   | dte ........................ sets A to DateTime.UnixEpoch
  5E 20   | dtfm ....................... formats A according to S, then puts the result in S.  A must be a <~date> instance
  5E 11   | dth ........................ gets the Hours value from A and puts it into A.  A must be a <~date> instance
  5E 12   | dti ........................ gets the Minutes value from A and puts it into A.  A must be a <~date> instance
  5E 13   | dtm ........................ gets the Milliseconds value from A and puts into A.  A must be a <~date> instance
- 5E 21   | dtn ........................ pushes DateTime.Now to the Stack
+ 5E 21   | dtn ........................ sets A to DateTime.Now
  5E 14   | dto ........................ gets the Months value from A and puts it into A.  A must be a <~date> instance
  5E 15   | dtt ........................ gets the Ticks value from A and puts it into A.  A must be a <~date> instance
  5E 16   | dts ........................ gets the Seconds value from A and puts it into A.  A must be a <~date> instance
