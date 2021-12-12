@@ -3,9 +3,10 @@
 namespace Chips.Core.Utility{
 	internal static partial class ValueConverter{
 		public static class Constants{
-			public const float E_Single = 2.7182818284590451f;
-			public const double E_Double = Math.E;
-			public const decimal E_Decimal = DecimalMath.DecimalEx.E;
+			public static readonly float   E_Single =  2.7182818284590451f;
+			public static readonly double  E_Double =  Math.E;
+			public static readonly decimal E_Decimal = DecimalMath.DecimalEx.E;
+			public static readonly Half    E_Half =    (Half)E_Single;
 
 			public static IFloat GetConst_E(Type t){
 				if(t == typeof(float))
@@ -14,6 +15,8 @@ namespace Chips.Core.Utility{
 					return new Double_T(E_Double);
 				else if(t == typeof(decimal))
 					return new Decimal_T(E_Decimal);
+				else if(t == typeof(Half))
+					return new Half_T(E_Half);
 
 				throw new InvalidOperationException("Function expects a floating-point type");
 			}
@@ -47,10 +50,11 @@ namespace Chips.Core.Utility{
 				float f => new Int32_T(*(int*)&f),
 				double d => new Int64_T(*(long*)&d),
 				decimal dm => throw new Exception("Operation is not supported on <f128> instances"),
+				Half h => new Int16_T(*(short*)&h),
 				_ => throw new Exception("Operation can only be performed on floating-point types") 
 			};
 
-		public static INumber BoxToUnderlyingType(object? o)
+		public static INumber? BoxToUnderlyingType(object? o)
 			=> o switch{
 				int i => new Int32_T(i),
 				sbyte s => new SByte_T(s),
@@ -63,8 +67,7 @@ namespace Chips.Core.Utility{
 				float f => new Single_T(f),
 				double d => new Double_T(d),
 				decimal dm => new Decimal_T(dm),
-				null => throw new ArgumentNullException(nameof(o)),
-				_ => throw new InvalidOperationException($"Cannot box <{(TypeTracking.GetChipsType(o, throwOnNotFound: false) ?? "unknown")}> to an internal calculations type")
+				_ => null  //Unsuccessful boxing should just result in "null", as most checks are usually to see if the result is an IInteger or IFloat
 			};
 	}
 }

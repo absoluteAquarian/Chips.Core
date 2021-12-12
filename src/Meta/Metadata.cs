@@ -40,7 +40,7 @@ namespace Chips.Core.Meta{
 			}
 
 			/// <summary>
-			/// Flag $N - value conversion success
+			/// Flag $N - whether value conversion from a string to some other type was successful
 			/// </summary>
 			public static bool Conversion{
 				get => (flags & 0x0002) != 0;
@@ -86,7 +86,8 @@ namespace Chips.Core.Meta{
 
 		internal static IOHandle[]? ioHandles;
 
-		public static readonly OpcodeTable? op;
+		//Used to ensure that no opcode shares the same code
+		internal static readonly OpcodeTable? op;
 
 		static Metadata(){
 			op = new OpcodeTable();

@@ -1,12 +1,14 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Types;
 using System.Numerics;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Chips.Core.Utility{
 	public static class TypeTracking{
 		private static readonly Dictionary<Type, object> cachedObjects = new();
 		private static readonly Dictionary<Type, ChipsGeneratedAttribute?> cachedGeneratedAttribute = new();
+		private static readonly Dictionary<Type, Type> cachedArrayTypes = new();
 
 		public static bool IsInteger(object? arg)
 			=> arg is sbyte or short or int or long or byte or ushort or uint or ulong or BigInteger;
@@ -34,7 +36,7 @@ namespace Chips.Core.Utility{
 				char _ => "char",
 				string _ => "str",
 				Indexer _ => "~index",
-				Array _ => $"~arr:{GetChipsType(o.GetType().GetElementType()!)}",
+				Array _ => $"~arr:{GetChipsType(o.GetType().GetElementType()!, throwOnNotFound)}",
 				Types.Range _ => "~range",
 				List _ => "~list",
 				TimeSpan _ => "~time",
@@ -51,19 +53,55 @@ namespace Chips.Core.Utility{
 				_ => !throwOnNotFound ? null : throw new ArgumentException($"Type \"{o.GetType().FullName}\" does not have a defined Chips type code")
 			};
 
-		public static string? GetChipsType(Type t){
+		public static Type? GetCSharpType(string chipsType)
+			=> chipsType switch{
+				"i32" => typeof(int),
+				"i8" => typeof(sbyte),
+				"i16" => typeof(short),
+				"i64" => typeof(long),
+				"u32" => typeof(uint),
+				"u8" => typeof(byte),
+				"u16" => typeof(ushort),
+				"u64" => typeof(ulong),
+				"iex" => typeof(BigInteger),
+				"f32" => typeof(float),
+				"f64" => typeof(double),
+				"f128" => typeof(decimal),
+				"obj" => typeof(object),
+				"char" => typeof(char),
+				"str" => typeof(string),
+				"~index" => typeof(Indexer),
+				"~range" => typeof(Types.Range),
+				"~list" => typeof(List),
+				"~time" => typeof(TimeSpan),
+				"~date" => typeof(DateTime),
+				"~regex" => typeof(Regex),
+				"bool" => typeof(bool),
+				"~rand" => typeof(Random),
+				"~cplx" => typeof(Complex),
+				"f16" => typeof(Half),
+				"null" => null,
+				_ when chipsType.StartsWith("~arr:") => GetCSharpType(chipsType[5..]) is Type type
+					? GetArrayType(type)
+					: throw new ArgumentException($"Type \"{chipsType[5..]}\" is not a valid member type for arrays"),
+				_ when chipsType.StartsWith("~ud:") => Assembly.GetEntryAssembly()?.GetType(chipsType[4..], throwOnError: false)
+					?? throw new ArgumentException($"Type \"{chipsType[4..]}\" does not exist in the program's assembly"),
+				_ => throw new ArgumentException($"Type \"{chipsType}\" does not exist in Chips and is not a user-defined type")
+			};
+
+		public static string? GetChipsType(Type t, bool throwOnNotFound = true){
 			if(!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = Activator.CreateInstance(t)!);
 
-			return GetChipsType(obj);
+			return GetChipsType(obj, throwOnNotFound);
 		}
 
-		public static string? GetChipsType<T>() where T : new(){
+		public static string? GetChipsType<T>(bool throwOnNotFound = true) where T : new(){
 			Type t = typeof(T);
 			if(!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = new T());
 
-			return GetChipsType(obj);
+			return GetChipsType(obj, throwOnNotFound);
 		}
 
 		public static TypeCode GetTypeCode(object o)
@@ -115,6 +153,13 @@ namespace Chips.Core.Utility{
 			return GetTypeCode(obj);
 		}
 
+		private static Type GetArrayType(Type elementType){
+			if(!cachedArrayTypes.TryGetValue(elementType, out Type? type))
+				cachedArrayTypes.Add(elementType, type = Array.CreateInstance(elementType, 0).GetType());
+
+			return type;
+		}
+
 		private static ChipsGeneratedAttribute? GetChipsGeneratedAttribute(this object o){
 			Type t = o.GetType();
 			if(!cachedGeneratedAttribute.TryGetValue(t, out ChipsGeneratedAttribute? attr))
@@ -132,10 +177,10 @@ namespace Chips.Core.Utility{
 				return 4;
 			if(t == typeof(long) || t == typeof(ulong) || t == typeof(double))
 				return 8;
-			if(t == typeof(decimal))
+			if(t == typeof(decimal) || t == typeof(Complex))
 				return 16;
 
-			throw new Exception($"Internal Chips Exception: Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}");
+			throw new Exception($"Internal Chips Exception -- Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}: {t.FullName}");
 		}
 	}
 }

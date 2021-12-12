@@ -1,4 +1,6 @@
-﻿using Chips.Core.Utility;
+﻿using Chips.Core.Types.NumberProcessing;
+using Chips.Core.Utility;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -50,9 +52,51 @@ namespace Chips.Core.Types{
 
 			//Hash calculating
 			[FieldOffset(0)]
-			private long hash;
+			private readonly long hash;
 			[FieldOffset(sizeof(double))]
-			private long hash2;
+			private readonly long hash2;
+			#endregion
+
+			public bool IsInteger => typeCode == Utility.TypeCode.Int8
+				|| typeCode == Utility.TypeCode.Int16
+				|| typeCode == Utility.TypeCode.Int32
+				|| typeCode == Utility.TypeCode.Int64
+				|| typeCode == Utility.TypeCode.Uint8
+				|| typeCode == Utility.TypeCode.Uint16
+				|| typeCode == Utility.TypeCode.Uint32
+				|| typeCode == Utility.TypeCode.Uint64;
+
+			public bool IsFloatingPoint => typeCode == Utility.TypeCode.Float32
+				|| typeCode == Utility.TypeCode.Float64
+				|| typeCode == Utility.TypeCode.Float128
+				|| typeCode == Utility.TypeCode.Float16;
+
+			#region Static Methods
+			public static Number Create(object? value)
+				=> value switch{
+					sbyte s => s,
+					short sh => sh,
+					int i => i,
+					long l => l,
+					byte b => b,
+					ushort us => us,
+					uint ui => ui,
+					ulong ul => ul,
+					float f => f,
+					double d => d,
+					decimal dm => dm,
+					Half h => h,
+					Complex c => c,
+					INumber n => Create(n.Value),
+					null => throw new ArgumentNullException(nameof(value)),
+					_ => throw new ArgumentException($"A value of type <{TypeTracking.GetChipsType(value, throwOnNotFound: false)}> cannot be used as an internal number type", nameof(value))
+				};
+
+			public static int CompareNumbers(object? value, object? value2)
+				=> Create(value).CompareTo(Create(value2));
+
+			public static bool SetUniverseMatches(Number num, Number num2)
+				=> (num.IsInteger && num2.IsInteger) || (num.IsFloatingPoint && num2.IsFloatingPoint) || (num.typeCode == Utility.TypeCode.Complex && num2.typeCode == Utility.TypeCode.Complex);
 			#endregion
 
 			#region Implicit Operators
@@ -155,7 +199,7 @@ namespace Chips.Core.Types{
 					Utility.TypeCode.Float128 => (decimal)this,
 					Utility.TypeCode.Float16 => (Half)this,
 					Utility.TypeCode.Complex => (Complex)this,
-					_ => throw new InvalidOperationException("Arithmetic set member contained an invalid type code")
+					_ => throw new InvalidOperationException("Internal number-type value contained an invalid type code")
 				};
 
 			public override string ToString(){
@@ -274,8 +318,10 @@ namespace Chips.Core.Types{
 
 		private readonly Number[] set;
 
-		public static readonly ArithmeticSet EmptySet = new(Array.Empty<Number>());
+		public static readonly ArithmeticSet EmptySet = new();
 		private static bool emptySetInitialized = false;
+
+		public ArithmeticSet() : this(Array.Empty<Number>()){ }
 
 		public ArithmeticSet(params Number[] numbers){
 			if(numbers is null)
@@ -285,7 +331,7 @@ namespace Chips.Core.Types{
 				if(emptySetInitialized)
 					set = EmptySet.set;
 				else{
-					set = numbers;
+					set = Array.Empty<Number>();
 					emptySetInitialized = true;
 				}
 			}else{
@@ -293,6 +339,38 @@ namespace Chips.Core.Types{
 
 				OrganizeSet();
 			}
+		}
+
+		public ArithmeticSet(params object[] numbers) : this(ConvertObjectsToNumbers(numbers)){ }
+
+		public ArithmeticSet(Array array) : this(ConvertObjectsToNumbers(array)){ }
+
+		private static unsafe Number[] ConvertObjectsToNumbers(object[] numbers){
+			Number[] arr = new Number[numbers.Length];
+
+			fixed(Number* ptr = arr){
+				Number* nfPtr = ptr;
+
+				object obj;
+				for(int i = 0; i < arr.Length; i++, nfPtr++)
+					*nfPtr = (obj = numbers[i]) is Number number ? number : Number.Create(obj);
+			}
+
+			return arr;
+		}
+
+		private static unsafe Number[] ConvertObjectsToNumbers(Array numbers){
+			Number[] arr = new Number[numbers.Length];
+
+			fixed(Number* ptr = arr){
+				Number* nfPtr = ptr;
+
+				object? obj;
+				for(int i = 0; i < arr.Length; i++, nfPtr++)
+					*nfPtr = (obj = numbers.GetValue(i)) is Number number ? number : Number.Create(obj);
+			}
+
+			return arr;
 		}
 
 		public bool IsEmptySet => set.Length == 0;
@@ -315,7 +393,7 @@ namespace Chips.Core.Types{
 
 		public static ArithmeticSet Intersection(ArithmeticSet a, ArithmeticSet b){
 			if(b.IsEmptySet)
-				return new(EmptySet.set);
+				return new();
 
 			ArithmeticSet ret;
 
@@ -370,6 +448,40 @@ namespace Chips.Core.Types{
 			StringBuilder sb = new(Formatting.FormatArray(set).Replace('[', '{').Replace(']', '}'));
 
 			return sb.ToString();
+		}
+
+		public override bool Equals(object? obj)
+			=> obj is ArithmeticSet set && Difference(this, set).IsEmptySet;
+
+		public override int GetHashCode()
+			=> base.GetHashCode();
+
+		public static unsafe bool operator ==(ArithmeticSet set, ArithmeticSet set2){
+			fixed(Number* ptr = set.set) fixed(Number* ptr2 = set2.set){
+				Number* nfPtr = ptr, nfPtr2 = ptr2;
+
+				int length = Math.Min(set.set.Length, set2.set.Length);
+
+				for(int i = 0; i < length; i++, nfPtr++, nfPtr2++)
+					if(!Number.SetUniverseMatches(*nfPtr, *nfPtr2) || nfPtr->CompareTo(*nfPtr2) != 0)
+						return false;
+			}
+
+			return true;
+		}
+
+		public static unsafe bool operator !=(ArithmeticSet set, ArithmeticSet set2){
+			fixed(Number* ptr = set.set) fixed(Number* ptr2 = set2.set){
+				Number* nfPtr = ptr, nfPtr2 = ptr2;
+
+				int length = Math.Min(set.set.Length, set2.set.Length);
+
+				for(int i = 0; i < length; i++, nfPtr++, nfPtr2++)
+					if(Number.SetUniverseMatches(*nfPtr, *nfPtr2) && nfPtr->CompareTo(*nfPtr2) == 0)
+						return false;
+			}
+
+			return true;
 		}
 	}
 }

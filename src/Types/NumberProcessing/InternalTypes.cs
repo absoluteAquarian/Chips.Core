@@ -32,7 +32,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			SByte_T convert = ValueConverter.CastToSByte_T(number);
-			return new SByte_T(value + convert.value);
+			return new SByte_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -104,11 +104,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new SByte_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(SByte))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new SByte_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(SByte))
 				return new SByte_T(0);
 			
-			SByte mask = (SByte)(1 << bit);
+			SByte mask = (SByte)(1 << shift);
 			return new SByte_T(value & mask);
 		}
 
@@ -150,7 +157,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(SByte) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -160,7 +167,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(SByte))
-				return number.And(this);
+				return number.Or(this);
 
 			SByte_T convert = ValueConverter.CastToSByte_T(iNum);
 			return new SByte_T(value | convert.value);
@@ -188,7 +195,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(SByte))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			SByte_T convert = ValueConverter.CastToSByte_T(number);
 			return new SByte_T(unchecked(value - convert.value));
@@ -208,7 +215,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(SByte))
-				return number.And(this);
+				return number.Xor(this);
 
 			SByte_T convert = ValueConverter.CastToSByte_T(iNum);
 			return new SByte_T(value ^ convert.value);
@@ -243,7 +250,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			Int16_T convert = ValueConverter.CastToInt16_T(number);
-			return new Int16_T(value + convert.value);
+			return new Int16_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -315,11 +322,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Int16_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(Int16))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new Int16_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(Int16))
 				return new Int16_T(0);
 			
-			Int16 mask = (Int16)(1 << bit);
+			Int16 mask = (Int16)(1 << shift);
 			return new Int16_T(value & mask);
 		}
 
@@ -361,7 +375,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int16) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -371,7 +385,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int16))
-				return number.And(this);
+				return number.Or(this);
 
 			Int16_T convert = ValueConverter.CastToInt16_T(iNum);
 			return new Int16_T(value | convert.value);
@@ -399,7 +413,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(Int16))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			Int16_T convert = ValueConverter.CastToInt16_T(number);
 			return new Int16_T(unchecked(value - convert.value));
@@ -419,7 +433,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int16))
-				return number.And(this);
+				return number.Xor(this);
 
 			Int16_T convert = ValueConverter.CastToInt16_T(iNum);
 			return new Int16_T(value ^ convert.value);
@@ -451,7 +465,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			Int32_T convert = ValueConverter.CastToInt32_T(number);
-			return new Int32_T(value + convert.value);
+			return new Int32_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -523,11 +537,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Int32_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(Int32))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new Int32_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(Int32))
 				return new Int32_T(0);
 			
-			Int32 mask = (Int32)(1 << bit);
+			Int32 mask = (Int32)(1 << shift);
 			return new Int32_T(value & mask);
 		}
 
@@ -569,7 +590,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int32) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -579,7 +600,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int32))
-				return number.And(this);
+				return number.Or(this);
 
 			Int32_T convert = ValueConverter.CastToInt32_T(iNum);
 			return new Int32_T(value | convert.value);
@@ -607,7 +628,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(Int32))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			Int32_T convert = ValueConverter.CastToInt32_T(number);
 			return new Int32_T(unchecked(value - convert.value));
@@ -627,7 +648,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int32))
-				return number.And(this);
+				return number.Xor(this);
 
 			Int32_T convert = ValueConverter.CastToInt32_T(iNum);
 			return new Int32_T(value ^ convert.value);
@@ -662,7 +683,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			Int64_T convert = ValueConverter.CastToInt64_T(number);
-			return new Int64_T(value + convert.value);
+			return new Int64_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -734,11 +755,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Int64_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(Int64))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new Int64_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(Int64))
 				return new Int64_T(0);
 			
-			Int64 mask = (Int64)(1 << bit);
+			Int64 mask = (Int64)(1 << shift);
 			return new Int64_T(value & mask);
 		}
 
@@ -780,7 +808,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int64) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -790,7 +818,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int64))
-				return number.And(this);
+				return number.Or(this);
 
 			Int64_T convert = ValueConverter.CastToInt64_T(iNum);
 			return new Int64_T(value | convert.value);
@@ -818,7 +846,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(Int64))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			Int64_T convert = ValueConverter.CastToInt64_T(number);
 			return new Int64_T(unchecked(value - convert.value));
@@ -838,7 +866,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Int64))
-				return number.And(this);
+				return number.Xor(this);
 
 			Int64_T convert = ValueConverter.CastToInt64_T(iNum);
 			return new Int64_T(value ^ convert.value);
@@ -873,7 +901,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			Byte_T convert = ValueConverter.CastToByte_T(number);
-			return new Byte_T(value + convert.value);
+			return new Byte_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -945,11 +973,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Byte_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(Byte))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new Byte_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(Byte))
 				return new Byte_T(0);
 			
-			Byte mask = (Byte)(1 << bit);
+			Byte mask = (Byte)(1 << shift);
 			return new Byte_T(value & mask);
 		}
 
@@ -991,7 +1026,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Byte) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -1001,7 +1036,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Byte))
-				return number.And(this);
+				return number.Or(this);
 
 			Byte_T convert = ValueConverter.CastToByte_T(iNum);
 			return new Byte_T(value | convert.value);
@@ -1029,7 +1064,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(Byte))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			Byte_T convert = ValueConverter.CastToByte_T(number);
 			return new Byte_T(unchecked(value - convert.value));
@@ -1049,7 +1084,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(Byte))
-				return number.And(this);
+				return number.Xor(this);
 
 			Byte_T convert = ValueConverter.CastToByte_T(iNum);
 			return new Byte_T(value ^ convert.value);
@@ -1084,7 +1119,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			UInt16_T convert = ValueConverter.CastToUInt16_T(number);
-			return new UInt16_T(value + convert.value);
+			return new UInt16_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -1156,11 +1191,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new UInt16_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(UInt16))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new UInt16_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(UInt16))
 				return new UInt16_T(0);
 			
-			UInt16 mask = (UInt16)(1 << bit);
+			UInt16 mask = (UInt16)(1 << shift);
 			return new UInt16_T(value & mask);
 		}
 
@@ -1196,7 +1238,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt16) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -1206,7 +1248,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt16))
-				return number.And(this);
+				return number.Or(this);
 
 			UInt16_T convert = ValueConverter.CastToUInt16_T(iNum);
 			return new UInt16_T(value | convert.value);
@@ -1234,7 +1276,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(UInt16))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			UInt16_T convert = ValueConverter.CastToUInt16_T(number);
 			return new UInt16_T(unchecked(value - convert.value));
@@ -1254,7 +1296,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt16))
-				return number.And(this);
+				return number.Xor(this);
 
 			UInt16_T convert = ValueConverter.CastToUInt16_T(iNum);
 			return new UInt16_T(value ^ convert.value);
@@ -1289,7 +1331,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			UInt32_T convert = ValueConverter.CastToUInt32_T(number);
-			return new UInt32_T(value + convert.value);
+			return new UInt32_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -1361,11 +1403,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new UInt32_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(UInt32))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new UInt32_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(UInt32))
 				return new UInt32_T(0);
 			
-			UInt32 mask = (UInt32)(1 << bit);
+			UInt32 mask = (UInt32)(1 << shift);
 			return new UInt32_T(value & mask);
 		}
 
@@ -1401,7 +1450,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt32) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -1411,7 +1460,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt32))
-				return number.And(this);
+				return number.Or(this);
 
 			UInt32_T convert = ValueConverter.CastToUInt32_T(iNum);
 			return new UInt32_T(value | convert.value);
@@ -1439,7 +1488,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(UInt32))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			UInt32_T convert = ValueConverter.CastToUInt32_T(number);
 			return new UInt32_T(unchecked(value - convert.value));
@@ -1459,7 +1508,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt32))
-				return number.And(this);
+				return number.Xor(this);
 
 			UInt32_T convert = ValueConverter.CastToUInt32_T(iNum);
 			return new UInt32_T(value ^ convert.value);
@@ -1494,7 +1543,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return number.Add(this);
 
 			UInt64_T convert = ValueConverter.CastToUInt64_T(number);
-			return new UInt64_T(value + convert.value);
+			return new UInt64_T(unchecked(value + convert.value));
 		}
 
 		public IInteger And(IInteger number){
@@ -1566,11 +1615,18 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new UInt64_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
-		public IInteger GetBit(byte bit){
-			if(bit >= 8 * sizeof(UInt64))
+		public IInteger GetBit(IInteger bit){
+			if(bit is not INumber number)
+				throw new ArgumentException("Internal Chips Error -- Value was an integer, but not a number");
+			
+			if(ArithmeticSet.Number.Create(number.Value).CompareTo(ushort.MaxValue) >= 0)
+				return new UInt64_T(0);
+
+			ushort shift = (ushort)ValueConverter.CastToUInt16_T(number).Value;
+			if(shift >= 8 * sizeof(UInt64))
 				return new UInt64_T(0);
 			
-			UInt64 mask = (UInt64)(1 << bit);
+			UInt64 mask = (UInt64)(1 << shift);
 			return new UInt64_T(value & mask);
 		}
 
@@ -1606,7 +1662,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt64) < sizeof(int)){
 				INumber upcast = ValueConverter.UpcastToAtLeastInt32(this);
-				return (upcast as IInteger)!.And(number);
+				return (upcast as IInteger)!.Or(number);
 			}
 
 			if(number is not INumber iNum)
@@ -1616,7 +1672,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-OR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt64))
-				return number.And(this);
+				return number.Or(this);
 
 			UInt64_T convert = ValueConverter.CastToUInt64_T(iNum);
 			return new UInt64_T(value | convert.value);
@@ -1644,7 +1700,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			}
 
 			if(TypeTracking.GetSizeFromNumericType(number.Value.GetType()) > sizeof(UInt64))
-				return number.Negate().Multiply(this.Negate());
+				return number.Negate().Subtract(this.Negate());
 
 			UInt64_T convert = ValueConverter.CastToUInt64_T(number);
 			return new UInt64_T(unchecked(value - convert.value));
@@ -1664,7 +1720,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				throw new Exception("Cannot perform bitwise-XOR operations with non-integer values");
 
 			if(TypeTracking.GetSizeFromNumericType(iNum.Value.GetType()) > sizeof(UInt64))
-				return number.And(this);
+				return number.Xor(this);
 
 			UInt64_T convert = ValueConverter.CastToUInt64_T(iNum);
 			return new UInt64_T(value ^ convert.value);
@@ -1711,7 +1767,7 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IFloat Atan()
 			=> new Single_T((Single)Math.Atan(value));
 
-		public IFloat Atan2(IFloat divisor){
+		public IFloat Atan2(IFloat divisor, bool inverseLogic = false){
 			if(divisor is not INumber number)
 				throw new InvalidOperationException("Number was not a floating-point value");
 
@@ -1720,10 +1776,10 @@ namespace Chips.Core.Types.NumberProcessing{
 			if(targetSize < sizeof(Single))
 				number = ValueConverter.CastToSingle_T(number);
 			else if(targetSize > sizeof(Single))
-				return divisor.Atan2(this);
+				return divisor.Atan2(this, true);
 
 			Single_T convert = ValueConverter.CastToSingle_T(number);
-			return new Single_T((Single)Math.Atan2(value, convert.value));
+			return new Single_T((Single)Math.Atan2(!inverseLogic ? value : convert.value, !inverseLogic ? convert.value : value));
 		}
 
 		public IFloat Atanh()
@@ -1885,7 +1941,7 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IFloat Atan()
 			=> new Double_T((Double)Math.Atan(value));
 
-		public IFloat Atan2(IFloat divisor){
+		public IFloat Atan2(IFloat divisor, bool inverseLogic = false){
 			if(divisor is not INumber number)
 				throw new InvalidOperationException("Number was not a floating-point value");
 
@@ -1894,10 +1950,10 @@ namespace Chips.Core.Types.NumberProcessing{
 			if(targetSize < sizeof(Double))
 				number = ValueConverter.CastToDouble_T(number);
 			else if(targetSize > sizeof(Double))
-				return divisor.Atan2(this);
+				return divisor.Atan2(this, true);
 
 			Double_T convert = ValueConverter.CastToDouble_T(number);
-			return new Double_T((Double)Math.Atan2(value, convert.value));
+			return new Double_T((Double)Math.Atan2(!inverseLogic ? value : convert.value, !inverseLogic ? convert.value : value));
 		}
 
 		public IFloat Atanh()
@@ -2059,7 +2115,7 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IFloat Atan()
 			=> new Decimal_T(DecimalMath.DecimalEx.ATan(value));
 
-		public IFloat Atan2(IFloat divisor){
+		public IFloat Atan2(IFloat divisor, bool inverseLogic = false){
 			if(divisor is not INumber number)
 				throw new InvalidOperationException("Number was not a floating-point value");
 
@@ -2068,7 +2124,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			if(targetSize < sizeof(Decimal))
 				number = ValueConverter.CastToDecimal_T(number);
 			else if(targetSize > sizeof(Decimal))
-				return divisor.Atan2(this);
+				return divisor.Atan2(this, true);
 
 			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
 			return new Decimal_T(DecimalMath.DecimalEx.ATan2(value, convert.value));

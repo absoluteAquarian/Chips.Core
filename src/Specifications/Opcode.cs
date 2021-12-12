@@ -1,14 +1,24 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Types;
 using Chips.Core.Utility;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Chips.Core.Specifications{
 	public unsafe partial class Opcode{
 		public struct FunctionContext{
-			internal object[] args = Array.Empty<object>();
+			internal object[] args;
 			
-			internal string? sourceFile = null;
-			internal int sourceLine = -1;
+			internal string? sourceFile;
+			internal int sourceLine;
+
+			public static readonly FunctionContext NoContext = new();
+
+			public FunctionContext(){
+				args = Array.Empty<object>();
+				sourceFile = null;
+				sourceLine = -1;
+			}
 
 			public FunctionContext(string sourceFile, int sourceLine, params object[] args){
 				this.sourceFile = sourceFile;
@@ -22,7 +32,7 @@ namespace Chips.Core.Specifications{
 
 		public bool IsParent => table is not null;
 
-		internal OpcodeTable? table;
+		public readonly OpcodeTable? table;
 		internal Opcode? parent;
 
 		internal readonly delegate*<FunctionContext, void> func;
@@ -50,6 +60,14 @@ namespace Chips.Core.Specifications{
 			func(context);
 		}
 
+		internal static void CheckZeroFlag_RegisterA(bool checkIntegers = false, bool checkFloats = false, bool checkCollections = false, bool checkStrings = false)
+			=> CheckZeroFlag(Metadata.Registers.A.Data, checkIntegers, checkFloats, checkCollections, checkStrings);
+
+		internal static void CheckZeroFlag_RegisterS(){
+			if(string.IsNullOrEmpty(Metadata.Registers.S.Data as string))
+				Metadata.Flags.Zero = true;
+		}
+
 		internal static void CheckZeroFlag(object? obj, bool checkIntegers = false, bool checkFloats = false, bool checkCollections = false, bool checkStrings = false){
 			if(obj is null){
 				Metadata.Flags.Zero = true;
@@ -58,8 +76,8 @@ namespace Chips.Core.Specifications{
 
 			var type = obj.GetType();
 
-			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive && ((ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0) || (obj is char c && c == 0));
-			bool zeroFlagSucess_Float = checkFloats && type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d;
+			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive && ((obj is char c && c == 0) || (obj is bool b && b) || (ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0));
+			bool zeroFlagSucess_Float = checkFloats && ((obj is Half h && h == (Half)0f) || (obj is Complex cm && cm == Complex.Zero) || (type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d));
 			bool zeroFlagSuccess_Collections = checkCollections && ((obj is Array array && array.Length == 0) || (obj is List list && list.Count == 0) || (obj is ArithmeticSet set && set.IsEmptySet));
 			bool zeroFlagSuccess_String = checkStrings && obj is string str && str == "";
 

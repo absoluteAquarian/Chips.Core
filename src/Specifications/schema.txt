@@ -123,7 +123,7 @@ _______|__x0__|__x1__|__x2__|__x3__|__x4__|__x5__|__x6__|__x7__|__x8__|__x9__|__
 |  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      |      |      |      | shas |      |      |      |      |
 |  Cx  |  sjn | sdiv | srmv | srep | atnt |      |      |      |      |      |      |      |      |      |      |      |
 |  Dx  |  sjn | sdiv | srmv |      | atnt |      |      |      |      |      |      |      |      |      |      |  sys |
-|  Ex  |  cpz | cpro | cpco |  cpo | cpcj | cprv | cpnr |  cpr |  cpi |      |      |      |      |      | wait |  sys |
+|  Ex  |  cpz | cpro | cpco |  cpo | cpcj | cprv | cpnr |  cpr |  cpi |      |      |      |      | csrv | wait |  sys |
 |  Fx  | conw | conh | cont | csrx | csry | cclb | cclf | caps | cnww | cnwh | conr | cnrf | cnrb |  cls | wait | halt |
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -298,12 +298,12 @@ BYTECODE | OPCODE
  18      | btz <label> ................ branches to <label> iff the Z flag is set
  67      | bin ........................ puts the binary representation of A into S.  A must be an integer
  68      | binz ....................... puts the binary representation of A into S, including leading zeroes.  A must be an integer
- 69      | bit <obj> .................. performs A = GetBit(A, <obj>).  <obj> must be a <u8>
- 79      | bit <var> .................. performs A = GetBit(A, <var>).  <var> must be a <u8>
+ 69      | bit <obj> .................. performs A = GetBit(A, <obj>).  <obj> must be an integer
+ 79      | bit <var> .................. performs A = GetBit(A, <var>).  <var> must be an integer
  6A      | bits ....................... replaces A with its bit representation.  A must be one of the floating-point types, and the resulting type of A depends on its initial type
 
  1B      | call <func> ................ jumps to <func>
- F7      | caps ....................... gets whether CAPS LOCK is enabled as a <bool>
+ F7      | caps ....................... sets A to whether CAPS LOCK is enabled as a <bool>
  63      | cast <type> ................ casts A to a variable of type <type>
  F5      | cclb ....................... sets the background color of the console to A.  Expected value is an <i32> between 0 and 15.  If the P flag is set, the value is copied to A instead
  F6      | cclf ....................... sets the foreground color of the console to A.  Expected value is an <i32> between 0 and 15.  If the P flag is set, the value is copied to A instead
@@ -325,13 +325,13 @@ BYTECODE | OPCODE
  07      | clt <obj> .................. sets the O flag iff A < <obj>
  08      | clt <var> .................. sets the O flag iff A < <var>
  4F      | clz ........................ clears the Z flag
- FB      | cnrf ....................... resets the console's foreground colour to its default
  FC      | cnrb ....................... resets the console's background colour to its default
+ FB      | cnrf ....................... resets the console's foreground colour to its default
  F9      | cnwh ....................... sets the console window's height.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
  F8      | cnww ....................... sets the console window's width.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
  F1      | conh ....................... sets the height of the console's text buffer to the value in A.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
- F2      | cont ....................... sets the title of the console to S.  If the P flag is set, the value is copied to S instead
  FA      | conr ....................... resets the console's colours to their default values
+ F2      | cont ....................... sets the title of the console to S.  If the P flag is set, the value is copied to S instead
  F0      | conw ....................... sets the width of the console's text buffer to the value in A.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
  E4      | cpcj ....................... sets A to its complex conjugate (a - bi)
  E2      | cpco ....................... performs A = 0 + 1i
@@ -342,6 +342,7 @@ BYTECODE | OPCODE
  E1      | cpro ....................... performs A = 1 + 0i
  E5      | cprv ....................... given a <~cplx> value in A, a + bi, performs A = b + ai
  E0      | cpz ........................ performs A = 0 + 0i
+ ED      | csrv ....................... sets whether the text cursor is visible.  A must be a <bool>.  If the P flag is set, the value is copied into A instead
  F3      | csrx ....................... sets the column the text cursor is located at in the console to A.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
  F4      | csry ....................... sets the row the text cursor is located at in the console to A.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
 
@@ -430,7 +431,7 @@ BYTECODE | OPCODE
 
  5B      | ldrg ....................... sets A to the program's arguments (an <~arr:str>)
  22      | len ........................ performs A = length(A)
- 73      | lens ....................... resizes an <~arr> or <~list> to have the length specified in Y
+ 73      | lens ....................... resizes a <~list> in A to have the length specified in Y
  36      | ln  ........................ performs A = Math.Log(A)
  37      | log ........................ performs A = Math.Log10(A)
 

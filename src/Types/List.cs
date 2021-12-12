@@ -32,6 +32,20 @@
 			ResetCount();
 		}
 
+		public List(object[] values){
+			this.values = (object[])values.Clone();
+
+			ResetCount();
+		}
+
+		public List(Array array){
+			values = new object[array.Length];
+
+			Array.Copy(array, values, array.Length);
+
+			ResetCount();
+		}
+
 		private void ResetCount(){
 			Count = 0;
 			
@@ -58,5 +72,7 @@
 					Count--;
 			}
 		}
+
+		public object[] ToArray() => (object[])values.Clone();
 	}
 }

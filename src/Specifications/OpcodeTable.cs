@@ -1,20 +1,22 @@
-﻿namespace Chips.Core.Specifications{
-	internal class OpcodeTable{
+﻿using Chips.Core.Types;
+
+namespace Chips.Core.Specifications{
+	public class OpcodeTable{
 		internal Opcode[] table = new Opcode[256];
 
 		public Opcode this[int index]{
 			get{
+				if(index < 0 || index > byte.MaxValue)
+					throw new ArgumentOutOfRangeException(nameof(index));
+
 				var op = table[index];
 				if(op is null)
-					throw new Exception($"Unknown opcode (0x{index:X2})");
+					throw new UnkownOpcodeException((byte)index);
 				return op;
 			}
 			set => table[index] = value;
 		}
 
-		public Opcode this[Opcode opcode]{
-			get => table[opcode.code];
-			internal set => table[value.code] = value;
-		}
+		public Opcode this[Opcode opcode] => this[opcode.code];
 	}
 }

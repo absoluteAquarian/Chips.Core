@@ -41,5 +41,46 @@
 		public static readonly Opcode Bit_obj  = new(0x69, &Opcode.Functions.Bit,  "bit <obj>");
 		public static readonly Opcode Bit_var  = new(0x79, &Opcode.Functions.Bit,  "bit <var>");
 		public static readonly Opcode Bits     = new(0x6A, &Opcode.Functions.Bits, "bits");
+
+		public static readonly Opcode Call     = new(0x1B, &Opcode.Functions.Call, "call <func>");
+		public static readonly Opcode Caps     = new(0xF7, &Opcode.Functions.Caps, "caps");
+		public static readonly Opcode Cast     = new(0x63, &Opcode.Functions.Cast, "cast <type>");
+		public static readonly Opcode Cclb     = new(0xF5, &Opcode.Functions.Cclb, "cclb");
+		public static readonly Opcode Cclf     = new(0xF6, &Opcode.Functions.Cclf, "cclf");
+		public static readonly Opcode Ceil     = new(0xA1, &Opcode.Functions.Ceil, "ceil");
+		public static readonly Opcode Ceq_obj  = new(0x05, &Opcode.Functions.Ceq,  "ceq <obj>");
+		public static readonly Opcode Ceq_var  = new(0x25, &Opcode.Functions.Ceq,  "ceq <var>");
+		public static readonly Opcode Cge_obj  = new(0x08, &Opcode.Functions.Cge,  "cge <obj>");
+		public static readonly Opcode Cge_var  = new(0x28, &Opcode.Functions.Cge,  "cge <var>");
+		public static readonly Opcode Cgt_obj  = new(0x06, &Opcode.Functions.Cgt,  "cgt <obj>");
+		public static readonly Opcode Cgt_var  = new(0x26, &Opcode.Functions.Cgt,  "cgt <var>");
+		public static readonly Opcode Clc      = new(0x0F, &Opcode.Functions.Clc,  "clc");
+		public static readonly Opcode Cle_obj  = new(0x09, &Opcode.Functions.Cle,  "cle <obj>");
+		public static readonly Opcode Cle_var  = new(0x29, &Opcode.Functions.Cle,  "cle <var>");
+		public static readonly Opcode Cln      = new(0x1F, &Opcode.Functions.Cln,  "cln");
+		public static readonly Opcode Clo      = new(0x2F, &Opcode.Functions.Clo,  "clo");
+		public static readonly Opcode Clp      = new(0x6F, &Opcode.Functions.Clp,  "clp");
+		public static readonly Opcode Clr      = new(0x3F, &Opcode.Functions.Clr,  "clr");
+		public static readonly Opcode Cls      = new(0xFD, &Opcode.Functions.Cls,  "cls");
+		public static readonly Opcode Clt_obj  = new(0x05, &Opcode.Functions.Clt,  "clt <obj>");
+		public static readonly Opcode Ctl_var  = new(0x25, &Opcode.Functions.Clt,  "clt <var>");
+		public static readonly Opcode Clz      = new(0x4F, &Opcode.Functions.Clr,  "clz");
+		public static readonly Opcode Cnrb     = new(0xFC, &Opcode.Functions.Cnrb, "cnrb");
+		public static readonly Opcode Cnrf     = new(0xFB, &Opcode.Functions.Cnrf, "cnrf");
+		public static readonly Opcode Cnwh     = new(0xF9, &Opcode.Functions.Cnwh, "cnwh");
+		public static readonly Opcode Cnww     = new(0xF8, &Opcode.Functions.Cnww, "cnww");
+		public static readonly Opcode Conh     = new(0xF1, &Opcode.Functions.Conh, "conh");
+		public static readonly Opcode Conr     = new(0xFA, &Opcode.Functions.Conr, "conr");
+		public static readonly Opcode Cont     = new(0xF2, &Opcode.Functions.Cont, "cont");
+		public static readonly Opcode Conw     = new(0xF0, &Opcode.Functions.Conw, "conw");
+		public static readonly Opcode Cpcj     = new(0xE4, &Opcode.Functions.Cpcj, "cpcj");
+		public static readonly Opcode Cpco     = new(0xE2, &Opcode.Functions.Cpco, "cpco");
+		public static readonly Opcode Cpi      = new(0xE8, &Opcode.Functions.Cpi,  "cpi");
+		public static readonly Opcode Cpnr     = new(0xE6, &Opcode.Functions.Cpnr, "cpnr");
+		public static readonly Opcode Cpo      = new(0xE3, &Opcode.Functions.Cpo,  "cpo");
+		public static readonly Opcode Cpr      = new(0xE7, &Opcode.Functions.Cpr,  "cpr");
+		public static readonly Opcode Cpro     = new(0xE1, &Opcode.Functions.Cpro, "cpro");
+		public static readonly Opcode Cprv     = new(0xE5, &Opcode.Functions.Cprv, "cprv");
+		public static readonly Opcode Cpz      = new(0xE0, &Opcode.Functions.Cpz,  "cpz");
 	}
 }

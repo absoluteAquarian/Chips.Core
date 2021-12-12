@@ -10,7 +10,7 @@
 
 		IFloat Atan();
 
-		IFloat Atan2(IFloat divisor);
+		IFloat Atan2(IFloat divisor, bool inverseLogic = false);
 
 		IFloat Atanh();
 

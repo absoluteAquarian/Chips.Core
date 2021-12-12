@@ -12,7 +12,7 @@
 
 		string BinaryRepresentation(bool leadingZeroes);
 
-		IInteger GetBit(byte bit);
+		IInteger GetBit(IInteger bit);
 
 		IInteger Not();
 
