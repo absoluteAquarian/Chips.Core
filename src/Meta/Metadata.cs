@@ -9,23 +9,30 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// The register for arithmetic.  Can contain any type of value
 			/// </summary>
-			public static Register A = new("A", null, null);
+			public static Register A =  new("A", null, null);
 			/// <summary>
 			/// The register for storing the current exception
 			/// </summary>
-			public static Register E = new("E", null, null);
+			public static Register E =  new("E", null, null);
 			/// <summary>
 			/// The register for indexing.  Can only contain integers
 			/// </summary>
-			public static Register X = new("X", 0, &TypeTracking.IsInteger);
+			public static Register X =  new("X",    0, &TypeTracking.IsInteger);
 			/// <summary>
 			/// The register for counting.  Can only contain integers
 			/// </summary>
-			public static Register Y = new("Y", 0, &TypeTracking.IsInteger);
+			public static Register Y =  new("Y",    0, &TypeTracking.IsInteger);
+			public static Register SP = new("SP",   0, &StackPointer_ReadOnly){ getDataOverride = &StackPointer_GetValue };
 			/// <summary>
 			/// The register for string manipulation.  Can only contain strings
 			/// </summary>
-			public static Register S = new("S", null, &TypeTracking.IsString);
+			public static Register S =  new("S", null, &TypeTracking.IsString);
+
+			private static bool StackPointer_ReadOnly(object? obj)
+				=> throw new InvalidOperationException("Stack pointer cannot be written to");
+
+			private static object? StackPointer_GetValue()
+				=> stack!.SP;
 		}
 
 		public static class Flags{

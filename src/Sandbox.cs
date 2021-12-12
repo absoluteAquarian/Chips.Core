@@ -3,8 +3,10 @@
 namespace Chips.Core{
 	public static unsafe class Sandbox{
 		public static int Execute(string[] args, int stackSize, delegate*<void> entryPoint){
-			//Invoke the static ctor
+			//Invoke the static ctors
 			_ = Metadata.Registers.A;
+			_ = Metadata.Flags.Carry;
+			_ = Metadata.stack;
 
 			const int HANDLES = 8;
 

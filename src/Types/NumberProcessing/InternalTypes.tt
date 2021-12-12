@@ -121,6 +121,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new <#= type.Name #>_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(<#= type.Name #>) < sizeof(int)){
@@ -149,6 +152,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			<#= type.Name #> mask = (<#= type.Name #>)(1 << shift);
 			return new <#= type.Name #>_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new <#= type.Name #>_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -401,6 +407,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			=> throw new InvalidOperationException("Performing \"cosh\" on <f128> values is not supported");
 <#
 } #>
+		
+		public INumber Decrement()
+			=> new <#= type.Name #>_T(value + 1);
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -426,6 +435,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
 <#
 } #>
+
+		public INumber Increment()
+			=> new <#= type.Name #>_T(value + 1);
 
 		public IFloat Inverse()
 			=> (new <#= type.Name #>_T(1f).Divide(this) as IFloat)!;

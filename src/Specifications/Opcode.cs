@@ -68,6 +68,23 @@ namespace Chips.Core.Specifications{
 				Metadata.Flags.Zero = true;
 		}
 
+		internal static void CheckZeroFlag_RegisterX(){
+			var obj = Metadata.Registers.X.Data;
+			if((ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0))
+				Metadata.Flags.Zero = true;
+		}
+
+		internal static void CheckZeroFlag_RegisterY(){
+			var obj = Metadata.Registers.Y.Data;
+			if((ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0))
+				Metadata.Flags.Zero = true;
+		}
+
+		internal static void CheckZeroFlag_RegisterSP(){
+			if((int)Metadata.Registers.SP.Data! == 0)
+				Metadata.Flags.Zero = true;
+		}
+
 		internal static void CheckZeroFlag(object? obj, bool checkIntegers = false, bool checkFloats = false, bool checkCollections = false, bool checkStrings = false){
 			if(obj is null){
 				Metadata.Flags.Zero = true;
@@ -76,9 +93,21 @@ namespace Chips.Core.Specifications{
 
 			var type = obj.GetType();
 
-			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive && ((obj is char c && c == 0) || (obj is bool b && b) || (ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0) || (ValueConverter.AsSignedInteger(obj) is long l && l == 0));
-			bool zeroFlagSucess_Float = checkFloats && ((obj is Half h && h == (Half)0f) || (obj is Complex cm && cm == Complex.Zero) || (type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d));
-			bool zeroFlagSuccess_Collections = checkCollections && ((obj is Array array && array.Length == 0) || (obj is List list && list.Count == 0) || (obj is ArithmeticSet set && set.IsEmptySet));
+			bool zeroFlagSuccess_Integer = checkIntegers && type.IsPrimitive
+				&& ((obj is char c && c == 0)
+				|| (obj is bool b && b)
+				|| (obj is DateTime date && date == default)
+				|| (obj is TimeSpan time && time == default)
+				|| (ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0)
+				|| (ValueConverter.AsSignedInteger(obj) is long l && l == 0));
+			bool zeroFlagSucess_Float = checkFloats
+				&& ((obj is Half h && h == (Half)0f)
+				|| (obj is Complex cm && cm == Complex.Zero)
+				|| (type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d));
+			bool zeroFlagSuccess_Collections = checkCollections
+				&& ((obj is Array array && array.Length == 0)
+				|| (obj is List list && list.Count == 0)
+				|| (obj is ArithmeticSet set && set.IsEmptySet));
 			bool zeroFlagSuccess_String = checkStrings && obj is string str && str == "";
 
 			if(zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)

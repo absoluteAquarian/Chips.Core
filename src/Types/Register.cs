@@ -6,7 +6,7 @@ namespace Chips.Core.Types{
 	public unsafe class Register{
 		private object? data;
 		public object? Data{
-			get => data;
+			get => getDataOverride is not null ? getDataOverride() : data;
 			set{
 				if(acceptValueFunc is not null && !acceptValueFunc(value))
 					throw new RegisterAssignmentException($"{Formatting.FormatObject(this)} cannot accept values of type \"{TypeTracking.GetChipsType(value)}\"", globalContext);
@@ -15,7 +15,9 @@ namespace Chips.Core.Types{
 			}
 		}
 
-		internal delegate*<object?, bool> acceptValueFunc;
+		internal readonly delegate*<object?, bool> acceptValueFunc;
+
+		internal delegate*<object?> getDataOverride;
 
 		public readonly string name;
 

@@ -85,6 +85,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return sb.ToString();
 		}
 
+		public INumber Decrement()
+			=> new BigInteger_T(value - 1);
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			BigInteger_T convert = ValueConverter.CastToBigInteger_T(number);
 			return new BigInteger_T(!inverseLogic ? value / convert.value : convert.value / value);
@@ -104,6 +107,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			BigInteger mask = 1 << shift;
 			return new BigInteger_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new BigInteger_T(value - 1);
 
 		public INumber Multiply(INumber number){
 			BigInteger_T convert = ValueConverter.CastToBigInteger_T(number);
@@ -173,9 +179,9 @@ namespace Chips.Core.Types.NumberProcessing{
 		public INumber Add(INumber number){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
-			if(number is IInteger || targetSize < sizeof(float))
+			if(number is IInteger)
 				number = ValueConverter.CastToHalf_T(number);
-			else if(targetSize > sizeof(float))
+			else if(targetSize > TypeTracking.GetSizeFromNumericType(typeof(Half)))
 				return number.Add(this);
 
 			Half_T convert = ValueConverter.CastToHalf_T(number);
@@ -218,6 +224,9 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IFloat Cosh()
 			=> new Half_T((float)Math.Cosh(ValueF));
 
+		public INumber Decrement()
+			=> new Half_T(ValueF - 1);
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
 
@@ -235,6 +244,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger GetBits()
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+
+		public INumber Increment()
+			=> new Single_T(ValueF + 1);
 
 		public IFloat Inverse()
 			=> (new Half_T(1f).Divide(this) as IFloat)!;
@@ -275,7 +287,7 @@ namespace Chips.Core.Types.NumberProcessing{
 				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
 
 			Half_T convert = ValueConverter.CastToHalf_T(number);
-			return new Half_T(ValueF * convert.ValueF);
+			return new Half_T((float)Math.Pow(ValueF, convert.ValueF));
 		}
 
 		public INumber Remainder(INumber number){
@@ -341,13 +353,6 @@ namespace Chips.Core.Types.NumberProcessing{
 			=> throw new InvalidOperationException("Operation \"acosh\" is not supported on complex numbers");
 
 		public INumber Add(INumber number){
-			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
-
-			if(number is IInteger || targetSize < sizeof(float))
-				number = ValueConverter.CastToComplex_T(number);
-			else if(targetSize > sizeof(float))
-				return number.Add(this);
-
 			Complex_T convert = ValueConverter.CastToComplex_T(number);
 			return new Complex_T(value + convert.value);
 		}
@@ -376,14 +381,10 @@ namespace Chips.Core.Types.NumberProcessing{
 		public IFloat Cosh()
 			=> throw new InvalidOperationException("Operation \"cosh\" is not supported on complex numbers");
 
+		public INumber Decrement()
+			=> throw new InvalidOperationException("Operation \"decrement\" is not supported on complex numbers");
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
-			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
-
-			if(number is IInteger)
-				number = ValueConverter.CastToComplex_T(number);
-			else if(targetSize > TypeTracking.GetSizeFromNumericType(typeof(Half)))
-				return number.Divide(this, true);
-
 			Complex_T convert = ValueConverter.CastToComplex_T(number);
 			return new Complex_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
@@ -392,7 +393,10 @@ namespace Chips.Core.Types.NumberProcessing{
 			=> new Complex_T(new Complex(Math.Floor(value.Real), Math.Floor(value.Imaginary)));
 
 		public IInteger GetBits()
-			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+			=> throw new InvalidOperationException("Operation \"bits\" is not supported on complex numbers");
+
+		public INumber Increment()
+			=> throw new InvalidOperationException("Operation \"increment\" is not supported on complex numbers");
 
 		public IFloat Inverse()
 			=> new Complex_T(Complex.Reciprocal(value));
@@ -425,15 +429,8 @@ namespace Chips.Core.Types.NumberProcessing{
 			if(exponent is not INumber number)
 				throw new InvalidOperationException("Number was not a floating-point value");
 			
-			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
-
-			if(number is IInteger)
-				number = ValueConverter.CastToComplex_T(number);
-			else if(targetSize > TypeTracking.GetSizeFromNumericType(typeof(Half)))
-				return ValueConverter.Constants.GetConst_E(number.Value.GetType()).Pow((number.Multiply((Ln() as INumber)!) as IFloat)!); //x^y = e^(y * ln(x))
-
 			Complex_T convert = ValueConverter.CastToComplex_T(number);
-			return new Complex_T(value * convert.value);
+			return new Complex_T(Complex.Pow(value, convert.value));
 		}
 
 		public INumber Remainder(INumber number)

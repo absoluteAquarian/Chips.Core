@@ -437,6 +437,19 @@ namespace Chips.Core.Types{
 		public static ArithmeticSet Complement(ArithmeticSet a, ArithmeticSet universe)
 			=> Difference(universe, a);
 
+		public unsafe object[] ToArray(){
+			object[] arr = new object[set.Length];
+			
+			fixed(Number* ptr = set){
+				Number* nfPtr = ptr;
+
+				for(int i = 0; i < set.Length; i++, nfPtr++)
+					arr[i] = nfPtr->GetUnderlyingValue();
+			}
+
+			return arr;
+		}
+
 		private void OrganizeSet(){
 			Sorting.TimSort(set!);
 		}

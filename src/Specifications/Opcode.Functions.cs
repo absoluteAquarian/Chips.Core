@@ -1,6 +1,7 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Types;
 using Chips.Core.Types.NumberProcessing;
+using Chips.Core.Types.UserDefined;
 using Chips.Core.Utility;
 using System.Numerics;
 
@@ -602,6 +603,229 @@ castFail:
 
 					Console.CursorTop = (int)i.Value;
 				}
+			}
+			#endregion
+
+			#region Functions - D
+			public static void Dex(FunctionContext context){
+				Metadata.Registers.X.Data = (Metadata.Registers.X.Data as INumber)!.Decrement();
+				CheckZeroFlag_RegisterX();
+			}
+
+			public static void Dey(FunctionContext context){
+				Metadata.Registers.X.Data = (Metadata.Registers.Y.Data as INumber)!.Decrement();
+				CheckZeroFlag_RegisterY();
+			}
+
+			public static void Div(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				Metadata.Registers.A.Data = a.Divide(arg).Value;
+				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
+			}
+
+			public static void Dtad(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddDays((double)ValueConverter.CastToDouble_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtah(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddHours((double)ValueConverter.CastToDouble_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtai(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddMinutes((double)ValueConverter.CastToDouble_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtam(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddMilliseconds((double)ValueConverter.CastToDouble_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtao(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddMonths((int)ValueConverter.CastToInt32_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtat(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddTicks((long)ValueConverter.CastToInt64_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtas(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddSeconds((double)ValueConverter.CastToDouble_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtay(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
+					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
+
+				Metadata.Registers.A.Data = d.AddYears((int)ValueConverter.CastToInt32_T(arg).Value);
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtd(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Day;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dte(FunctionContext context){
+				Metadata.Registers.A.Data = DateTime.UnixEpoch;
+			}
+
+			public static void Dtfm(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.S.Data = d.ToString(Metadata.Registers.S.Data as string);
+				CheckZeroFlag_RegisterS();
+			}
+
+			public static void Dth(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Hour;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dti(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Minute;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtm(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Millisecond;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtn(FunctionContext context){
+				Metadata.Registers.A.Data = DateTime.Now;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dto(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Month;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dtt(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Ticks;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dts(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Second;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dty(FunctionContext context){
+				if(Metadata.Registers.A.Data is not DateTime d)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
+
+				Metadata.Registers.A.Data = d.Year;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Dup(FunctionContext context){
+				Metadata.stack!.Push(Metadata.stack!.Peek());
+			}
+
+			public static void Dupd(FunctionContext context){
+				object? obj = Metadata.stack!.Peek();
+
+				Metadata.stack.Push(obj switch{
+					Array a => a.Clone(),
+					List l => new List(l.ToArray()),
+					ArithmeticSet s => new ArithmeticSet(s.ToArray()),
+					IChipsStruct i => i.Clone(),
+					_ => obj
+				});
 			}
 			#endregion
 		}

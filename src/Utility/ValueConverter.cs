@@ -1,4 +1,5 @@
 ﻿using Chips.Core.Types.NumberProcessing;
+using System.Numerics;
 
 namespace Chips.Core.Utility{
 	internal static partial class ValueConverter{
@@ -68,6 +69,13 @@ namespace Chips.Core.Utility{
 				double d => new Double_T(d),
 				decimal dm => new Decimal_T(dm),
 				_ => null  //Unsuccessful boxing should just result in "null", as most checks are usually to see if the result is an IInteger or IFloat
+			};
+
+		internal static INumber? EnsureObjectCanBeCastToIConvertable(INumber num)
+			=> num switch{
+				BigInteger_T b => new Double_T((double)(BigInteger)b.Value),
+				Complex_T _ => null,  //Conversion not allowed
+				_ => num
 			};
 	}
 }

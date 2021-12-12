@@ -90,6 +90,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new SByte_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(SByte) < sizeof(int)){
@@ -118,6 +121,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			SByte mask = (SByte)(1 << shift);
 			return new SByte_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new SByte_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -308,6 +314,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new Int16_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int16) < sizeof(int)){
@@ -336,6 +345,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int16 mask = (Int16)(1 << shift);
 			return new Int16_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new Int16_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -523,6 +535,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new Int32_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int32) < sizeof(int)){
@@ -551,6 +566,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int32 mask = (Int32)(1 << shift);
 			return new Int32_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new Int32_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -741,6 +759,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new Int64_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Int64) < sizeof(int)){
@@ -769,6 +790,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Int64 mask = (Int64)(1 << shift);
 			return new Int64_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new Int64_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -959,6 +983,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new Byte_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(Byte) < sizeof(int)){
@@ -987,6 +1014,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Byte mask = (Byte)(1 << shift);
 			return new Byte_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new Byte_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1177,6 +1207,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new UInt16_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt16) < sizeof(int)){
@@ -1205,6 +1238,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt16 mask = (UInt16)(1 << shift);
 			return new UInt16_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new UInt16_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1389,6 +1425,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new UInt32_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt32) < sizeof(int)){
@@ -1417,6 +1456,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt32 mask = (UInt32)(1 << shift);
 			return new UInt32_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new UInt32_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1601,6 +1643,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return bin;
 		}
 
+		public INumber Decrement()
+			=> new UInt64_T(unchecked(value - 1));
+
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			//For sizes larger than int, this block should be removed by the compiler
 			if(sizeof(UInt64) < sizeof(int)){
@@ -1629,6 +1674,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			UInt64 mask = (UInt64)(1 << shift);
 			return new UInt64_T(value & mask);
 		}
+
+		public INumber Increment()
+			=> new UInt64_T(unchecked(value + 1));
 
 		public INumber Multiply(INumber number){
 			//For sizes larger than int, this block should be removed by the compiler
@@ -1793,6 +1841,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IFloat Cosh()
 			=> new Single_T((Single)Math.Cosh(value));
+		
+		public INumber Decrement()
+			=> new Single_T(value + 1);
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1811,6 +1862,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger GetBits()
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+
+		public INumber Increment()
+			=> new Single_T(value + 1);
 
 		public IFloat Inverse()
 			=> (new Single_T(1f).Divide(this) as IFloat)!;
@@ -1967,6 +2021,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IFloat Cosh()
 			=> new Double_T((Double)Math.Cosh(value));
+		
+		public INumber Decrement()
+			=> new Double_T(value + 1);
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -1985,6 +2042,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger GetBits()
 			=> (ValueConverter.RetrieveFloatingPointBits(this) as IInteger)!;
+
+		public INumber Increment()
+			=> new Double_T(value + 1);
 
 		public IFloat Inverse()
 			=> (new Double_T(1f).Divide(this) as IFloat)!;
@@ -2141,6 +2201,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IFloat Cosh()
 			=> throw new InvalidOperationException("Performing \"cosh\" on <f128> values is not supported");
+		
+		public INumber Decrement()
+			=> new Decimal_T(value + 1);
 
 		public INumber Divide(INumber number, bool inverseLogic = false){
 			int targetSize = TypeTracking.GetSizeFromNumericType(number.Value.GetType());
@@ -2159,6 +2222,9 @@ namespace Chips.Core.Types.NumberProcessing{
 
 		public IInteger GetBits()
 			=> throw new InvalidOperationException("Retrieving the bits on an <f128> instance is not supported");
+
+		public INumber Increment()
+			=> new Decimal_T(value + 1);
 
 		public IFloat Inverse()
 			=> (new Decimal_T(1f).Divide(this) as IFloat)!;

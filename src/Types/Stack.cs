@@ -1,15 +1,18 @@
-﻿using Chips.Core.Utility;
+﻿using Chips.Core.Meta;
+using Chips.Core.Utility;
 
 namespace Chips.Core.Types{
 	public class Stack{
 		private readonly object?[] stack;
-		public int sp;
+
+		public int SP{ get; private set; }
+		
 		private readonly int capacity;
 
 		public Stack(){
 			capacity = 1000;
 			stack = new object?[1000];
-			sp = 0;
+			SP = 0;
 		}
 
 		public Stack(int capacity){
@@ -18,34 +21,33 @@ namespace Chips.Core.Types{
 
 			this.capacity = capacity;
 			stack = new object[capacity];
-			sp = 0;
+			SP = 0;
 		}
 
-		public void Push(object obj){
-			if(sp >= capacity)
+		public void Push(object? obj){
+			if(SP >= capacity)
 				throw new Exception("Stack overflow detected. Cannot push more objects to the stack.");
 
-			//Locations are in sync.  Just replace the topmost element
-			stack[sp] = obj;
-			sp++;
+			stack[SP] = obj;
+			SP++;
 		}
 
 		public object? Pop(){
-			if(sp <= 0)
+			if(SP <= 0)
 				throw new Exception("Stack underflow detected. Cannot pop more objects from the stack.");
 
-			object? obj = stack[sp - 1];
-			stack[sp - 1] = null;
-			sp--;
+			object? obj = stack[SP - 1];
+			stack[SP - 1] = null;
+			SP--;
 
 			return obj;
 		}
 
-		public object? Peek() => sp == 0 ? throw new Exception("Stack does not contain any values") : stack[sp - 1];
+		public object? Peek() => SP == 0 ? throw new Exception("Stack does not contain any values") : stack[SP - 1];
 
 		public override string ToString()
-			=> sp == 0
+			=> SP == 0
 				? "[ <empty> ]"
-				: Formatting.FormatArray(stack[0..sp]);
+				: Formatting.FormatArray(stack[0..SP]);
 	}
 }

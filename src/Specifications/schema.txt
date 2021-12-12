@@ -117,8 +117,8 @@ _______|__x0__|__x1__|__x2__|__x3__|__x4__|__x5__|__x6__|__x7__|__x8__|__x9__|__
 |  5x  |  tax |  tay |  txa |  txy |  tya |  tyx |  mov | intp |  tas |  tsa |  inv | ldrg |  rem | dupd | <ex> |  stc |
 |  6x  |   is |  err |  isa | cast | prse | <ex> |  mov |  bin | binz |  bit | bits | size |  rem |      |      |  clp |
 |  7x  |  sbs |  err | type | lens |  btp |  idx |  mov | sqrt |  exp |  bit |  brt |  brt |  brf |  brf |      |  stp |
-|  8x  |  inx |  dex |  iny |  dey |  bfp |  idx |  mov | idxv |      |  rgs |  rge | stun | stin | stdj | stco | stdf |
-|  9x  |  try | flor |  sin |  cos |  tan | asnh |  mov | idxv |      |  rgs |  rge | stun | stin | stdj | stco | stdf |
+|  8x  |  inx |  dex |  iny |  dey |  bfp |  idx |  mov | idxv | psev |  rgs |  rge | stun | stin | stdj | stco | stdf |
+|  9x  |  try | flor |  sin |  cos |  tan | asnh |  mov | idxv | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
 |  Ax  |  try | ceil | asin | acos | atan | acsh |  mov | idxv |      |  rgs |  rge | shas | aems |      |      |      |
 |  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      |      |      |      | shas |      |      |      |      |
 |  Cx  |  sjn | sdiv | srmv | srep | atnt |      |      |      |      |      |      |      |      |      |      |      |
@@ -367,16 +367,16 @@ BYTECODE | OPCODE
  5E 07   | dtay <obj> ................. adds <obj> years to A.  A must be a <~date> instance
  5E 0F   | dtay <var> ................. adds <var> years to A.  A must be a <~date> instance
  5E 10   | dtd ........................ gets the Days value from A and puts it into A.  A must be a <~date> instance
+ 5E 22   | dte ........................ pushes DateTime.UnixEpoch to the Stack
+ 5E 20   | dtfm ....................... formats A according to S, then puts the result in S.  A must be a <~date> instance
  5E 11   | dth ........................ gets the Hours value from A and puts it into A.  A must be a <~date> instance
  5E 12   | dti ........................ gets the Minutes value from A and puts it into A.  A must be a <~date> instance
  5E 13   | dtm ........................ gets the Milliseconds value from A and puts into A.  A must be a <~date> instance
+ 5E 21   | dtn ........................ pushes DateTime.Now to the Stack
  5E 14   | dto ........................ gets the Months value from A and puts it into A.  A must be a <~date> instance
  5E 15   | dtt ........................ gets the Ticks value from A and puts it into A.  A must be a <~date> instance
  5E 16   | dts ........................ gets the Seconds value from A and puts it into A.  A must be a <~date> instance
  5E 17   | dty ........................ gets the Years value from A and puts it into A.  A must be a <~date> instance
- 5E 20   | dtfm ....................... formats A according to S, then puts the result in S.  A must be a <~date> instance
- 5E 21   | dtn ........................ pushes DateTime.Now to the Stack
- 5E 22   | dte ........................ pushes DateTime.UnixEpoch to the Stack
  4D      | dup ........................ duplicates the value on the top of the Stack via reference duplication.  Both values will refer to the same object, should the type be a reference type
  5D      | dupd ....................... duplicates the value on the top of the Stack via deep cloning.  Neither value will refer to the same object
 
@@ -469,6 +469,7 @@ BYTECODE | OPCODE
  21      | or <var>  .................. performs A = A | <var>
 
  2A      | poa ........................ pops a value from the Stack and puts it into A
+ 98      | poev <type> ................ pops a value from the Evaluation Stack (internal mechanism in C#), unboxes the value to <type> and sets the result to A
  1C      | pop ........................ pops a value from the Stack
  3C      | pop <var> .................. pops a value from the Stack and puts it into <var>
  3E      | pos ........................ pops a value from the Stack and puts it into S
@@ -480,6 +481,7 @@ BYTECODE | OPCODE
  4C      | pntl ....................... prints A with a newline
  64      | prse <type> ................ parses S into a value of type <type>.  If the parsing was successful, the parsed value is put into A and the N flag is set
  0A      | psa ........................ pushes A to the Stack
+ 88      | psev <type> ................ pushes A to the Evaluation Stack (internal mechanism in C#), boxing the value to <type>.  Used to return values from a function
  3B      | psh <obj> .................. pushes <obj> to the stack
  4B      | psh <var> .................. pushes <var> to the stack
  3D      | pss ........................ pushes S to the Stack
