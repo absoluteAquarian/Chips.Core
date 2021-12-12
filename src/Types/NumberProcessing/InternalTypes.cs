@@ -1857,6 +1857,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Single_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public IFloat Exp()
+			=> new Single_T((Single)Math.Exp(value));
+
 		public INumber Floor()
 			=> new Single_T((Single)Math.Floor(value));
 
@@ -2037,6 +2040,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Double_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public IFloat Exp()
+			=> new Double_T((Double)Math.Exp(value));
+
 		public INumber Floor()
 			=> new Double_T((Double)Math.Floor(value));
 
@@ -2216,6 +2222,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Decimal_T convert = ValueConverter.CastToDecimal_T(number);
 			return new Decimal_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
+
+		public IFloat Exp()
+			=> new Decimal_T(DecimalMath.DecimalEx.Exp(value));
 
 		public INumber Floor()
 			=> new Decimal_T((Decimal)Math.Floor(value));

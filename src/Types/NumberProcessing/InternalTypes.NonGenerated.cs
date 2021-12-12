@@ -239,6 +239,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new Half_T(!inverseLogic ? ValueF / convert.ValueF : convert.ValueF / ValueF);
 		}
 
+		public IFloat Exp()
+			=> new Half_T((float)Math.Exp(ValueF));
+
 		public INumber Floor()
 			=> new Half_T((float)Math.Floor(ValueF));
 
@@ -388,6 +391,9 @@ namespace Chips.Core.Types.NumberProcessing{
 			Complex_T convert = ValueConverter.CastToComplex_T(number);
 			return new Complex_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
+
+		public IFloat Exp()
+			=> new Complex_T(Complex.Exp(value));
 
 		public INumber Floor()
 			=> new Complex_T(new Complex(Math.Floor(value.Real), Math.Floor(value.Imaginary)));

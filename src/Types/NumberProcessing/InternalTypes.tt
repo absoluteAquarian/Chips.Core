@@ -423,6 +423,16 @@ namespace Chips.Core.Types.NumberProcessing{
 			return new <#= type.Name #>_T(!inverseLogic ? value / convert.value : convert.value / value);
 		}
 
+		public IFloat Exp()
+<# if(type.Name != "Decimal"){
+#>
+			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Exp(value));
+<# }else{
+#>
+			=> new <#= type.Name #>_T(DecimalMath.DecimalEx.Exp(value));
+<#
+} #>
+
 		public INumber Floor()
 			=> new <#= type.Name #>_T((<#= type.Name #>)Math.Floor(value));
 

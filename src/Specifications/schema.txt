@@ -386,7 +386,7 @@ BYTECODE | OPCODE
 
  91      | flor ....................... performs A = Math.Floor(A)
 
- FF      | halt ....................... stops the program
+ FF      | halt ....................... stops the program.  The exit code is stored in X
 
  75      | idx <obj> .................. performs X = A.IndexOf(<obj>)
  85      | idx <var> .................. performs X = A.IndexOf(<var>)

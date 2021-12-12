@@ -82,5 +82,67 @@
 		public static readonly Opcode Cpro     = new(0xE1, &Opcode.Functions.Cpro, "cpro");
 		public static readonly Opcode Cprv     = new(0xE5, &Opcode.Functions.Cprv, "cprv");
 		public static readonly Opcode Cpz      = new(0xE0, &Opcode.Functions.Cpz,  "cpz");
+
+		public static readonly Opcode Dex      = new(0x81, &Opcode.Functions.Dex,  "dex");
+		public static readonly Opcode Dey      = new(0x83, &Opcode.Functions.Dey,  "dey");
+		public static readonly Opcode Div_obj  = new(0x33, &Opcode.Functions.Div,  "div <obj>");
+		public static readonly Opcode Div_var  = new(0x43, &Opcode.Functions.Div,  "div <var>");
+			public static readonly Opcode Dtad_obj = new(0x00, &Opcode.Functions.Dtad, "dtad <obj>");
+			public static readonly Opcode Dtad_var = new(0x08, &Opcode.Functions.Dtad, "dtad <var>");
+			public static readonly Opcode Dtah_obj = new(0x01, &Opcode.Functions.Dtah, "dtah <obj>");
+			public static readonly Opcode Dtah_var = new(0x09, &Opcode.Functions.Dtah, "dtah <var>");
+			public static readonly Opcode Dtai_obj = new(0x02, &Opcode.Functions.Dtai, "dtai <obj>");
+			public static readonly Opcode Dtai_var = new(0x0A, &Opcode.Functions.Dtai, "dtai <var>");
+			public static readonly Opcode Dtam_obj = new(0x03, &Opcode.Functions.Dtam, "dtam <obj>");
+			public static readonly Opcode Dtam_var = new(0x0B, &Opcode.Functions.Dtam, "dtam <var>");
+			public static readonly Opcode Dtao_obj = new(0x04, &Opcode.Functions.Dtao, "dtao <obj>");
+			public static readonly Opcode Dtao_var = new(0x0C, &Opcode.Functions.Dtao, "dtao <var>");
+			public static readonly Opcode Dtat_obj = new(0x05, &Opcode.Functions.Dtat, "dtat <obj>");
+			public static readonly Opcode Dtat_var = new(0x0D, &Opcode.Functions.Dtat, "dtat <var>");
+			public static readonly Opcode Dtas_obj = new(0x06, &Opcode.Functions.Dtas, "dtas <obj>");
+			public static readonly Opcode Dtas_var = new(0x0E, &Opcode.Functions.Dtas, "dtas <var>");
+			public static readonly Opcode Dtay_obj = new(0x07, &Opcode.Functions.Dtay, "dtay <obj>");
+			public static readonly Opcode Dtay_var = new(0x0F, &Opcode.Functions.Dtay, "dtay <var>");
+			public static readonly Opcode Dtd      = new(0x10, &Opcode.Functions.Dtd,  "dtd");
+			public static readonly Opcode Dte      = new(0x22, &Opcode.Functions.Dte,  "dte");
+			public static readonly Opcode Dtfm     = new(0x20, &Opcode.Functions.Dtfm, "dtfm");
+			public static readonly Opcode Dth      = new(0x11, &Opcode.Functions.Dth,  "dth");
+			public static readonly Opcode Dti      = new(0x12, &Opcode.Functions.Dti,  "dti");
+			public static readonly Opcode Dtm      = new(0x13, &Opcode.Functions.Dtm,  "dtm");
+			public static readonly Opcode Dtn      = new(0x21, &Opcode.Functions.Dtn,  "dtn");
+			public static readonly Opcode Dto      = new(0x14, &Opcode.Functions.Dto,  "dto");
+			public static readonly Opcode Dtt      = new(0x15, &Opcode.Functions.Dtt,  "dtt");
+			public static readonly Opcode Dts      = new(0x16, &Opcode.Functions.Dts,  "dts");
+			public static readonly Opcode Dty      = new(0x17, &Opcode.Functions.Dty,  "dty");
+		public static readonly Opcode Dt       = new(0x5E, &Opcode.Functions.Ext, "<extended opcode>",
+			Dtad_obj, Dtad_var,
+			Dtah_obj, Dtah_var,
+			Dtai_obj, Dtai_var,
+			Dtam_obj, Dtam_var,
+			Dtao_obj, Dtao_var,
+			Dtat_obj, Dtat_var,
+			Dtas_obj, Dtas_var,
+			Dtay_obj, Dtay_var,
+			Dtd,
+			Dte,
+			Dtfm,
+			Dth,
+			Dti,
+			Dtm,
+			Dtn,
+			Dto,
+			Dtt,
+			Dts,
+			Dty);
+		public static readonly Opcode Dup      = new(0x4D, &Opcode.Functions.Dup,  "dup");
+		public static readonly Opcode Dupd     = new(0x5D, &Opcode.Functions.Dupd, "dupd");
+
+		public static readonly Opcode Err      = new(0x61, &Opcode.Functions.Err,  "err");
+		public static readonly Opcode Err_obj  = new(0x71, &Opcode.Functions.Err,  "err <obj>");
+		public static readonly Opcode Exp      = new(0x78, &Opcode.Functions.Exp,  "exp");
+
+		public static readonly Opcode Flor     = new(0x91, &Opcode.Functions.Flor, "flor");
+
+		public static readonly Opcode Halt     = new(0xFF, &Opcode.Functions.Halt, "halt");
 	}
 }

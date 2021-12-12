@@ -20,6 +20,8 @@
 
 		IFloat Cosh();
 
+		IFloat Exp();
+
 		INumber Floor();
 
 		IInteger GetBits();

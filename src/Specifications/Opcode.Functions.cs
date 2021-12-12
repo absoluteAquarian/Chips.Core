@@ -828,6 +828,50 @@ castFail:
 				});
 			}
 			#endregion
+
+			#region Functions - E
+			public static void Ext(FunctionContext context)
+				=> throw new InvalidOperationException("Extended opcodes cannot be called directly");
+
+			public static void Err(FunctionContext context){
+				if(context.args[0] is not string msg)
+					throw new InvalidOpcodeArgumentException(0, "Value must be a <str> instance", context);
+
+				throw new Exception(msg);
+			}
+
+			public static void Exp(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = (a.Exp() as INumber)!.Value;
+				CheckZeroFlag_RegisterA(checkFloats: true);
+			}
+			#endregion
+
+			#region Functions - F
+			public static void Flor(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = a.Floor().Value;
+				CheckZeroFlag_RegisterA(checkFloats: true);
+			}
+			#endregion
+
+			#region Functions - H
+			public static void Halt(FunctionContext context){
+				int code;
+				if(ValueConverter.AsSignedInteger(Metadata.Registers.X.Data) is long l)
+					code = (int)l;
+				else if(ValueConverter.AsUnsignedInteger(Metadata.Registers.X.Data) is ulong ul)
+					code = (int)ul;
+				else
+					throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.X} did not contain an integer");
+
+				Environment.Exit(code);
+			}
+			#endregion
 		}
 	}
 }
