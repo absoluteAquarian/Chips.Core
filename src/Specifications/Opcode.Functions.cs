@@ -177,11 +177,13 @@ namespace Chips.Core.Specifications{
 
 			#region Functions - C
 			public static void Call(FunctionContext context)
-				=> throw new InvalidOperationException("Call opcode should not be called directly");
+				=> throw new InvalidOperationException("Call opcode should not be called directly"
+						+ ExceptionHelper.GetContextString(context));
 
 			public static void Caps(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				Metadata.Registers.A.Data = Console.CapsLock;
 				CheckZeroFlag_RegisterA(checkIntegers: true);
@@ -258,7 +260,8 @@ castFail:
 
 			public static void Cclb(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = (int)Console.BackgroundColor;
@@ -273,7 +276,8 @@ castFail:
 					else if(ValueConverter.AsUnsignedInteger(Metadata.Registers.A.Data) is ulong u)
 						color = (int)u;
 					else
-						throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.A} contained an integer but also did not contain an integer");
+						throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.A} contained an integer but also did not contain an integer"
+							+ ExceptionHelper.GetContextString(context));
 
 					if(color >= 0 && color <= 15)
 						Console.BackgroundColor = (ConsoleColor)color;
@@ -284,7 +288,8 @@ castFail:
 
 			public static void Cclf(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = (int)Console.ForegroundColor;
@@ -299,7 +304,8 @@ castFail:
 					else if(ValueConverter.AsUnsignedInteger(Metadata.Registers.A.Data) is ulong u)
 						color = (int)u;
 					else
-						throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.A} contained an integer but also did not contain an integer");
+						throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.A} contained an integer but also did not contain an integer"
+							+ ExceptionHelper.GetContextString(context));
 
 					if(color >= 0 && color <= 15)
 						Console.ForegroundColor = (ConsoleColor)color;
@@ -384,7 +390,8 @@ castFail:
 
 			public static void Cls(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				Console.Clear();
 			}
@@ -405,7 +412,8 @@ castFail:
 
 			public static void Cnrb(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				ConsoleColor color = Console.ForegroundColor;
 				Console.ResetColor();
@@ -414,7 +422,8 @@ castFail:
 
 			public static void Cnrf(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				ConsoleColor color = Console.BackgroundColor;
 				Console.ResetColor();
@@ -423,7 +432,8 @@ castFail:
 
 			public static void Cnwh(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.WindowHeight;
@@ -438,7 +448,8 @@ castFail:
 
 			public static void Cnww(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.WindowWidth;
@@ -453,7 +464,8 @@ castFail:
 
 			public static void Conh(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.BufferHeight;
@@ -468,7 +480,8 @@ castFail:
 
 			public static void Cont(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.S.Data = Console.Title;
@@ -483,14 +496,16 @@ castFail:
 
 			public static void Conr(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				Console.ResetColor();
 			}
 
 			public static void Conw(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.BufferWidth;
@@ -562,7 +577,8 @@ castFail:
 
 			public static void Csrv(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.CursorVisible;
@@ -577,7 +593,8 @@ castFail:
 
 			public static void Csrx(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.CursorLeft;
@@ -592,7 +609,8 @@ castFail:
 
 			public static void Csry(FunctionContext context){
 				if(!OperatingSystem.IsWindows())
-					throw new InvalidOperationException("Console opcodes are only supported on Windows");
+					throw new InvalidOperationException("Console opcodes are only supported on Windows"
+						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
 					Metadata.Registers.A.Data = Console.CursorTop;
@@ -627,6 +645,7 @@ castFail:
 				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 
+			#region Extended Opcodes - DateTime
 			public static void Dtad(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
@@ -811,21 +830,30 @@ castFail:
 				Metadata.Registers.A.Data = d.Year;
 				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
+			#endregion
 
 			public static void Dup(FunctionContext context){
-				Metadata.stack!.Push(Metadata.stack!.Peek());
+				try{
+					Metadata.stack!.Push(Metadata.stack!.Peek());
+				}catch(Exception e){
+					throw new Exception(e.Message + ExceptionHelper.GetContextString(context));
+				}
 			}
 
 			public static void Dupd(FunctionContext context){
 				object? obj = Metadata.stack!.Peek();
 
-				Metadata.stack.Push(obj switch{
-					Array a => a.Clone(),
-					List l => new List(l.ToArray()),
-					ArithmeticSet s => new ArithmeticSet(s.ToArray()),
-					IChipsStruct i => i.Clone(),
-					_ => obj
-				});
+				try{
+					Metadata.stack.Push(obj switch{
+						Array a => a.Clone(),
+						List l => new List(l.ToArray()),
+						ArithmeticSet s => new ArithmeticSet(s.ToArray()),
+						IChipsStruct i => i.Clone(),
+						_ => obj
+					});
+				}catch(Exception e){
+					throw new Exception(e.Message + ExceptionHelper.GetContextString(context));
+				}
 			}
 			#endregion
 
@@ -867,9 +895,251 @@ castFail:
 				else if(ValueConverter.AsUnsignedInteger(Metadata.Registers.X.Data) is ulong ul)
 					code = (int)ul;
 				else
-					throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.X} did not contain an integer");
+					throw new InvalidOperationException($"Internal Chips Error -- {Metadata.Registers.X} did not contain an integer"
+						+ ExceptionHelper.GetContextString(context));
 
 				Environment.Exit(code);
+			}
+			#endregion
+
+			#region Functions - I
+			public static void Idx(FunctionContext context){
+				object arg = context.args[0];
+
+				switch(Metadata.Registers.A.Data){
+					case string s:
+						if(arg is char c)
+							Metadata.Registers.X.Data = s.IndexOf(c);
+						else if(arg is string s2)
+							Metadata.Registers.X.Data = s.IndexOf(s2);
+						else
+							throw new InvalidOpcodeArgumentException(0, $"A value of type <{TypeTracking.GetChipsType(arg, throwOnNotFound: false)}> cannot be used for operation \"idx\" on a <~str>", context);
+						break;
+					case List list:
+						Metadata.Registers.X.Data = list.IndexOf(arg);
+						break;
+					case Array arr:
+						Metadata.Registers.X.Data = Array.IndexOf(arr, arg);
+						break;
+					default:
+						throw new InvalidRegisterTypeException("The value in " + Metadata.Registers.A.ToString() + " had an invalid type", context);
+				}
+
+				CheckZeroFlag_RegisterX();
+			}
+
+			public static void Idxv(FunctionContext context){
+				if(Metadata.Registers.A.Data is not Indexer idx)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <^u32> value", context);
+
+				Metadata.Registers.A.Data = idx.value;
+
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Inc(FunctionContext context){
+				Console.Write(Metadata.Registers.S.Data as string);
+				Metadata.Registers.S.Data = Console.ReadKey().KeyChar.ToString();
+			}
+
+			public static void Incb(FunctionContext context){
+				Console.Write(Metadata.Registers.S.Data as string);
+				Metadata.Registers.S.Data = Console.ReadKey(true).KeyChar.ToString();
+			}
+
+			public static void Inl(FunctionContext context){
+				Console.Write(Metadata.Registers.S.Data as string);
+				Metadata.Registers.S.Data = Console.ReadLine();
+
+				CheckZeroFlag_RegisterS();
+			}
+
+			public static void Intp(FunctionContext context){
+				if(Metadata.Registers.A.Data is not object[] arr)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~arr:obj> value", context);
+
+				Metadata.Registers.S.Data = string.Format((Metadata.Registers.S.Data as string)!, arr);
+
+				CheckZeroFlag_RegisterS();
+			}
+
+			public static void Inv(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point value", context);
+
+				Metadata.Registers.A.Data = (a.Inverse() as INumber)!.Value;
+				CheckZeroFlag_RegisterA(checkFloats: true);
+			}
+
+			public static void Inx(FunctionContext context){
+				Metadata.Registers.X.Data = (Metadata.Registers.X.Data as INumber)!.Increment();
+
+				CheckZeroFlag_RegisterX();
+			}
+
+			public static void Iny(FunctionContext context){
+				Metadata.Registers.Y.Data = (Metadata.Registers.Y.Data as INumber)!.Increment();
+
+				CheckZeroFlag_RegisterY();
+			}
+
+			#region Extended Opcodes - I/O
+			public static void Iob(FunctionContext context){
+				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				Metadata.ioHandles![handle].Begin(context);
+			}
+
+			public static void Ioc(FunctionContext context){
+				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				Metadata.ioHandles![handle].Close(context);
+			}
+
+			public static void Iofp(FunctionContext context){
+				object arg0 = context.args[0];
+				object arg1 = context.args[1];
+				object arg2 = context.args[2];
+
+				if(!ValueIsValidForIOStreamHandle(arg0, out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				long offset;
+				if(ValueConverter.AsSignedInteger(arg1) is long l)
+					offset = l;
+				else if(ValueConverter.AsUnsignedInteger(arg1) is ulong ul)
+					offset = (long)ul;
+				else
+					throw new InvalidOpcodeArgumentException(1, "Value was not an integer", context);
+
+				SeekOrigin seek;
+				if(ValueConverter.AsSignedInteger(arg2) is long l2){
+					if(l2 >= (int)SeekOrigin.Begin && l2 <= (int)SeekOrigin.End)
+						seek = (SeekOrigin)l2;
+					else
+						throw new InvalidOpcodeArgumentException(2, "Value exceeded the valid range of SeekOrigin types: [0..2]", context);
+				}else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2){
+					if(ul2 <= (int)SeekOrigin.End)
+						seek = (SeekOrigin)ul2;
+					else
+						throw new InvalidOpcodeArgumentException(2, "Value exceeded the valid range of SeekOrigin types: [0..2]", context);
+				}else
+					throw new InvalidOpcodeArgumentException(2, "Value was not an integer", context);
+
+				Metadata.ioHandles![handle].Seek(offset, seek, context);
+			}
+
+			public static void Ior(FunctionContext context){
+				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				if(context.args[1] is not string type)
+					throw new InvalidOpcodeArgumentException(1, "Value must be a type reference", context);
+
+				Metadata.Registers.A.Data = Metadata.ioHandles![handle].Read(type, context);
+
+				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true, checkCollections: true, checkStrings: true);
+			}
+
+			public static void Ios(FunctionContext context){
+				object arg0 = context.args[0];
+				object arg1 = context.args[1];
+				object arg2 = context.args[2];
+
+				if(!ValueIsValidForIOStreamHandle(arg0, out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				int setting;
+				if(ValueConverter.AsSignedInteger(arg1) is long l)
+					setting = (int)l;
+				else if(ValueConverter.AsUnsignedInteger(arg1) is ulong ul)
+					setting = (int)ul;
+				else
+					throw new InvalidOpcodeArgumentException(1, "Value was not an integer", context);
+
+				if(setting < IOHandle.SETTING_BINARY || setting > IOHandle.SETTING_MODE)
+					throw new InvalidOpcodeArgumentException(1, $"Value exceeded the valid range of I/O setting IDs: [{IOHandle.SETTING_BINARY}..{IOHandle.SETTING_MODE}]", context);
+
+				var io = Metadata.ioHandles![handle];
+
+				bool ParseBooleanSetting(string setting){
+					if(arg2 is bool b)
+						return b;
+					else if(ValueConverter.AsSignedInteger(arg2) is long l2){
+						if(l2 == 0)
+							return false;
+						else if(l2 == 1)
+							return true;
+					}else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2){
+						if(ul2 == 0)
+							return false;
+						else if(ul2 == 1)
+							return true;
+					}
+
+					throw new InvalidOpcodeArgumentException(2, $"I/O setting \"{setting}\" must be provided an integer value set to 0 or 1, or a <bool>", context);
+				}
+
+				switch(setting){
+					case IOHandle.SETTING_BINARY:
+						io.BinaryModeActive = ParseBooleanSetting("binary/stream");
+						break;
+					case IOHandle.SETTING_WRITENEWLINES:
+						io.WriteNewlines = ParseBooleanSetting("write newlines");
+						break;
+					case IOHandle.SETTING_WRITETOFILE:
+						io.WriteToStream = ParseBooleanSetting("read/write");
+						break;
+					case IOHandle.SETTING_FILE:
+						if(arg2 is not string file)
+							throw new InvalidOpcodeArgumentException(2, "I/O setting \"file\" must be provided a <str> value", context);
+
+						io.file = file;
+						break;
+					case IOHandle.SETTING_MODE:
+						bool success = false;
+						FileMode mode = FileMode.CreateNew;
+						if(ValueConverter.AsSignedInteger(arg2) is long l2)
+							success = Enum.TryParse(l2.ToString(), out mode);
+						else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2)
+							success = Enum.TryParse(ul2.ToString(), out mode);
+						
+						if(!success)
+							throw new InvalidOpcodeArgumentException(2, $"I/O setting \"mode\" must be provided an <integer> value within [{(int)FileMode.CreateNew}..{(int)FileMode.Append}]", context);
+
+						io.mode = mode;
+						break;
+				}
+			}
+
+			public static void Iow(FunctionContext context){
+				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
+					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
+
+				Metadata.ioHandles![handle].Write(context.args[1], context);
+
+				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true, checkCollections: true, checkStrings: true);
+			}
+			#endregion
+
+			public static void Is(FunctionContext context){
+				if(context.args[0] is not string type)
+					throw new InvalidOpcodeArgumentException(0, "Value must be a type reference", context);
+
+				if(type == "~arr" && Metadata.Registers.A.Data is Array)
+					Metadata.Flags.Comparison = true;
+				else if(TypeTracking.GetChipsType(Metadata.Registers.A.Data) == type)
+					Metadata.Flags.Comparison = true;
+			}
+
+			public static void Isa(FunctionContext context){
+				if(context.args[0] is not string type)
+					throw new InvalidOpcodeArgumentException(0, "Value must be a type reference", context);
+
+				if(Metadata.Registers.A.Data is Array array && TypeTracking.GetChipsType(array.GetType().GetElementType()!) == type)
+					Metadata.Flags.Comparison = true;
 			}
 			#endregion
 		}

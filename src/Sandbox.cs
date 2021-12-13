@@ -2,19 +2,19 @@
 
 namespace Chips.Core{
 	public static unsafe class Sandbox{
+		public const int IO_HANDLES = 8;
+
 		public static int Execute(string[] args, int stackSize, delegate*<void> entryPoint){
 			//Invoke the static ctors
 			_ = Metadata.Registers.A;
 			_ = Metadata.Flags.Carry;
 			_ = Metadata.stack;
 
-			const int HANDLES = 8;
-
 			Metadata.stack = new(stackSize);
 			Metadata.programArgs = args;
-			Metadata.ioHandles = new IOHandle[HANDLES];
+			Metadata.ioHandles = new IOHandle[IO_HANDLES];
 
-			for(int i = 0; i < HANDLES; i++)
+			for(int i = 0; i < IO_HANDLES; i++)
 				Metadata.ioHandles[i] = new();
 
 			try{
@@ -25,7 +25,7 @@ namespace Chips.Core{
 
 				Console.WriteLine($"{ex.GetType().Name} thrown: {ex.Message}\nCompiled stacktrace:\n{ex.StackTrace}");
 			}finally{
-				for(int i = 0; i < HANDLES; i++)
+				for(int i = 0; i < IO_HANDLES; i++)
 					(Metadata.ioHandles[i].handle as IDisposable)?.Dispose();
 			}
 

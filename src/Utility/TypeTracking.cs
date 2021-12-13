@@ -1,5 +1,6 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Types;
+using Chips.Core.Types.UserDefined;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -9,6 +10,7 @@ namespace Chips.Core.Utility{
 		private static readonly Dictionary<Type, object> cachedObjects = new();
 		private static readonly Dictionary<Type, ChipsGeneratedAttribute?> cachedGeneratedAttribute = new();
 		private static readonly Dictionary<Type, Type> cachedArrayTypes = new();
+		private static readonly Dictionary<string, Type> cachedNameToTypes = new();
 
 		public static bool IsInteger(object? arg)
 			=> arg is sbyte or short or int or long or byte or ushort or uint or ulong or BigInteger;
@@ -89,6 +91,40 @@ namespace Chips.Core.Utility{
 				_ => throw new ArgumentException($"Type \"{chipsType}\" does not exist in Chips and is not a user-defined type")
 			};
 
+		public static Type? GetCSharpType(TypeCode code)
+			=> code switch{
+				TypeCode.Null => null,
+				TypeCode.Int32 => typeof(int),
+				TypeCode.Int8 => typeof(sbyte),
+				TypeCode.Int16 => typeof(short),
+				TypeCode.Int64 => typeof(long),
+				TypeCode.Uint32 => typeof(uint),
+				TypeCode.Uint8 => typeof(byte),
+				TypeCode.Uint16 => typeof(ushort),
+				TypeCode.Uint64 => typeof(ulong),
+				TypeCode.BigInt => typeof(BigInteger),
+				TypeCode.Float32 => typeof(float),
+				TypeCode.Float64 => typeof(double),
+				TypeCode.Float128 => typeof(decimal),
+				TypeCode.Obj => typeof(object),
+				TypeCode.Char => typeof(char),
+				TypeCode.Str => typeof(string),
+				TypeCode.Indexer => typeof(Indexer),
+				TypeCode.Array => null,  //Shouldn't be used directly
+				TypeCode.Range => typeof(Types.Range),
+				TypeCode.List => typeof(List),
+				TypeCode.Time => typeof(TimeSpan),
+				TypeCode.Set => typeof(ArithmeticSet),
+				TypeCode.Date => typeof(DateTime),
+				TypeCode.Regex => typeof(Regex),
+				TypeCode.Bool => typeof(bool),
+				TypeCode.Rand => typeof(Random),
+				TypeCode.Complex => typeof(Complex),
+				TypeCode.UserDefined => null,
+				TypeCode.Float16 => typeof(Half),
+				_ => throw new ArgumentException("Unknown type code: " + code)
+			};
+
 		public static string? GetChipsType(Type t, bool throwOnNotFound = true){
 			if(!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = Activator.CreateInstance(t)!);
@@ -104,7 +140,7 @@ namespace Chips.Core.Utility{
 			return GetChipsType(obj, throwOnNotFound);
 		}
 
-		public static TypeCode GetTypeCode(object o)
+		public static TypeCode GetTypeCode(object? o)
 			=> o switch{
 				int _ => TypeCode.Int32,
 				sbyte _ => TypeCode.Int8,
@@ -134,7 +170,7 @@ namespace Chips.Core.Utility{
 				Half _ => TypeCode.Float16,
 				null => TypeCode.Null,
 				_ when o.GetType() == typeof(object) => TypeCode.Obj,
-				_ when o.GetChipsGeneratedAttribute() is not null => TypeCode.UserDefined,
+				_ when o is IChipsStruct => TypeCode.UserDefined,
 				_ => throw new ArgumentException($"Type \"{o.GetType().FullName}\" does not have a defined Chips type code")
 			};
 
@@ -181,6 +217,16 @@ namespace Chips.Core.Utility{
 				return 16;
 
 			throw new Exception($"Internal Chips Exception -- Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}: {t.FullName}");
+		}
+
+		internal static Type GetType(string name, Assembly? assembly){
+			string? asm = assembly?.GetName().Name;
+			name = (asm is null ? "" : asm + "::") + name;
+
+			if(!cachedNameToTypes.TryGetValue(name, out Type? type))
+				cachedNameToTypes.Add(name, assembly?.GetType(name) ?? Type.GetType(name) ?? throw new ArgumentException($"Type \"{name}\" could not be found"));
+
+			return type!;
 		}
 	}
 }

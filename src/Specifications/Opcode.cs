@@ -54,7 +54,8 @@ namespace Chips.Core.Specifications{
 
 		public void Invoke(FunctionContext context){
 			if(IsParent)
-				throw new InvalidOperationException("Internal Chips Error: Attempted to invoke an opcode type with sub-types defined");
+				throw new InvalidOperationException("Internal Chips Error: Attempted to invoke an opcode type with sub-types defined"
+					+ ExceptionHelper.GetContextString(context));
 
 			Register.globalContext = context;
 			func(context);
@@ -112,6 +113,17 @@ namespace Chips.Core.Specifications{
 
 			if(zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)
 				Metadata.Flags.Zero = true;
+		}
+
+		internal static bool ValueIsValidForIOStreamHandle(object? obj, out int handle){
+			handle = -1;
+
+			if(ValueConverter.AsSignedInteger(obj) is long l && l >= 0 && l < Sandbox.IO_HANDLES)
+				handle = (int)l;
+			else if(ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul < Sandbox.IO_HANDLES)
+				handle = (int)ul;
+
+			return handle > -1;
 		}
 	}
 }

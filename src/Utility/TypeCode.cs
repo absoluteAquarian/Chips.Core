@@ -1,9 +1,8 @@
 ﻿using System.Numerics;
-using System.Text.RegularExpressions;
 
 namespace Chips.Core.Utility{
 	public enum TypeCode{
-		Null = -1,
+		Null = 255,
 		/// <summary>
 		/// i32 - signed 32bit integer
 		/// </summary>

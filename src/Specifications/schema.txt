@@ -115,11 +115,11 @@ _______|__x0__|__x1__|__x2__|__x3__|__x4__|__x5__|__x6__|__x7__|__x8__|__x9__|__
 |  3x  |  add |  sub |  mul |  div |  pow |  art |   ln |  log |  blg |  abs |  neg |  psh |  pop |  pss |  pos |  clr |
 |  4x  |  add |  sub |  mul |  div |  pow |  art |  mov |  inl |  inc | incb | prnt |  psh | pntl |  dup | <ex> |  clz |
 |  5x  |  tax |  tay |  txa |  txy |  tya |  tyx |  mov | intp |  tas |  tsa |  inv | ldrg |  rem | dupd | <ex> |  stc |
-|  6x  |   is |  err |  isa | cast | prse | <ex> |  mov |  bin | binz |  bit | bits | size |  rem |      |      |  clp |
+|  6x  |   is |  err |  isa | cast | prse | <ex> |  mov |  bin | binz |  bit | bits | size |  rem | lsct | lscp |  clp |
 |  7x  |  sbs |  err | type | lens |  btp |  idx |  mov | sqrt |  exp |  bit |  brt |  brt |  brf |  brf |      |  stp |
 |  8x  |  inx |  dex |  iny |  dey |  bfp |  idx |  mov | idxv | psev |  rgs |  rge | stun | stin | stdj | stco | stdf |
-|  9x  |  try | flor |  sin |  cos |  tan | asnh |  mov | idxv | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
-|  Ax  |  try | ceil | asin | acos | atan | acsh |  mov | idxv |      |  rgs |  rge | shas | aems |      |      |      |
+|  9x  |  try | flor |  sin |  cos |  tan | asnh |  mov |      | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
+|  Ax  |  try | ceil | asin | acos | atan | acsh |  mov |      |      |  rgs |  rge | shas | aems |      |      |      |
 |  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      |      |      |      | shas |      |      |      |      |
 |  Cx  |  sjn | sdiv | srmv | srep | atnt |      |      |      |      |      |      |      |      |      |      |      |
 |  Dx  |  sjn | sdiv | srmv |      | atnt |      |      |      |      |      |      |      |      |      |      |  sys |
@@ -256,6 +256,10 @@ EXTENDED OPCODES
  65 35 | iofp <var>, <obj>, <var2>
  65 36 | iofp <var>, <var2>, <obj>
  65 37 | iofp <var>, <var2>, <var3>
+ 65 40 | iob <obj>
+ 65 41 | iob <var>
+ 65 42 | ioc <obj>
+ 65 43 | ioc <var>
 
 BYTECODE | OPCODE
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -391,8 +395,6 @@ BYTECODE | OPCODE
  75      | idx <obj> .................. performs X = A.IndexOf(<obj>)
  85      | idx <var> .................. performs X = A.IndexOf(<var>)
  87      | idxv ....................... gets the "index value" of a <^u32> in A.  Negative values correspond to a reverse-end indexer
- 97      | idxv <obj> ................. sets the "index value" of a <^u32> in A to <obj>.  Negative values correspond to a reverse-end indexer
- A7      | idxv <var> ................. sets the "index value" of a <^u32> in A to <var>.  Negative values correspond to a reverse-end indexer
  48      | inc ........................ prompts the user with Console.Write(S), then waits for a character to be entered.  S stores the inputted character as a <~str>
  49      | incb ....................... same as "inc", but the inputted character isn't printed
  47      | inl ........................ prompts the user with Console.Write(S), then waits for a line of characters to be entered.  S stores the inputted line
@@ -400,10 +402,14 @@ BYTECODE | OPCODE
  5A      | inv ........................ performs A = 1 / A
  80      | inx ........................ increases X by 1
  82      | iny ........................ increases Y by 1
+ 65 40   | iob <obj> .................. starts I/O stream <obj>
+ 65 41   | iob <var> .................. starts I/O stream <var>
+ 65 42   | ioc <obj> .................. closes I/O stream <obj>
+ 65 43   | ioc <var> .................. closes I/O stream <var>
  65 30   | iofp <obj>, <obj2>, <obj3> . sets the stream position for stream <obj> based on <obj2> (the offset) and <obj3> (the seek type)
  65 31   | iofp <obj>, <obj2>, <var> .. sets the stream position for stream <obj> based on <obj2> (the offset) and <var> (the seek type)
  65 32   | iofp <obj>, <var>, <obj2> .. sets the stream position for stream <obj> based on <var> (the offset) and <obj2> (the seek type)
- 65 33   | iofp <var>, <obj>, <obj2> .. sets the stream position for stream <var> based on <obj> (the offset) and <obj2> (the seek type)
+ 65 33   | iofp <obj>, <var>, <var2> .. sets the stream position for stream <obj> based on <var> (the offset) and <var2> (the seek type)
  65 34   | iofp <var>, <obj>, <obj2> .. sets the stream position for stream <var> based on <obj> (the offset) and <obj2> (the seek type)
  65 35   | iofp <var>, <obj>, <var2> .. sets the stream position for stream <var> based on <obj> (the offset) and <var2> (the seek type)
  65 36   | iofp <var>, <var2>, <obj> .. sets the stream position for stream <var> based on <var2> (the offset) and <obj> (the seek type)
@@ -434,6 +440,8 @@ BYTECODE | OPCODE
  73      | lens ....................... resizes a <~list> in A to have the length specified in Y
  36      | ln  ........................ performs A = Math.Log(A)
  37      | log ........................ performs A = Math.Log10(A)
+ 6D      | lsct ....................... performs A = A.Count -- A must be a <~list>
+ 6E      | lscp ....................... performs A = A.Capacity -- A must be a <~list>
 
  46      | mov <var>, <obj> ........... moves <obj> into <var>
  56      | mov <var1>, <var2> ......... moves <var2> into <var1>

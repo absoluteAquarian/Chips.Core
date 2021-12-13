@@ -1,6 +1,6 @@
 ﻿namespace Chips.Core.Types{
 	public class List{
-		private object[] values;
+		private object?[] values;
 
 		public int Capacity{
 			get => values.Length;
@@ -54,7 +54,7 @@
 					Count++;
 		}
 
-		public object this[int index]{
+		public object? this[int index]{
 			get => values[index];
 			set{
 				if(index < 0)
@@ -74,5 +74,8 @@
 		}
 
 		public object[] ToArray() => (object[])values.Clone();
+
+		public int IndexOf(object? obj)
+			=> Array.IndexOf(values, obj);
 	}
 }
