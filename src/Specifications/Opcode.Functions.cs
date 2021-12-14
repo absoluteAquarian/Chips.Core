@@ -1046,7 +1046,6 @@ castFail:
 			public static void Ios(FunctionContext context){
 				object arg0 = context.args[0];
 				object arg1 = context.args[1];
-				object arg2 = context.args[2];
 
 				if(!ValueIsValidForIOStreamHandle(arg0, out int handle))
 					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
@@ -1064,53 +1063,69 @@ castFail:
 
 				var io = Metadata.ioHandles![handle];
 
-				bool ParseBooleanSetting(string setting){
-					if(arg2 is bool b)
-						return b;
-					else if(ValueConverter.AsSignedInteger(arg2) is long l2){
-						if(l2 == 0)
-							return false;
-						else if(l2 == 1)
-							return true;
-					}else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2){
-						if(ul2 == 0)
-							return false;
-						else if(ul2 == 1)
-							return true;
+				if(context.args.Length > 2){
+					object arg2 = context.args[2];
+
+					bool ParseBooleanSetting(string setting){
+						if(arg2 is bool b)
+							return b;
+						else if(ValueConverter.AsSignedInteger(arg2) is long l2){
+							if(l2 == 0)
+								return false;
+							else if(l2 == 1)
+								return true;
+						}else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2){
+							if(ul2 == 0)
+								return false;
+							else if(ul2 == 1)
+								return true;
+						}
+
+						throw new InvalidOpcodeArgumentException(2, $"I/O setting \"{setting}\" must be provided an integer value set to 0 or 1, or a <bool>", context);
 					}
 
-					throw new InvalidOpcodeArgumentException(2, $"I/O setting \"{setting}\" must be provided an integer value set to 0 or 1, or a <bool>", context);
-				}
+					switch(setting){
+						case IOHandle.SETTING_BINARY:
+							io.BinaryModeActive = ParseBooleanSetting("binary/stream");
+							break;
+						case IOHandle.SETTING_WRITENEWLINES:
+							io.WriteNewlines = ParseBooleanSetting("write newlines");
+							break;
+						case IOHandle.SETTING_WRITETOFILE:
+							io.WriteToStream = ParseBooleanSetting("read/write");
+							break;
+						case IOHandle.SETTING_FILE:
+							if(arg2 is not string file)
+								throw new InvalidOpcodeArgumentException(2, "I/O setting \"file\" must be provided a <str> value", context);
 
-				switch(setting){
-					case IOHandle.SETTING_BINARY:
-						io.BinaryModeActive = ParseBooleanSetting("binary/stream");
-						break;
-					case IOHandle.SETTING_WRITENEWLINES:
-						io.WriteNewlines = ParseBooleanSetting("write newlines");
-						break;
-					case IOHandle.SETTING_WRITETOFILE:
-						io.WriteToStream = ParseBooleanSetting("read/write");
-						break;
-					case IOHandle.SETTING_FILE:
-						if(arg2 is not string file)
-							throw new InvalidOpcodeArgumentException(2, "I/O setting \"file\" must be provided a <str> value", context);
-
-						io.file = file;
-						break;
-					case IOHandle.SETTING_MODE:
-						bool success = false;
-						FileMode mode = FileMode.CreateNew;
-						if(ValueConverter.AsSignedInteger(arg2) is long l2)
-							success = Enum.TryParse(l2.ToString(), out mode);
-						else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2)
-							success = Enum.TryParse(ul2.ToString(), out mode);
+							io.file = file;
+							break;
+						case IOHandle.SETTING_MODE:
+							bool success = false;
+							FileMode mode = FileMode.CreateNew;
+							if(ValueConverter.AsSignedInteger(arg2) is long l2)
+								success = Enum.TryParse(l2.ToString(), out mode);
+							else if(ValueConverter.AsUnsignedInteger(arg2) is ulong ul2)
+								success = Enum.TryParse(ul2.ToString(), out mode);
 						
-						if(!success)
-							throw new InvalidOpcodeArgumentException(2, $"I/O setting \"mode\" must be provided an <integer> value within [{(int)FileMode.CreateNew}..{(int)FileMode.Append}]", context);
+							if(!success)
+								throw new InvalidOpcodeArgumentException(2, $"I/O setting \"mode\" must be provided an <integer> value within [{(int)FileMode.CreateNew}..{(int)FileMode.Append}]", context);
 
-						io.mode = mode;
-						break;
+							io.mode = mode;
+							break;
+					}
+				}else{
+					Metadata.Registers.A.Data = setting switch{
+						IOHandle.SETTING_BINARY => io.BinaryModeActive,
+						IOHandle.SETTING_WRITENEWLINES => io.WriteNewlines,
+						IOHandle.SETTING_WRITETOFILE => io.WriteToStream,
+						IOHandle.SETTING_FILE => io.file,
+						IOHandle.SETTING_MODE => (int)io.mode!,
+						_ => throw new InvalidOperationException("Internal Chips Error -- I/O setting check failed"
+							+ ExceptionHelper.GetContextString(context))
+					};
+
+					CheckZeroFlag_RegisterA(checkIntegers: true, checkStrings: true);
 				}
 			}
 
