@@ -96,6 +96,8 @@ namespace Chips.Core.Meta{
 		//Used to ensure that no opcode shares the same code
 		internal static readonly OpcodeTable? op;
 
+		public static readonly Dictionary<string, Type> userDefinedTypes = new();
+
 		static Metadata(){
 			op = new OpcodeTable();
 			

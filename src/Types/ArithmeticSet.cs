@@ -321,6 +321,8 @@ namespace Chips.Core.Types{
 		public static readonly ArithmeticSet EmptySet = new();
 		private static bool emptySetInitialized = false;
 
+		public int NumberCount => set.Length;
+
 		public ArithmeticSet() : this(Array.Empty<Number>()){ }
 
 		public ArithmeticSet(params Number[] numbers){

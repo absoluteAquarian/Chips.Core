@@ -81,5 +81,20 @@ namespace Chips.Core.Utility{
 
 			setterFuncs[name] = (Action<T, object?>)method.CreateDelegate(typeof(Action<T, object?>));
 		}
+
+		
+	}
+
+	internal static class ReflectionHelper{
+		private static readonly Dictionary<string, ConstructorInfo> constructors = new();
+
+		public static ConstructorInfo GetConstructor(string accessKey, Type srcType, Type[] argTypes){
+			if(!constructors.TryGetValue(accessKey, out var constructor)){
+				constructors.Add(accessKey, constructor = srcType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, argTypes)
+					?? throw new ArgumentException($"Could not find constructor for type <{TypeTracking.GetChipsType(srcType, throwOnNotFound: false)}>"));
+			}
+
+			return constructor;
+		}
 	}
 }

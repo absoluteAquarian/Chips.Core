@@ -4,6 +4,8 @@ using Chips.Core.Types.NumberProcessing;
 using Chips.Core.Types.UserDefined;
 using Chips.Core.Utility;
 using System.Numerics;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Chips.Core.Specifications{
 	public unsafe partial class Opcode{
@@ -1155,6 +1157,248 @@ castFail:
 
 				if(Metadata.Registers.A.Data is Array array && TypeTracking.GetChipsType(array.GetType().GetElementType()!) == type)
 					Metadata.Flags.Comparison = true;
+			}
+			#endregion
+
+			#region Functions - L
+			public static void Lda(FunctionContext context)
+				=> throw new InvalidOperationException("Lda opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Ldrg(FunctionContext context){
+				Metadata.Registers.A.Data = Metadata.programArgs;
+
+				CheckZeroFlag_RegisterA(checkCollections: true);
+			}
+
+			public static void Len(FunctionContext context){
+				Metadata.Registers.A.Data = Metadata.Registers.A.Data switch{
+					Array arr => arr.Length,
+					ArithmeticSet set => set.NumberCount,
+					List _ => throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " contained a <~list> instance.  To get the count of a <~list>, use the \"lscp\" instruction instead", context),
+					null => throw new ArgumentNullException(Metadata.Registers.A.ToString(), "Value was null"
+						+ ExceptionHelper.GetContextString(context)),
+					_ => throw new InvalidRegisterTypeException($"Cannot perform operation \"length\" on a <{TypeTracking.GetChipsType(Metadata.Registers.A.Data, throwOnNotFound: false)}> value", context)
+				};
+
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Lens(FunctionContext context){
+				if(Metadata.Registers.A.Data is not List list)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~list> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.Y.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.Y.ToString() + " was not an integer", context);
+
+				var aNum = (a as INumber)!;
+				if(ArithmeticSet.Number.CompareNumbers(aNum.Value, 0) < 0 || ArithmeticSet.Number.CompareNumbers(aNum.Value, int.MaxValue) > 0)
+					throw new InvalidOperationException("Value was not valid for List.Capacity"
+						+ ExceptionHelper.GetContextString(context));
+
+				int newSize = (int)ValueConverter.CastToInt32_T(aNum).Value;
+				list.Capacity = newSize;
+			}
+
+			public static void Ln(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = (a.Ln() as INumber)!.Value;
+				CheckZeroFlag_RegisterA(checkFloats: true);
+			}
+
+			public static void Log(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.Registers.A.Data = (a.Log10() as INumber)!.Value;
+				CheckZeroFlag_RegisterA(checkFloats: true);
+			}
+
+			public static void Lscp(FunctionContext context){
+				if(Metadata.Registers.A.Data is not List list)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~list> instance", context);
+
+				Metadata.Registers.A.Data = list.Capacity;
+
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+
+			public static void Lsct(FunctionContext context){
+				if(Metadata.Registers.A.Data is not List list)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~list> instance", context);
+
+				Metadata.Registers.A.Data = list.Count;
+
+				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+			#endregion
+
+			#region Functions - M
+			public static void Mov(FunctionContext context)
+				=> throw new InvalidOperationException("Mov opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Mul(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
+
+				Metadata.Registers.A.Data = a.Multiply(arg).Value;
+				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
+			}
+			#endregion
+
+			#region Functions - N
+			public static void Neg(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
+
+				Metadata.Registers.A.Data = a.Negate().Value;
+				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
+			}
+
+			public static void New(FunctionContext context){
+				//arg0: type
+				//arg1: arr -- if opcode uses it
+				if(context.args[0] is not string type)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a type reference", context);
+
+				if(context.args.Length > 1){
+					switch(type){
+						case "~date":
+							switch(context.args[1]){
+								case long ticks:
+									Metadata.stack!.Push(new DateTime(ticks));
+									break;
+								case int[] values:
+									if(values.Length == 3)
+										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2]));
+									else if(values.Length == 6)
+										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5]));
+									else if(values.Length == 7)
+										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5], values[6]));
+									else
+										throw new InvalidOpcodeArgumentException(1, "Value (<~arr:i32> instance) had an invalid amount of members for <~date> value creation", context);
+									break;
+								default:
+									throw new InvalidOpcodeArgumentException(1, "Value was not an <i64> or <~arr:i32>", context);
+							}
+							break;
+						case "~rand":
+							if(ValueConverter.BoxToUnderlyingType(context.args[1]) is not IInteger seed)
+								throw new InvalidOpcodeArgumentException(1, "Value was not an integer", context);
+
+							Metadata.stack!.Push(new Random((int)ValueConverter.CastToInt32_T((seed as INumber)!).Value));
+							break;
+						case "~set":
+							if(context.args[1] is not Array array)
+								throw new InvalidOpcodeArgumentException(1, "Value was not an array", context);
+
+							Metadata.stack!.Push(new ArithmeticSet(array));
+							break;
+						case "~time":
+							switch(context.args[1]){
+								case long ticks:
+									Metadata.stack!.Push(new TimeSpan(ticks));
+									break;
+								case int[] values:
+									if(values.Length == 3)
+										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2]));
+									else if(values.Length == 4)
+										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2], values[3]));
+									else if(values.Length == 5)
+										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2], values[3], values[4]));
+									else
+										throw new InvalidOpcodeArgumentException(1, "Value (<~arr:i32> instance) had an invalid amount of members for <~time> value creation", context);
+									break;
+								default:
+									throw new InvalidOpcodeArgumentException(1, "Value was not an <i64> or <~arr:i32>", context);
+							}
+							break;
+						default:
+							throw new InvalidOpcodeArgumentException(0, "Could not determine type/function from argument", context);
+					}
+				}else{
+					//Type only
+					switch(type){
+						case "^u32":
+							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger value)
+								throw new InvalidRegisterTypeException(Metadata.Registers.X.ToString() + " was not an integer", context);
+
+							Metadata.stack!.Push(new Indexer((int)ValueConverter.CastToInt32_T((value as INumber)!).Value));
+							break;
+						case "~date":
+							Metadata.stack!.Push(DateTime.MinValue);
+							break;
+						case "~list":
+							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.Y.Data) is not IInteger capacity)
+								throw new InvalidRegisterTypeException(Metadata.Registers.Y.ToString() + " was not an integer", context);
+
+							Metadata.stack!.Push(new List((int)ValueConverter.CastToInt32_T((capacity as INumber)!).Value));
+							break;
+						case "~rand":
+							Metadata.stack!.Push(new Random());
+							break;
+						case "~range":
+							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger start)
+								throw new InvalidRegisterTypeException(Metadata.Registers.X.ToString() + " was not an integer", context);
+							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.Y.Data) is not IInteger end)
+								throw new InvalidRegisterTypeException(Metadata.Registers.Y.ToString() + " was not an integer", context);
+
+							Metadata.stack!.Push(new Types.Range((int)ValueConverter.CastToInt32_T((start as INumber)!).Value, (int)ValueConverter.CastToInt32_T((end as INumber)!).Value));
+							break;
+						case "~regex":
+							if(Metadata.Registers.S.Data is not string pattern)
+								throw new InvalidRegisterTypeException(Metadata.Registers.S.ToString() + " was not a <str> instance", context);
+
+							Metadata.stack!.Push(new Regex(pattern, RegexOptions.Compiled));
+							break;
+						case "~set":
+							Metadata.stack!.Push(ArithmeticSet.EmptySet);
+							break;
+						case "~time":
+							Metadata.stack!.Push(TimeSpan.Zero);
+							break;
+						case string a when a.StartsWith("~arr:"):
+							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger length)
+								throw new InvalidRegisterTypeException(Metadata.Registers.X.ToString() + " was not an integer", context);
+
+							string subType = a[5..];
+							Metadata.stack!.Push(Array.CreateInstance(TypeTracking.GetCSharpType(subType) ?? throw new InvalidOpcodeArgumentException(0, "Type cannot be used as an array element type: " + subType, context), (int)ValueConverter.CastToInt32_T((length as INumber)!).Value));
+							break;
+						case string s when s.StartsWith("~ud:"):
+							//Determine the type to use and call its requested constructor
+							string ss = s[4..];
+
+							string[] split = ss.Split("->");
+							if(split.Length != 2)
+								throw new InvalidOpcodeArgumentException(0, "Could not determine type and constructor from argument", context);
+
+							if(!Metadata.userDefinedTypes.TryGetValue(split[0], out Type? udType))
+								throw new InvalidOpcodeArgumentException(0, $"Could not find type \"{split[1]}\"", context);
+
+							if(!split[1].StartsWith(".ctor"))
+								throw new InvalidOpcodeArgumentException(0, "Function provided was not a constructor", context);
+
+							ConstructorInfo ctor = ReflectionHelper.GetConstructor(s, udType, Type.EmptyTypes);
+
+							Metadata.stack!.Push(ctor.Invoke(null));
+							break;
+						default:
+							throw new InvalidOpcodeArgumentException(0, "Could not determine type/function from argument", context);
+					}
+				}
+			}
+
+			public static void Not(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+
+				Metadata.Registers.A.Data = (a.Not() as INumber)!.Value;
+				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 			#endregion
 		}

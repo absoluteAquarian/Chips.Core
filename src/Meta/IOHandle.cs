@@ -283,7 +283,7 @@ namespace Chips.Core.Meta{
 							+ ExceptionHelper.GetContextString(context));
 
 					string[] split = asmAndType.Split("::");
-					Type udType = TypeTracking.GetType(split[1], Assembly.Load(split[0]));
+					Type udType = TypeTracking.GetType(split[1], Assembly.Load(split[0]), out _, throwOnNotFound: false)!;
 
 					IChipsStruct ud = Activator.CreateInstance(udType) as IChipsStruct
 						?? throw new InvalidOperationException($"Type was not a user-defined Chips type: \"{asmAndType}\""

@@ -51,7 +51,7 @@ namespace Chips.Core.Utility{
 				Half _ => "f16",
 				null => "null",
 				_ when o.GetType() == typeof(object) => "obj",
-				_ when o.GetChipsGeneratedAttribute() is not null => $"~ud:{o.GetType().Name}",
+				_ when o is IChipsStruct => $"~ud:{o.GetType().Name}",
 				_ => !throwOnNotFound ? null : throw new ArgumentException($"Type \"{o.GetType().FullName}\" does not have a defined Chips type code")
 			};
 
@@ -86,8 +86,8 @@ namespace Chips.Core.Utility{
 				_ when chipsType.StartsWith("~arr:") => GetCSharpType(chipsType[5..]) is Type type
 					? GetArrayType(type)
 					: throw new ArgumentException($"Type \"{chipsType[5..]}\" is not a valid member type for arrays"),
-				_ when chipsType.StartsWith("~ud:") => Assembly.GetEntryAssembly()?.GetType(chipsType[4..], throwOnError: false)
-					?? throw new ArgumentException($"Type \"{chipsType[4..]}\" does not exist in the program's assembly"),
+				_ when chipsType.StartsWith("~ud:") => GetTypeFromAnyAssembly(chipsType[4..], throwOnNotFound: false)
+					?? throw new ArgumentException($"Type \"{chipsType[4..]}\" does not exist"),
 				_ => throw new ArgumentException($"Type \"{chipsType}\" does not exist in Chips and is not a user-defined type")
 			};
 
@@ -219,14 +219,39 @@ namespace Chips.Core.Utility{
 			throw new Exception($"Internal Chips Exception -- Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}: {t.FullName}");
 		}
 
-		internal static Type GetType(string name, Assembly? assembly){
+		internal static Type? GetTypeFromAnyAssembly(string name, bool throwOnNotFound = true){
+			Type? search = null;
+			string? generatedKey = null;
+			foreach(var asm in AppDomain.CurrentDomain.GetAssemblies()){
+				if(asm.IsDynamic)
+					continue;
+
+				search = GetType(name, asm, out generatedKey, throwOnNotFound: false);
+				if(search is not null)
+					break;
+			}
+
+			if(throwOnNotFound && search is null)
+				throw new ArgumentException($"Type \"{generatedKey ?? name}\" could not be found");
+
+			return search;
+		}
+
+		internal static Type? GetType(string name, Assembly? assembly, out string generatedKey, bool throwOnNotFound = true){
 			string? asm = assembly?.GetName().Name;
-			name = (asm is null ? "" : asm + "::") + name;
+			generatedKey = name = (asm is null ? "" : asm + "::") + name;
 
-			if(!cachedNameToTypes.TryGetValue(name, out Type? type))
-				cachedNameToTypes.Add(name, assembly?.GetType(name) ?? Type.GetType(name) ?? throw new ArgumentException($"Type \"{name}\" could not be found"));
+			if(!cachedNameToTypes.TryGetValue(name, out Type? type)){
+				type = assembly?.GetType(name) ?? Type.GetType(name);
 
-			return type!;
+				if(type is not null)
+					cachedNameToTypes.Add(name, type!);
+
+				if(throwOnNotFound && type is null)
+					throw new ArgumentException($"Type \"{name}\" could not be found");
+			}
+
+			return type;
 		}
 	}
 }

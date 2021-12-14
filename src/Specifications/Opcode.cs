@@ -7,10 +7,10 @@ using System.Runtime.CompilerServices;
 namespace Chips.Core.Specifications{
 	public unsafe partial class Opcode{
 		public struct FunctionContext{
-			internal object[] args;
+			public object[] args;
 			
-			internal string? sourceFile;
-			internal int sourceLine;
+			public readonly string? sourceFile;
+			public readonly int sourceLine;
 
 			public static readonly FunctionContext NoContext = new();
 
