@@ -257,7 +257,7 @@ namespace Chips.Core.Meta{
 				case Utility.TypeCode.Date:
 					return new DateTime(br.ReadInt64());
 				case Utility.TypeCode.Regex:
-					return new Regex(br.ReadString(), RegexOptions.Compiled);
+					return new Types.Regex(br.ReadString());
 				case Utility.TypeCode.Bool:
 					return br.ReadBoolean();
 				case Utility.TypeCode.Rand:
@@ -398,7 +398,7 @@ namespace Chips.Core.Meta{
 				case DateTime date:
 					bw.Write(date.Ticks);
 					break;
-				case Regex regex:
+				case Types.Regex regex:
 					bw.Write(regex.ToString());
 					break;
 				case bool b:

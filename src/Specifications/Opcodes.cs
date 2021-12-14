@@ -217,8 +217,8 @@
 		public static readonly Opcode Mul_var      = new(0x42, &Opcode.Functions.Mul,              "mul <var>"                   );
 
 		public static readonly Opcode Neg          = new(0x3A, &Opcode.Functions.Neg,              "neg"                         );
-			public static readonly Opcode New_idx      = new(0x00, &Opcode.Functions.New,          "new ^u32"                    );
-			public static readonly Opcode New_arr      = new(0x10, &Opcode.Functions.New,          "new ~arr:<type>"             );
+			public static readonly Opcode New_indexer  = new(0x00, &Opcode.Functions.New,          "new ^u32"                    );
+			public static readonly Opcode New_array    = new(0x10, &Opcode.Functions.New,          "new ~arr:<type>"             );
 			public static readonly Opcode New_date     = new(0x60, &Opcode.Functions.New,          "new ~date"                   );
 			public static readonly Opcode New_date_obj = new(0x61, &Opcode.Functions.New,          "new ~date, <obj>"            );
 			public static readonly Opcode New_date_var = new(0x62, &Opcode.Functions.New,          "new ~date, <var>"            );
@@ -235,7 +235,17 @@
 			public static readonly Opcode New_time_obj = new(0x41, &Opcode.Functions.New,          "new ~time, <obj>"            );
 			public static readonly Opcode New_time_var = new(0x42, &Opcode.Functions.New,          "new ~time, <var>"            );
 			public static readonly Opcode New_userdef  = new(0x90, &Opcode.Functions.New,          "new ~ud:<file::type>-><func>");
-		public static readonly Opcode New          = new(0x2E, &Opcode.Functions.Ext,              "<extended opcode>"           );
+		public static readonly Opcode New          = new(0x2E, &Opcode.Functions.Ext,              "<extended opcode>",
+			New_indexer,
+			New_array,
+			New_date, New_date_obj, New_date_var,
+			New_list,
+			New_rand, New_rand_obj, New_rand_var,
+			New_range,
+			New_regex,
+			New_set, New_set_obj, New_set_var,
+			New_time, New_time_obj, New_time_var,
+			New_userdef);
 		public static readonly Opcode Not          = new(0x02, &Opcode.Functions.Not,              "not"                         );
 	}
 }

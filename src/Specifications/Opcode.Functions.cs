@@ -1354,7 +1354,7 @@ castFail:
 							if(Metadata.Registers.S.Data is not string pattern)
 								throw new InvalidRegisterTypeException(Metadata.Registers.S.ToString() + " was not a <str> instance", context);
 
-							Metadata.stack!.Push(new Regex(pattern, RegexOptions.Compiled));
+							Metadata.stack!.Push(new Types.Regex(pattern));
 							break;
 						case "~set":
 							Metadata.stack!.Push(ArithmeticSet.EmptySet);
