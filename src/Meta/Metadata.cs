@@ -1,6 +1,7 @@
 ﻿using Chips.Core.Specifications;
 using Chips.Core.Types;
 using Chips.Core.Utility;
+using System.Numerics;
 using System.Reflection;
 
 namespace Chips.Core.Meta{
@@ -9,30 +10,77 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// The register for arithmetic.  Can contain any type of value
 			/// </summary>
-			public static Register A =  new("A", null, null);
+			public static readonly Register A =  new("A", null, null);
 			/// <summary>
 			/// The register for storing the current exception
 			/// </summary>
-			public static Register E =  new("E", null, null);
+			public static readonly Register E =  new("E", null, null);
 			/// <summary>
 			/// The register for indexing.  Can only contain integers
 			/// </summary>
-			public static Register X =  new("X",    0, &TypeTracking.IsInteger);
+			public static readonly Register X =  new("X",    0, &TypeTracking.IsInteger);
 			/// <summary>
 			/// The register for counting.  Can only contain integers
 			/// </summary>
-			public static Register Y =  new("Y",    0, &TypeTracking.IsInteger);
-			public static Register SP = new("SP",   0, &StackPointer_ReadOnly){ getDataOverride = &StackPointer_GetValue };
+			public static readonly Register Y =  new("Y",    0, &TypeTracking.IsInteger);
+			public static readonly Register SP = new("SP",   0, &StackPointer_ReadOnly){ getDataOverride = &StackPointer_GetValue };
 			/// <summary>
 			/// The register for string manipulation.  Can only contain strings
 			/// </summary>
-			public static Register S =  new("S", null, &TypeTracking.IsString);
+			public static readonly Register S =  new("S", null, &TypeTracking.IsString);
+
+			//Used for checking values popped off of the stack
+			private static readonly Register StackOperations = new("<so>", null, null);
 
 			private static bool StackPointer_ReadOnly(object? obj)
 				=> throw new InvalidOperationException("Stack pointer cannot be written to");
 
 			private static object? StackPointer_GetValue()
-				=> stack!.SP;
+				=> stack.SP;
+
+			/// <summary>
+			/// Sets the data of a hidden register for usage with <seealso cref="ZeroFlagChecks"/>
+			/// </summary>
+			/// <param name="obj">The object</param>
+			public static void SetStackOperationsObject(object? obj)
+				=> StackOperations.Data = obj;
+
+			/// <summary>
+			/// Uses <seealso cref="ZeroFlagChecks"/> to parse <paramref name="register"/> for setting the <seealso cref="Flags.Zero"/> flag
+			/// </summary>
+			/// <param name="register">The register to check</param>
+			public static void CheckRegister(Register register){
+				object? obj = register.Data;
+
+				if(obj is null){
+					Metadata.Flags.Zero = true;
+					return;
+				}
+
+				var type = obj.GetType();
+
+				bool zeroFlagSuccess_Integer = (ZeroFlagChecks & CheckIntegers) != 0 && type.IsPrimitive
+					&& ((obj is char c && c == 0)
+					|| (obj is bool b && b)
+					|| (obj is DateTime date && date == default)
+					|| (obj is TimeSpan time && time == default)
+					|| (ValueConverter.AsUnsignedInteger(obj) is ulong ul && ul == 0)
+					|| (ValueConverter.AsSignedInteger(obj) is long l && l == 0));
+				bool zeroFlagSucess_Float = (ZeroFlagChecks & CheckFloats) != 0
+					&& ((obj is Half h && h == (Half)0f)
+					|| (obj is Complex cm && cm == Complex.Zero)
+					|| (type.IsPrimitive && ValueConverter.AsFloatingPoint(obj) is double d && d == 0d));
+				bool zeroFlagSuccess_Collections = (ZeroFlagChecks & CheckCollections) != 0
+					&& ((obj is Array array && array.Length == 0)
+					|| (obj is List list && list.Count == 0)
+					|| (obj is ArithmeticSet set && set.IsEmptySet));
+				bool zeroFlagSuccess_String = (ZeroFlagChecks & CheckStrings) != 0 && obj is string str && str == "";
+
+				if(zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)
+					Flags.Zero = true;
+
+				ZeroFlagChecks = 0b0000;
+			}
 		}
 
 		public static class Flags{
@@ -87,11 +135,29 @@ namespace Chips.Core.Meta{
 			}
 		}
 
-		public static Stack? stack;
+		/// <summary>
+		/// Used by the registers when assigning values to their Data properties
+		/// <para>
+		/// <list type="bullet">
+		/// <item>000X - check Integers</item>
+		/// <item>00X0 - check Floats</item>
+		/// <item>0X00 - check Collections</item>
+		/// <item>X000 - check Strings</item>
+		/// </list>
+		/// </para>
+		/// </summary>
+		public static int ZeroFlagChecks{ get; set; }
 
-		public static string[]? programArgs;
+		public const byte CheckIntegers = 0b0001;
+		public const byte CheckFloats = 0b0010;
+		public const byte CheckCollections = 0b0100;
+		public const byte CheckStrings = 0b1000;
 
-		internal static IOHandle[]? ioHandles;
+		public static Stack stack;
+
+		public static string[] programArgs;
+
+		internal static IOHandle[] ioHandles;
 
 		//Used to ensure that no opcode shares the same code
 		internal static readonly OpcodeTable? op;

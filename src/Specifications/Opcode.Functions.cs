@@ -5,8 +5,8 @@ using Chips.Core.Types.UserDefined;
 using Chips.Core.Utility;
 using System.Numerics;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
+#pragma warning disable IDE0060
 namespace Chips.Core.Specifications{
 	public unsafe partial class Opcode{
 		internal static class Functions{
@@ -15,24 +15,24 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Abs().Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 
 			public static void Acos(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Acos() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Acsh(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Acosh() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Add(FunctionContext context){
@@ -41,8 +41,8 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Add(arg).Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 
 			public static void Aems(FunctionContext context){
@@ -57,8 +57,8 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IInteger arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not an integer", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.And(arg) as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Art(FunctionContext context){
@@ -67,56 +67,56 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IFloat arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a floating-point number", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Root(arg) as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Asin(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Asin() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Asl(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.ArithmeticShiftLeft() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Asnh(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Asinh() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Asr(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.ArithmeticShiftRight() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Atan(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Atan() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Atnh(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Atanh() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Atnt(FunctionContext context){
@@ -125,8 +125,8 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IFloat arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a floating-point number", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Atan2(arg) as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 			#endregion
 
@@ -138,24 +138,24 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Log2() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Bin(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = a.BinaryRepresentation(false);
-				CheckZeroFlag_RegisterS();
 			}
 
 			public static void Binz(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = a.BinaryRepresentation(true);
-				CheckZeroFlag_RegisterS();
 			}
 
 			public static void Bit(FunctionContext context){
@@ -164,16 +164,16 @@ namespace Chips.Core.Specifications{
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IInteger arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not an integer", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.GetBit(arg) as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Bits(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.GetBits() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 			#endregion
 
@@ -187,8 +187,8 @@ namespace Chips.Core.Specifications{
 					throw new InvalidOperationException("Console opcodes are only supported on Windows"
 						+ ExceptionHelper.GetContextString(context));
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = Console.CapsLock;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Cast(FunctionContext context){
@@ -199,6 +199,8 @@ namespace Chips.Core.Specifications{
 
 				object? data = Metadata.Registers.A.Data;
 				if(ValueConverter.BoxToUnderlyingType(data) is not INumber number){
+					Metadata.ZeroFlagChecks = Metadata.CheckCollections | Metadata.CheckStrings;
+
 					//Check for conversions between the various types
 					switch(data){
 						case Array array:
@@ -222,9 +224,9 @@ namespace Chips.Core.Specifications{
 								goto castFail;
 							break;
 					}
-
-					CheckZeroFlag_RegisterA(checkCollections: true, checkStrings: true);
 				}else{
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
+
 					if(type == typeof(sbyte))
 						Metadata.Registers.A.Data = ValueConverter.CastToSByte_T(number);
 					else if(type == typeof(short))
@@ -251,8 +253,6 @@ namespace Chips.Core.Specifications{
 						Metadata.Registers.A.Data = ValueConverter.CastToHalf_T(number);
 					else if(type == typeof(Complex))
 						Metadata.Registers.A.Data = ValueConverter.CastToComplex_T(number);
-
-					CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 				}
 
 				return;
@@ -266,8 +266,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = (int)Console.BackgroundColor;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
@@ -294,8 +294,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = (int)Console.ForegroundColor;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
@@ -320,8 +320,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Ceiling().Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Ceq(FunctionContext context){
@@ -438,8 +438,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.WindowHeight;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -454,8 +454,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.WindowWidth;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -470,8 +470,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.BufferHeight;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -486,8 +486,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 					Metadata.Registers.S.Data = Console.Title;
-					CheckZeroFlag_RegisterS();
 				}else{
 					if(Metadata.Registers.S.Data is not string s)
 						throw new InvalidRegisterTypeException(Metadata.Registers.S.ToString() + " was not a <str> value", context);
@@ -510,8 +510,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.BufferWidth;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -524,8 +524,8 @@ castFail:
 				if(Metadata.Registers.A.Data is not Complex c)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = Complex.Conjugate(c);
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Cpco(FunctionContext context){
@@ -536,16 +536,16 @@ castFail:
 				if(Metadata.Registers.A.Data is not Complex c)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = c.Imaginary;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Cpnr(FunctionContext context){
 				if(Metadata.Registers.A.Data is not Complex c)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = new Complex(-c.Real, c.Imaginary);
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Cpo(FunctionContext context){
@@ -556,8 +556,8 @@ castFail:
 				if(Metadata.Registers.A.Data is not Complex c)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = c.Real;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Cpro(FunctionContext context){
@@ -568,8 +568,8 @@ castFail:
 				if(Metadata.Registers.A.Data is not Complex c)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = new Complex(c.Imaginary, c.Real);
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Cpz(FunctionContext context){
@@ -583,8 +583,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.CursorVisible;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(Metadata.Registers.A.Data is not bool b)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <bool> value", context);
@@ -599,8 +599,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.CursorLeft;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -615,8 +615,8 @@ castFail:
 						+ ExceptionHelper.GetContextString(context));
 
 				if(Metadata.Flags.PropertyAccess){
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 					Metadata.Registers.A.Data = Console.CursorTop;
-					CheckZeroFlag_RegisterA(checkIntegers: true);
 				}else{
 					if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not Int32_T i)
 						throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an <i32> value", context);
@@ -628,13 +628,13 @@ castFail:
 
 			#region Functions - D
 			public static void Dex(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.X.Data = (Metadata.Registers.X.Data as INumber)!.Decrement();
-				CheckZeroFlag_RegisterX();
 			}
 
 			public static void Dey(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.X.Data = (Metadata.Registers.Y.Data as INumber)!.Decrement();
-				CheckZeroFlag_RegisterY();
 			}
 
 			public static void Div(FunctionContext context){
@@ -643,8 +643,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Divide(arg).Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 
 			#region Extended Opcodes - DateTime
@@ -657,8 +657,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddDays((double)ValueConverter.CastToDouble_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtah(FunctionContext context){
@@ -670,8 +670,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddHours((double)ValueConverter.CastToDouble_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtai(FunctionContext context){
@@ -683,8 +683,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMinutes((double)ValueConverter.CastToDouble_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtam(FunctionContext context){
@@ -696,8 +696,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMilliseconds((double)ValueConverter.CastToDouble_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtao(FunctionContext context){
@@ -709,8 +709,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMonths((int)ValueConverter.CastToInt32_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtat(FunctionContext context){
@@ -722,8 +722,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddTicks((long)ValueConverter.CastToInt64_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtas(FunctionContext context){
@@ -735,8 +735,8 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddSeconds((double)ValueConverter.CastToDouble_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtay(FunctionContext context){
@@ -748,16 +748,16 @@ castFail:
 				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
 					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddYears((int)ValueConverter.CastToInt32_T(arg).Value);
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtd(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Day;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dte(FunctionContext context){
@@ -768,82 +768,82 @@ castFail:
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = d.ToString(Metadata.Registers.S.Data as string);
-				CheckZeroFlag_RegisterS();
 			}
 
 			public static void Dth(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Hour;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dti(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Minute;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtm(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Millisecond;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtn(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = DateTime.Now;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dto(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Month;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dtt(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Ticks;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dts(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Second;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Dty(FunctionContext context){
 				if(Metadata.Registers.A.Data is not DateTime d)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.Year;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 			#endregion
 
 			public static void Dup(FunctionContext context){
 				try{
-					Metadata.stack!.Push(Metadata.stack!.Peek());
+					Metadata.stack.Push(Metadata.stack.Peek());
 				}catch(Exception e){
 					throw new Exception(e.Message + ExceptionHelper.GetContextString(context));
 				}
 			}
 
 			public static void Dupd(FunctionContext context){
-				object? obj = Metadata.stack!.Peek();
+				object? obj = Metadata.stack.Peek();
 
 				try{
 					Metadata.stack.Push(obj switch{
@@ -874,8 +874,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Exp() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 			#endregion
 
@@ -884,8 +884,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Floor().Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 			#endregion
 
@@ -908,6 +908,8 @@ castFail:
 			public static void Idx(FunctionContext context){
 				object arg = context.args[0];
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+
 				switch(Metadata.Registers.A.Data){
 					case string s:
 						if(arg is char c)
@@ -926,63 +928,61 @@ castFail:
 					default:
 						throw new InvalidRegisterTypeException("The value in " + Metadata.Registers.A.ToString() + " had an invalid type", context);
 				}
-
-				CheckZeroFlag_RegisterX();
 			}
 
 			public static void Idxv(FunctionContext context){
 				if(Metadata.Registers.A.Data is not Indexer idx)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <^u32> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = idx.value;
-
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Inc(FunctionContext context){
 				Console.Write(Metadata.Registers.S.Data as string);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = Console.ReadKey().KeyChar.ToString();
 			}
 
 			public static void Incb(FunctionContext context){
 				Console.Write(Metadata.Registers.S.Data as string);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = Console.ReadKey(true).KeyChar.ToString();
 			}
 
 			public static void Inl(FunctionContext context){
 				Console.Write(Metadata.Registers.S.Data as string);
-				Metadata.Registers.S.Data = Console.ReadLine();
 
-				CheckZeroFlag_RegisterS();
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
+				Metadata.Registers.S.Data = Console.ReadLine();
 			}
 
 			public static void Intp(FunctionContext context){
 				if(Metadata.Registers.A.Data is not object[] arr)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~arr:obj> value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
 				Metadata.Registers.S.Data = string.Format((Metadata.Registers.S.Data as string)!, arr);
-
-				CheckZeroFlag_RegisterS();
 			}
 
 			public static void Inv(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Inverse() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Inx(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.X.Data = (Metadata.Registers.X.Data as INumber)!.Increment();
-
-				CheckZeroFlag_RegisterX();
 			}
 
 			public static void Iny(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.Y.Data = (Metadata.Registers.Y.Data as INumber)!.Increment();
-
-				CheckZeroFlag_RegisterY();
 			}
 
 			#region Extended Opcodes - I/O
@@ -990,14 +990,14 @@ castFail:
 				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
 					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
 
-				Metadata.ioHandles![handle].Begin(context);
+				Metadata.ioHandles[handle].Begin(context);
 			}
 
 			public static void Ioc(FunctionContext context){
 				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
 					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
 
-				Metadata.ioHandles![handle].Close(context);
+				Metadata.ioHandles[handle].Close(context);
 			}
 
 			public static void Iofp(FunctionContext context){
@@ -1030,7 +1030,7 @@ castFail:
 				}else
 					throw new InvalidOpcodeArgumentException(2, "Value was not an integer", context);
 
-				Metadata.ioHandles![handle].Seek(offset, seek, context);
+				Metadata.ioHandles[handle].Seek(offset, seek, context);
 			}
 
 			public static void Ior(FunctionContext context){
@@ -1040,9 +1040,8 @@ castFail:
 				if(context.args[1] is not string type)
 					throw new InvalidOpcodeArgumentException(1, "Value must be a type reference", context);
 
-				Metadata.Registers.A.Data = Metadata.ioHandles![handle].Read(type, context);
-
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true, checkCollections: true, checkStrings: true);
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats | Metadata.CheckCollections | Metadata.CheckStrings;
+				Metadata.Registers.A.Data = Metadata.ioHandles[handle].Read(type, context);
 			}
 
 			public static void Ios(FunctionContext context){
@@ -1063,7 +1062,7 @@ castFail:
 				if(setting < IOHandle.SETTING_BINARY || setting > IOHandle.SETTING_MODE)
 					throw new InvalidOpcodeArgumentException(1, $"Value exceeded the valid range of I/O setting IDs: [{IOHandle.SETTING_BINARY}..{IOHandle.SETTING_MODE}]", context);
 
-				var io = Metadata.ioHandles![handle];
+				var io = Metadata.ioHandles[handle];
 
 				if(context.args.Length > 2){
 					object arg2 = context.args[2];
@@ -1117,6 +1116,8 @@ castFail:
 							break;
 					}
 				}else{
+					Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckStrings;
+
 					Metadata.Registers.A.Data = setting switch{
 						IOHandle.SETTING_BINARY => io.BinaryModeActive,
 						IOHandle.SETTING_WRITENEWLINES => io.WriteNewlines,
@@ -1126,8 +1127,6 @@ castFail:
 						_ => throw new InvalidOperationException("Internal Chips Error -- I/O setting check failed"
 							+ ExceptionHelper.GetContextString(context))
 					};
-
-					CheckZeroFlag_RegisterA(checkIntegers: true, checkStrings: true);
 				}
 			}
 
@@ -1135,9 +1134,7 @@ castFail:
 				if(!ValueIsValidForIOStreamHandle(context.args[0], out int handle))
 					throw new InvalidOpcodeArgumentException(0, "Value was either not an integer or exceeded the I/O handle ID bounds of [0..7]", context);
 
-				Metadata.ioHandles![handle].Write(context.args[1], context);
-
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true, checkCollections: true, checkStrings: true);
+				Metadata.ioHandles[handle].Write(context.args[1], context);
 			}
 			#endregion
 
@@ -1166,12 +1163,12 @@ castFail:
 					+ ExceptionHelper.GetContextString(context));
 
 			public static void Ldrg(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckCollections;
 				Metadata.Registers.A.Data = Metadata.programArgs;
-
-				CheckZeroFlag_RegisterA(checkCollections: true);
 			}
 
 			public static void Len(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = Metadata.Registers.A.Data switch{
 					Array arr => arr.Length,
 					ArithmeticSet set => set.NumberCount,
@@ -1180,8 +1177,6 @@ castFail:
 						+ ExceptionHelper.GetContextString(context)),
 					_ => throw new InvalidRegisterTypeException($"Cannot perform operation \"length\" on a <{TypeTracking.GetChipsType(Metadata.Registers.A.Data, throwOnNotFound: false)}> value", context)
 				};
-
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Lens(FunctionContext context){
@@ -1204,41 +1199,48 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Ln() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Log(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
 				Metadata.Registers.A.Data = (a.Log10() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkFloats: true);
 			}
 
 			public static void Lscp(FunctionContext context){
 				if(Metadata.Registers.A.Data is not List list)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~list> instance", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = list.Capacity;
-
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 
 			public static void Lsct(FunctionContext context){
 				if(Metadata.Registers.A.Data is not List list)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~list> instance", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = list.Count;
-
-				CheckZeroFlag_RegisterA(checkIntegers: true);
 			}
 			#endregion
 
 			#region Functions - M
-			public static void Mov(FunctionContext context)
-				=> throw new InvalidOperationException("Mov opcode should not be called directly"
-					+ ExceptionHelper.GetContextString(context));
+			public static void Mov(FunctionContext context){
+				if(context.args.Length != 4)
+					throw new InvalidOperationException("Invalid opcode parameter list detected (count != 3)"
+						+ ExceptionHelper.GetContextString(context));
+
+				if(context.args[0] is not SetValueIndirectly setFunc)
+					throw new InvalidOpcodeArgumentException(0, $"Value did not refer to a \"{nameof(SetValueIndirectly)}\" delegate", context);
+				if(context.args[2] is not GetValueIndirectly getFunc)
+					throw new InvalidOpcodeArgumentException(2, $"Value did not refer to a \"{nameof(GetValueIndirectly)}\" delegate", context);
+
+				setFunc(ref context.args[1]!, getFunc(context.args[3]));
+			}
 
 			public static void Mul(FunctionContext context){
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
@@ -1246,8 +1248,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Multiply(arg).Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 			#endregion
 
@@ -1256,8 +1258,8 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not INumber a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a number value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats;
 				Metadata.Registers.A.Data = a.Negate().Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true, checkFloats: true);
 			}
 
 			public static void New(FunctionContext context){
@@ -1271,15 +1273,15 @@ castFail:
 						case "~date":
 							switch(context.args[1]){
 								case long ticks:
-									Metadata.stack!.Push(new DateTime(ticks));
+									Metadata.stack.Push(new DateTime(ticks));
 									break;
 								case int[] values:
 									if(values.Length == 3)
-										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2]));
+										Metadata.stack.Push(new DateTime(values[0], values[1], values[2]));
 									else if(values.Length == 6)
-										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5]));
+										Metadata.stack.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5]));
 									else if(values.Length == 7)
-										Metadata.stack!.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5], values[6]));
+										Metadata.stack.Push(new DateTime(values[0], values[1], values[2], values[3], values[4], values[5], values[6]));
 									else
 										throw new InvalidOpcodeArgumentException(1, "Value (<~arr:i32> instance) had an invalid amount of members for <~date> value creation", context);
 									break;
@@ -1291,26 +1293,26 @@ castFail:
 							if(ValueConverter.BoxToUnderlyingType(context.args[1]) is not IInteger seed)
 								throw new InvalidOpcodeArgumentException(1, "Value was not an integer", context);
 
-							Metadata.stack!.Push(new Random((int)ValueConverter.CastToInt32_T((seed as INumber)!).Value));
+							Metadata.stack.Push(new Random((int)ValueConverter.CastToInt32_T((seed as INumber)!).Value));
 							break;
 						case "~set":
 							if(context.args[1] is not Array array)
 								throw new InvalidOpcodeArgumentException(1, "Value was not an array", context);
 
-							Metadata.stack!.Push(new ArithmeticSet(array));
+							Metadata.stack.Push(new ArithmeticSet(array));
 							break;
 						case "~time":
 							switch(context.args[1]){
 								case long ticks:
-									Metadata.stack!.Push(new TimeSpan(ticks));
+									Metadata.stack.Push(new TimeSpan(ticks));
 									break;
 								case int[] values:
 									if(values.Length == 3)
-										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2]));
+										Metadata.stack.Push(new TimeSpan(values[0], values[1], values[2]));
 									else if(values.Length == 4)
-										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2], values[3]));
+										Metadata.stack.Push(new TimeSpan(values[0], values[1], values[2], values[3]));
 									else if(values.Length == 5)
-										Metadata.stack!.Push(new TimeSpan(values[0], values[1], values[2], values[3], values[4]));
+										Metadata.stack.Push(new TimeSpan(values[0], values[1], values[2], values[3], values[4]));
 									else
 										throw new InvalidOpcodeArgumentException(1, "Value (<~arr:i32> instance) had an invalid amount of members for <~time> value creation", context);
 									break;
@@ -1328,19 +1330,19 @@ castFail:
 							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger value)
 								throw new InvalidRegisterTypeException(Metadata.Registers.X.ToString() + " was not an integer", context);
 
-							Metadata.stack!.Push(new Indexer((int)ValueConverter.CastToInt32_T((value as INumber)!).Value));
+							Metadata.stack.Push(new Indexer((int)ValueConverter.CastToInt32_T((value as INumber)!).Value));
 							break;
 						case "~date":
-							Metadata.stack!.Push(DateTime.MinValue);
+							Metadata.stack.Push(DateTime.MinValue);
 							break;
 						case "~list":
 							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.Y.Data) is not IInteger capacity)
 								throw new InvalidRegisterTypeException(Metadata.Registers.Y.ToString() + " was not an integer", context);
 
-							Metadata.stack!.Push(new List((int)ValueConverter.CastToInt32_T((capacity as INumber)!).Value));
+							Metadata.stack.Push(new List((int)ValueConverter.CastToInt32_T((capacity as INumber)!).Value));
 							break;
 						case "~rand":
-							Metadata.stack!.Push(new Random());
+							Metadata.stack.Push(new Random());
 							break;
 						case "~range":
 							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger start)
@@ -1348,26 +1350,26 @@ castFail:
 							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.Y.Data) is not IInteger end)
 								throw new InvalidRegisterTypeException(Metadata.Registers.Y.ToString() + " was not an integer", context);
 
-							Metadata.stack!.Push(new Types.Range((int)ValueConverter.CastToInt32_T((start as INumber)!).Value, (int)ValueConverter.CastToInt32_T((end as INumber)!).Value));
+							Metadata.stack.Push(new Types.Range((int)ValueConverter.CastToInt32_T((start as INumber)!).Value, (int)ValueConverter.CastToInt32_T((end as INumber)!).Value));
 							break;
 						case "~regex":
 							if(Metadata.Registers.S.Data is not string pattern)
 								throw new InvalidRegisterTypeException(Metadata.Registers.S.ToString() + " was not a <str> instance", context);
 
-							Metadata.stack!.Push(new Types.Regex(pattern));
+							Metadata.stack.Push(new Types.Regex(pattern));
 							break;
 						case "~set":
-							Metadata.stack!.Push(ArithmeticSet.EmptySet);
+							Metadata.stack.Push(ArithmeticSet.EmptySet);
 							break;
 						case "~time":
-							Metadata.stack!.Push(TimeSpan.Zero);
+							Metadata.stack.Push(TimeSpan.Zero);
 							break;
 						case string a when a.StartsWith("~arr:"):
 							if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.X.Data) is not IInteger length)
 								throw new InvalidRegisterTypeException(Metadata.Registers.X.ToString() + " was not an integer", context);
 
 							string subType = a[5..];
-							Metadata.stack!.Push(Array.CreateInstance(TypeTracking.GetCSharpType(subType) ?? throw new InvalidOpcodeArgumentException(0, "Type cannot be used as an array element type: " + subType, context), (int)ValueConverter.CastToInt32_T((length as INumber)!).Value));
+							Metadata.stack.Push(Array.CreateInstance(TypeTracking.GetCSharpType(subType) ?? throw new InvalidOpcodeArgumentException(0, "Type cannot be used as an array element type: " + subType, context), (int)ValueConverter.CastToInt32_T((length as INumber)!).Value));
 							break;
 						case string s when s.StartsWith("~ud:"):
 							//Determine the type to use and call its requested constructor
@@ -1385,7 +1387,7 @@ castFail:
 
 							ConstructorInfo ctor = ReflectionHelper.GetConstructor(s, udType, Type.EmptyTypes);
 
-							Metadata.stack!.Push(ctor.Invoke(null));
+							Metadata.stack.Push(ctor.Invoke(null));
 							break;
 						default:
 							throw new InvalidOpcodeArgumentException(0, "Could not determine type/function from argument", context);
@@ -1397,8 +1399,135 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
 
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = (a.Not() as INumber)!.Value;
-				CheckZeroFlag_RegisterA(checkIntegers: true);
+			}
+			#endregion
+
+			#region Functions - O
+			public static void Or(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IInteger arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not an integer", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = (a.Or(arg) as INumber)!.Value;
+			}
+			#endregion
+
+			#region Functions - P
+			public static void Pntl(FunctionContext context){
+				Console.WriteLine(Formatting.FormatObject(Metadata.Registers.A.Data));
+			}
+
+			public static void Poa(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats | Metadata.CheckCollections | Metadata.CheckStrings;
+				Metadata.Registers.A.Data = Metadata.stack.Pop();
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.CheckRegister(Metadata.Registers.SP);
+			}
+
+			public static void Poev(FunctionContext context)
+				=> throw new InvalidOperationException("Poev opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Pop(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats | Metadata.CheckCollections | Metadata.CheckStrings;
+
+				if(context.args.Length == 0){
+					Metadata.Registers.SetStackOperationsObject(Metadata.stack.Pop());
+				}else if(context.args.Length == 2){
+					if(context.args[0] is SetValueIndirectly func)
+						func(ref context.args[1]!, Metadata.stack.Pop());
+					else
+						throw new InvalidOpcodeArgumentException(0, $"Value did not refer to a \"{nameof(SetValueIndirectly)}\" delegate", context);
+				}else
+					throw new InvalidOperationException("Invalid opcode parameter list detected (count != 2)"
+						+ ExceptionHelper.GetContextString(context));
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.CheckRegister(Metadata.Registers.SP);
+			}
+
+			public static void Pos(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
+				Metadata.Registers.S.Data = Metadata.stack.Pop();
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.CheckRegister(Metadata.Registers.SP);
+			}
+
+			public static void Pow(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IFloat arg)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
+				Metadata.Registers.A.Data = (a.Pow(arg) as INumber)!.Value;
+			}
+
+			public static void Pox(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.X.Data = Metadata.stack.Pop();
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.CheckRegister(Metadata.Registers.SP);
+			}
+
+			public static void Poy(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.Y.Data = Metadata.stack.Pop();
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.CheckRegister(Metadata.Registers.SP);
+			}
+
+			public static void Prnt(FunctionContext context){
+				Console.Write(Formatting.FormatObject(Metadata.Registers.A.Data));
+			}
+
+			public static void Prse(FunctionContext context){
+				if(context.args[0] is not string type)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a type instance", context);
+
+				if(TypeTracking.cachedParseFuncs.TryGetValue(type, out var func)){
+					if(func(Metadata.Registers.S.Data as string, out object? result)){
+						Metadata.ZeroFlagChecks = Metadata.CheckIntegers | Metadata.CheckFloats | Metadata.CheckCollections | Metadata.CheckStrings;
+						Metadata.Registers.A.Data = result;
+
+						Metadata.Flags.Conversion = true;
+					}
+				}else
+					throw new InvalidOpcodeArgumentException(0, "Type instance either does not have parsing support or does not exist", context);
+
+				// TODO: parsing other types?
+			}
+
+			public static void Psa(FunctionContext context){
+				Metadata.stack.Push(Metadata.Registers.A.Data);
+			}
+
+			public static void Psev(FunctionContext context)
+				=> throw new InvalidOperationException("Psev opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Psh(FunctionContext context){
+				Metadata.stack.Push(context.args[0]);
+			}
+
+			public static void Pss(FunctionContext context){
+				Metadata.stack.Push(Metadata.Registers.S.Data);
+			}
+
+			public static void Psx(FunctionContext context){
+				Metadata.stack.Push(Metadata.Registers.X.Data);
+			}
+
+			public static void Psy(FunctionContext context){
+				Metadata.stack.Push(Metadata.Registers.Y.Data);
 			}
 			#endregion
 		}

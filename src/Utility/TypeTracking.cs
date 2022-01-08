@@ -12,6 +12,71 @@ namespace Chips.Core.Utility{
 		private static readonly Dictionary<Type, Type> cachedArrayTypes = new();
 		private static readonly Dictionary<string, Type> cachedNameToTypes = new();
 
+		internal delegate bool ParseValue(string? str, out object? result);
+		private delegate bool ParseValue<T>(string? str, out T result);
+
+		private static ParseValue CreateParseValueDelegate<T>(ParseValue<T> func)
+			=> (string? str, out object? result) => {
+				bool success = func(str, out T typedResult);
+				result = typedResult;
+				return success;
+			};
+
+		internal static readonly Dictionary<string, ParseValue> cachedParseFuncs = new(){
+			["i32"] = CreateParseValueDelegate<int>(int.TryParse),
+			["i8"] = CreateParseValueDelegate<sbyte>(sbyte.TryParse),
+			["i16"] = CreateParseValueDelegate<short>(short.TryParse),
+			["i64"] = CreateParseValueDelegate<long>(long.TryParse),
+			["u32"] = CreateParseValueDelegate<uint>(uint.TryParse),
+			["u8"] = CreateParseValueDelegate<byte>(byte.TryParse),
+			["u16"] = CreateParseValueDelegate<ushort>(ushort.TryParse),
+			["u64"] = CreateParseValueDelegate<ulong>(ulong.TryParse),
+			["iex"] = CreateParseValueDelegate<BigInteger>(BigInteger.TryParse),
+			["f32"] = CreateParseValueDelegate<float>(float.TryParse),
+			["f64"] = CreateParseValueDelegate<double>(double.TryParse),
+			["f128"] = CreateParseValueDelegate<decimal>(decimal.TryParse),
+			["char"] = CreateParseValueDelegate<char>(char.TryParse),
+			["~index"] = CreateParseValueDelegate<Indexer>(Indexer.TryParse),
+			["~range"] = CreateParseValueDelegate<Types.Range>(Types.Range.TryParse),
+			["bool"] = CreateParseValueDelegate<bool>(bool.TryParse),
+			["~cplx"] = (string? str, out object? result) => {
+				if(str is null){
+					result = Complex.Zero;
+					return false;
+				}
+
+				//Real only
+				if(double.TryParse(str, out double d)){
+					result = new Complex(d, 0);
+					return true;
+				}
+
+				ReadOnlySpan<char> span = str.AsSpan(), a, b;
+
+				//Imaginary only
+				if(span[^1] == 'i' && double.TryParse(span[..^1], out d)){
+					result = new Complex(0, d);
+					return true;
+				}
+
+				int opIndex;
+				if((opIndex = span.LastIndexOf('+')) > 0 || (opIndex = span.LastIndexOf('-')) > 0){
+					//Both real and imaginary
+					a = span[..opIndex];
+					b = span[opIndex..];
+
+					if(double.TryParse(a.TrimEnd(), out double real) && b[^1] == 'i' && double.TryParse(b[..^1].TrimStart(), out double imag)){
+						result = new Complex(real, imag);
+						return true;
+					}
+				}
+
+				result = null;
+				return false;
+			},
+			["f16"] = CreateParseValueDelegate<Half>(Half.TryParse)
+		};
+
 		public static bool IsInteger(object? arg)
 			=> arg is sbyte or short or int or long or byte or ushort or uint or ulong or BigInteger;
 

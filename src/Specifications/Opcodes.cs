@@ -247,5 +247,10 @@
 			New_time, New_time_obj, New_time_var,
 			New_userdef);
 		public static readonly Opcode Not          = new(0x02, &Opcode.Functions.Not,              "not"                         );
+
+		public static readonly Opcode Or_obj       = new(0x01, &Opcode.Functions.Or,               "or <obj>"                    );
+		public static readonly Opcode Or_var       = new(0x21, &Opcode.Functions.Or,               "or <var>"                    );
+
+
 	}
 }

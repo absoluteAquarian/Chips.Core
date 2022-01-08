@@ -1,4 +1,5 @@
-﻿using Chips.Core.Specifications;
+﻿using Chips.Core.Meta;
+using Chips.Core.Specifications;
 using Chips.Core.Utility;
 using System.Numerics;
 
@@ -12,6 +13,8 @@ namespace Chips.Core.Types{
 					throw new RegisterAssignmentException($"{Formatting.FormatObject(this)} cannot accept values of type \"{TypeTracking.GetChipsType(value)}\"", globalContext);
 
 				data = value;
+
+				Metadata.Registers.CheckRegister(this);
 			}
 		}
 

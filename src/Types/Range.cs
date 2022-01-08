@@ -26,5 +26,28 @@
 		}
 
 		public override string ToString() => $"[{start}..{end}]";
+
+		public static bool TryParse(string? str, out Range range){
+			if(str is null){
+				range = default;
+				return false;
+			}
+			
+			ReadOnlySpan<char> span = str.AsSpan();
+			//Length of >= 6 accounts for the punctuation in "[X..Y]"
+			if(span.Length >= 6 && span[0] == '[' && span[^1] == ']'){
+				int rangeIndex = span.IndexOf("..", StringComparison.CurrentCulture);
+				int rangeIndexEnd = rangeIndex + 2;
+				if(rangeIndex > 2 && int.TryParse(span[1..rangeIndex], out int start) && int.TryParse(span[rangeIndexEnd..^1], out int end)){
+					//The string is valid
+					range = new(start, end);
+					return true;
+				}
+			}
+
+			//The string is not valid
+			range = default;
+			return false;
+		}
 	}
 }

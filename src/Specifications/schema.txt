@@ -480,7 +480,8 @@ BYTECODE | OPCODE
 
  01      | or <obj>  ...................... performs A = A | <obj>
  21      | or <var>  ...................... performs A = A | <var>
-
+ 
+ 4C      | pntl ........................... prints A with a newline
  2A      | poa ............................ pops a value from the Stack and puts it into A
  98      | poev <type> .................... pops a value from the Evaluation Stack (internal mechanism in C#), unboxes the value to <type> and sets the result to A
  1C      | pop ............................ pops a value from the Stack
@@ -491,7 +492,6 @@ BYTECODE | OPCODE
  2B      | pox ............................ pops a value from the Stack and puts it into X
  2C      | poy ............................ pops a value from the Stack and puts it into Y
  4A      | prnt ........................... prints A
- 4C      | pntl ........................... prints A with a newline
  64      | prse <type> .................... parses S into a value of type <type>.  If the parsing was successful, the parsed value is put into A and the N flag is set
  0A      | psa ............................ pushes A to the Stack
  88      | psev <type> .................... pushes A to the Evaluation Stack (internal mechanism in C#), boxing the value to <type>.  Used to return values from a function
