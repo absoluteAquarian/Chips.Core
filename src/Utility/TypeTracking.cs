@@ -280,6 +280,8 @@ namespace Chips.Core.Utility{
 				return 8;
 			if(t == typeof(decimal) || t == typeof(Complex))
 				return 16;
+			if(t == typeof(BigInteger))
+				return 32;  //Just need to make sure it's "larger" than ulong and long
 
 			throw new Exception($"Internal Chips Exception -- Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}: {t.FullName}");
 		}

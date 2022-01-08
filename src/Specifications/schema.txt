@@ -31,7 +31,7 @@ NOTES
   - offset 0: 2 bytes
     - bit 0-1 of low byte: local variable (00), global variable (01), register (10) or flag (11)
     - rest of integer: variable/register/flag index * 4
-      - cap of 16k variables
+      - value is an encoded integer, up to 4 bytes
 - <arr> operands indicate variables of type <~arr>
 - <label> operands are stored as:
   - offset 0: instruction offset
@@ -111,18 +111,18 @@ OPCODES
 _______|__x0__|__x1__|__x2__|__x3__|__x4__|__x5__|__x6__|__x7__|__x8__|__x9__|__xA__|__xB__|__xC__|__xD__|__xE__|__xF__|
 |  0x  |  and |   or |  not |  xor |  ret |  ceq |  cgt |  clt |  cge |  cle |  psa |  psx |  psy |  asl |  asr |  clc |
 |  1x  |  btc |  bfc |  btn |  bfn |  bto |  bfo |  btr |  bfr |  btz |  bfz |   br | call |  pop |  rol |  ror |  cln |
-|  2x  |  and |   or |  len |  xor | <ex> |  ceq |  cgt |  clt |  cge |  cle |  poa |  pox |  poy |  swp | <ex> |  clo |
+|  2x  |  and |   or |  len |  xor | <ex> |  ceq |  cgt |  clt |  cge |  cle |  poa |  pox |  poy | swap | <ex> |  clo |
 |  3x  |  add |  sub |  mul |  div |  pow |  art |   ln |  log |  blg |  abs |  neg |  psh |  pop |  pss |  pos |  clr |
 |  4x  |  add |  sub |  mul |  div |  pow |  art |  mov |  inl |  inc | incb | prnt |  psh | pntl |  dup | <ex> |  clz |
 |  5x  |  tax |  tay |  txa |  txy |  tya |  tyx |  mov | intp |  tas |  tsa |  inv | ldrg |  rem | dupd | <ex> |  stc |
 |  6x  |   is |  err |  isa | cast | prse | <ex> |  mov |  bin | binz |  bit | bits | size |  rem | lsct | lscp |  clp |
 |  7x  |  sbs |  err | type | lens |  btp |  idx |  mov | sqrt |  exp |  bit |  brt |  brt |  brf |  brf |  lda |  stp |
 |  8x  |  inx |  dex |  iny |  dey |  bfp |  idx |  mov | idxv | psev |  rgs |  rge | stun | stin | stdj | stco | stdf |
-|  9x  |  try | flor |  sin |  cos |  tan | asnh |  mov |      | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
-|  Ax  |  try | ceil | asin | acos | atan | acsh |  mov |      |      |  rgs |  rge | shas | aems |      |      |      |
+|  9x  | tryc | flor |  sin |  cos |  tan | asnh |  mov | rgxf | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
+|  Ax  | tryf | ceil | asin | acos | atan | acsh |  mov | rgxf | rgxm |  rgs |  rge | shas | aems |      |      |      |
 |  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      |      |      |      | shas |      |      |      |      |
 |  Cx  |  sjn | sdiv | srmv | srep | atnt |      |      |      |      |      |      |      |      |      |      |      |
-|  Dx  |  sjn | sdiv | srmv |      | atnt |      |      |      |      |      |      |      |      |      |      |  sys |
+|  Dx  |  sjn | sdiv | srmv | tryn | atnt |      |      |      |      |      |      |      |      |      |      |  sys |
 |  Ex  |  cpz | cpro | cpco |  cpo | cpcj | cprv | cpnr |  cpr |  cpi |      |      |      |      | csrv | wait |  sys |
 |  Fx  | conw | conh | cont | csrx | csry | cclb | cclf | caps | cnww | cnwh | conr | cnrf | cnrb |  cls | wait | halt |
 ------------------------------------------------------------------------------------------------------------------------
@@ -339,6 +339,8 @@ BYTECODE | OPCODE
  FA      | conr ........................... resets the console's colours to their default values
  F2      | cont ........................... sets the title of the console to S.  If the P flag is set, the value is copied to S instead
  F0      | conw ........................... sets the width of the console's text buffer to the value in A.  A must be an <i32>.  If the P flag is set, the value is copied to A instead
+ 93      | cos ............................ Performs A = Math.Cos(A)
+ B3      | cosh ........................... Performs A = Math.Cosh(A)
  E4      | cpcj ........................... sets A to its complex conjugate (a - bi)
  E2      | cpco ........................... performs A = 0 + 1i
  E8      | cpi ............................ given a <~cplx> value in A, a + bi, performs A = b
@@ -504,45 +506,48 @@ BYTECODE | OPCODE
  5C      | rem <obj> ...................... performs A = A % <obj>
  6C      | rem <var> ...................... performs A = A % <var>
  04      | ret ............................ returns immediately from the current function
- 8A      | rge ............................ gets the end component of a <~range> in A
+ 8A      | rge ............................ sets A to the end component of a <~range> in A
  9A      | rge <obj> ...................... sets the end component of a <~range> in A to <obj>
  AA      | rge <var> ...................... sets the end component of a <~range> in A to <var>
- 89      | rgs ............................ gets the start component of a <~range> in A
+ 89      | rgs ............................ sets A to the start component of a <~range> in A
  99      | rgs <obj> ...................... sets the start component of a <~range> in A to <obj>
  A9      | rgs <var> ...................... sets the start component of a <~range> in A to <var>
+ 97      | rgxf <obj> ..................... given a <~regex> instance in A, performs S = A.ReplaceString(S, <obj>)
+ A7      | rgxf <var> ..................... given a <~regex> instance in A, performs S = A.ReplaceString(S, <var>)
  B1      | rgxm <obj> ..................... gets match <obj> in the <~regex> in A and puts it into S
+ A8      | rgxm <var> ..................... gets match <var> in the <~regex> in A and puts it into S
  B0      | rgxs ........................... sets the R flag iff the <~regex> in A could find a match from S and also sets the "matches" collection inside of the <~regex> in A
- 9B      | rndi ........................... uses a <~rand> instance in A to generate an i32 in [0, int.MaxValue)
- AB      | rndi <obj> ..................... uses a <~rand> instance in A to generate an i32 in [0, <obj>)
- 4E 02   | rndi <var> ..................... uses a <~rand> instance in A to generate an i32 in [0, <var>)
- 4E 03   | rndi <obj>, <obj2> ............. uses a <~rand> instance in A to generate an i32 in [<obj>, <obj2>)
- 4E 04   | rndi <obj>, <var> .............. uses a <~rand> instance in A to generate an i32 in [<obj>, <var>)
- 4E 05   | rndi <var>, <obj> .............. uses a <~rand> instance in A to generate an i32 in [<var>, <obj>)
- 4E 06   | rndi <var>, <var2> ............. uses a <~rand> instance in A to generate an i32 in [<var>, <var2>)
- 4E 10   | rndf ........................... uses a <~rand> instance in A to generate an f32 in [0, 1)
- 4E 11   | rndf <obj> ..................... uses a <~rand> instance in A to generate an f32 in [0, <obj>)
- 4E 12   | rndf <var> ..................... uses a <~rand> instance in A to generate an f32 in [0, <var>)
- 4E 13   | rndf <obj>, <obj2> ............. uses a <~rand> instance in A to generate an f32 in [<obj>, <obj2>)
- 4E 14   | rndf <obj>, <var> .............. uses a <~rand> instance in A to generate an f32 in [<obj>, <var>)
- 4E 15   | rndf <var>, <obj> .............. uses a <~rand> instance in A to generate an f32 in [<var>, <obj>)
- 4E 16   | rndf <var>, <var2> ............. uses a <~rand> instance in A to generate an f32 in [<var>, <var2>)
- 4E 20   | rndd ........................... uses a <~rand> instance in A to generate an f64 in [0, 1)
- 4E 21   | rndd <obj> ..................... uses a <~rand> instance in A to generate an f64 in [0, <obj>)
- 4E 22   | rndd <var> ..................... uses a <~rand> instance in A to generate an f64 in [0, <var>)
- 4E 23   | rndd <obj>, <obj2> ............. uses a <~rand> instance in A to generate an f64 in [<obj>, <obj2>)
- 4E 24   | rndd <obj>, <var> .............. uses a <~rand> instance in A to generate an f64 in [<obj>, <var>)
- 4E 25   | rndd <var>, <obj> .............. uses a <~rand> instance in A to generate an f64 in [<var>, <obj>)
- 4E 26   | rndd <var>, <var2> ............. uses a <~rand> instance in A to generate an f64 in [<var>, <var2>)
- 4E 30   | rndl ........................... uses a <~rand> instance in A to generate an i64 in [0, long.maxValue)
- 4E 31   | rndl <obj> ..................... uses a <~rand> instance in A to generate an i64 in [0, <obj>)
- 4E 32   | rndl <var> ..................... uses a <~rand> instance in A to generate an i64 in [0, <var>)
- 4E 33   | rndl <obj>, <obj2> ............. uses a <~rand> instance in A to generate an i64 in [<obj>, <obj2>)
- 4E 34   | rndl <obj>, <var> .............. uses a <~rand> instance in A to generate an i64 in [<obj>, <var>)
- 4E 35   | rndl <var>, <obj> .............. uses a <~rand> instance in A to generate an i64 in [<var>, <obj>)
- 4E 36   | rndl <var>, <var2> ............. uses a <~rand> instance in A to generate an i64 in [<var>, <var2>)
  4E 40   | rndb <arr> ..................... uses a <~rand> instance in A to fill <arr> with random bytes.  <arr> must be an <~arr:u8>
- 1D      | rol ............................ rotates the bits between C and A.  E.g. A BCDEFGHI ==> B CDEFGHIA
- 1E      | ror ............................ rotates the bits between C and A.  E.g. A BCDEFGHI ==> I ABCDEFGH
+ 4E 20   | rndd ........................... uses a <~rand> instance in A to generate an f64 in [0, 1) and sets the result to A
+ 4E 21   | rndd <obj> ..................... uses a <~rand> instance in A to generate an f64 in [0, <obj>) and sets the result to A
+ 4E 22   | rndd <var> ..................... uses a <~rand> instance in A to generate an f64 in [0, <var>) and sets the result to A
+ 4E 23   | rndd <obj>, <obj2> ............. uses a <~rand> instance in A to generate an f64 in [<obj>, <obj2>) and sets the result to A
+ 4E 24   | rndd <obj>, <var> .............. uses a <~rand> instance in A to generate an f64 in [<obj>, <var>) and sets the result to A
+ 4E 25   | rndd <var>, <obj> .............. uses a <~rand> instance in A to generate an f64 in [<var>, <obj>) and sets the result to A
+ 4E 26   | rndd <var>, <var2> ............. uses a <~rand> instance in A to generate an f64 in [<var>, <var2>) and sets the result to A
+ 4E 10   | rndf ........................... uses a <~rand> instance in A to generate an f32 in [0, 1) and sets the result to A
+ 4E 11   | rndf <obj> ..................... uses a <~rand> instance in A to generate an f32 in [0, <obj>) and sets the result to A
+ 4E 12   | rndf <var> ..................... uses a <~rand> instance in A to generate an f32 in [0, <var>) and sets the result to A
+ 4E 13   | rndf <obj>, <obj2> ............. uses a <~rand> instance in A to generate an f32 in [<obj>, <obj2>) and sets the result to A
+ 4E 14   | rndf <obj>, <var> .............. uses a <~rand> instance in A to generate an f32 in [<obj>, <var>) and sets the result to A
+ 4E 15   | rndf <var>, <obj> .............. uses a <~rand> instance in A to generate an f32 in [<var>, <obj>) and sets the result to A
+ 4E 16   | rndf <var>, <var2> ............. uses a <~rand> instance in A to generate an f32 in [<var>, <var2>) and sets the result to A
+ 4E 00   | rndi ........................... uses a <~rand> instance in A to generate an i32 in [0, int.MaxValue) and sets the result to A
+ 4E 01   | rndi <obj> ..................... uses a <~rand> instance in A to generate an i32 in [0, <obj>) and sets the result to A
+ 4E 02   | rndi <var> ..................... uses a <~rand> instance in A to generate an i32 in [0, <var>) and sets the result to A
+ 4E 03   | rndi <obj>, <obj2> ............. uses a <~rand> instance in A to generate an i32 in [<obj>, <obj2>) and sets the result to A
+ 4E 04   | rndi <obj>, <var> .............. uses a <~rand> instance in A to generate an i32 in [<obj>, <var>) and sets the result to A
+ 4E 05   | rndi <var>, <obj> .............. uses a <~rand> instance in A to generate an i32 in [<var>, <obj>) and sets the result to A
+ 4E 06   | rndi <var>, <var2> ............. uses a <~rand> instance in A to generate an i32 in [<var>, <var2>) and sets the result to A
+ 4E 30   | rndl ........................... uses a <~rand> instance in A to generate an i64 in [0, long.maxValue) and sets the result to A
+ 4E 31   | rndl <obj> ..................... uses a <~rand> instance in A to generate an i64 in [0, <obj>) and sets the result to A
+ 4E 32   | rndl <var> ..................... uses a <~rand> instance in A to generate an i64 in [0, <var>) and sets the result to A
+ 4E 33   | rndl <obj>, <obj2> ............. uses a <~rand> instance in A to generate an i64 in [<obj>, <obj2>) and sets the result to A
+ 4E 34   | rndl <obj>, <var> .............. uses a <~rand> instance in A to generate an i64 in [<obj>, <var>) and sets the result to A
+ 4E 35   | rndl <var>, <obj> .............. uses a <~rand> instance in A to generate an i64 in [<var>, <obj>) and sets the result to A
+ 4E 36   | rndl <var>, <var2> ............. uses a <~rand> instance in A to generate an i64 in [<var>, <var2>) and sets the result to A
+ 1D      | rol ............................ rotates the bits between the C flag and A.  E.g. A BCDEFGHI ==> B CDEFGHIA
+ 1E      | ror ............................ rotates the bits between the C flag and A.  E.g. A BCDEFGHI ==> I ABCDEFGH
 
  70      | sbs ............................ performs S = S.Substring(X, Y)
  C1      | sdiv <obj> ..................... performs A = string.Split(S, <obj>)
@@ -551,30 +556,30 @@ BYTECODE | OPCODE
  BB      | shas <var> ..................... sets the O flag iff A contains <var>.  A must be a <~set> instance
  92      | sin ............................ performs A = Math.Sin(A)
  B2      | sinh ........................... performs A = Math.Sinh(A)
+ 6B      | size ........................... performs A = sizeof(A)
  C0      | sjn <obj> ...................... performs S = string.Join(A, <obj>)
  D0      | sjn <var> ...................... performs S = string.Join(A, <var>)
  77      | sqrt ........................... performs A = Math.Sqrt(A)
  C3      | srep ........................... performs S = Duplicate(S, A)
  C2      | srmv <obj> ..................... performs S = S.Remove(<obj>)
  D2      | srmv <var> ..................... performs S = S.Remove(<var>)
+ 5F      | stc ............................ sets the C flag
+ 8E      | stco <obj> ..................... performs A = Ac, given <obj> as the set universe.  A and <obj> must be <~set> instances
+ 9E      | stco <var> ..................... performs A = Ac, given <var> as the set universe.  A and <var> must be <~set> instances
  8F      | stdf <obj> ..................... performs A = A - <obj>.  A and <obj> must be <~set> instances
  9F      | stdf <var> ..................... performs A = A - <var>.  A and <var> must be <~set> instances
- 4E 02   | stdj <obj> ..................... sets the O flag iff A is disjoint with <obj>.  A and <obj> must be <~set> instances
- 4E 02   | stdj <var> ..................... sets the O flag iff A is disjoint with <var>.  A and <var> must be <~set> instances
- 4E 01   | stin <obj> ..................... performs A = A ∩ <obj>.  A and <obj> must be <~set> instances
- 4E 01   | stin <var> ..................... performs A = A ∩ <var>.  A and <var> must be <~set> instances
- 6B      | size ........................... performs A = sizeof(A)
- 5F      | stc ............................ sets the C flag
+ 8D      | stdj <obj> ..................... sets the O flag iff A is disjoint with <obj>.  A and <obj> must be <~set> instances
+ 9D      | stdj <var> ..................... sets the O flag iff A is disjoint with <var>.  A and <var> must be <~set> instances
+ 8C      | stin <obj> ..................... performs A = A ∩ <obj>.  A and <obj> must be <~set> instances
+ 9C      | stin <var> ..................... performs A = A ∩ <var>.  A and <var> must be <~set> instances
  7F      | stp ............................ sets the P flag
+ 8B      | stun <obj> ..................... performs A = A ∪ <obj>.  A and <obj> must be <~set> instances
+ 9D      | stun <var> ..................... performs A = A ∪ <var>.  A and <var> must be <~set> instances
  31      | sub <obj> ...................... performs A = A - <obj>
  41      | sub <var> ...................... performs A = A - <var>
- 4E 00   | stun <obj> ..................... performs A = A ∪ <obj>.  A and <obj> must be <~set> instances
- 4E 00   | stun <var> ..................... performs A = A ∪ <var>.  A and <var> must be <~set> instances
- 4E 03   | stco <obj> ..................... performs A = Ac, given <obj> as the set universe.  A and <obj> must be <~set> instances
- 4E 03   | stco <var> ..................... performs A = Ac, given <var> as the set universe.  A and <var> must be <~set> instances
- 2D      | swp ............................ swaps the positions of the top two elements on the Stack
+ 2D      | swap ........................... swaps the positions of the top two elements on the Stack
  DF      | sys <obj> ...................... calls one of the defined "system calls". <obj> must be an <i32>
- DF      | sys <var> ...................... calls one of the defined "system calls". <var> must be an <i32>
+ EF      | sys <var> ...................... calls one of the defined "system calls". <var> must be an <i32>
 
  94      | tan ............................ performs A = Math.Tan(A)
  B4      | tanh ........................... performs A = Math.Tanh(A)
@@ -605,8 +610,9 @@ BYTECODE | OPCODE
  24 17   | tmti ........................... gets the TotalMinutes value from A and puts it into A.  A must be a <~time> instance
  24 18   | tmtm ........................... gets the TotalMilliseconds value from A and puts it into A.  A must be a <~time> instance
  24 19   | tmts ........................... gets the TotalSeconds value from A and puts it into A.  A must be a <~time> instance
- 90      | try <label> .................... enters a try-clause, where <label> points to the start of the catch-clause
- A0      | try <label>, <label2> .......... enters a try-clause, where <label> points to the start of the catch-clause and <label2> points to the start of the finally-clause
+ 90      | tryc <label> ................... enters a try-clause, where <label> points to the start of the catch-clause
+ A0      | tryf <label>, <label2> ......... enters a try-clause, where <label> points to the start of the catch-clause and <label2> points to the start of the finally-clause
+ D3      | tryn <label> ................... enters a try-clause, where <label> points to the start of the finally-clause (no catch clause)
  59      | tsa ............................ copies S into A
  53      | txa ............................ copies X into A
  54      | txy ............................ copies X into Y

@@ -439,6 +439,9 @@ namespace Chips.Core.Types{
 		public static ArithmeticSet Complement(ArithmeticSet a, ArithmeticSet universe)
 			=> Difference(universe, a);
 
+		public static bool AreDisjoint(ArithmeticSet a, ArithmeticSet b)
+			=> Intersection(a, b).IsEmptySet;
+
 		public unsafe object[] ToArray(){
 			object[] arr = new object[set.Length];
 			
@@ -454,6 +457,20 @@ namespace Chips.Core.Types{
 
 		private void OrganizeSet(){
 			Sorting.TimSort(set!);
+		}
+
+		public bool ContainsNumber(object? obj){
+			//Performs error checking if "obj" isn't a number
+			Number num = Number.Create(obj);
+
+			if(IsEmptySet)
+				return false;
+
+			for(int i = 0; i < set.Length; i++)
+				if(set[i].CompareTo(num) == 0)
+					return true;
+
+			return false;
 		}
 
 		public override string ToString(){

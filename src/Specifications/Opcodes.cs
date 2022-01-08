@@ -73,6 +73,8 @@
 		public static readonly Opcode Conr         = new(0xFA, &Opcode.Functions.Conr,             "conr"                        );
 		public static readonly Opcode Cont         = new(0xF2, &Opcode.Functions.Cont,             "cont"                        );
 		public static readonly Opcode Conw         = new(0xF0, &Opcode.Functions.Conw,             "conw"                        );
+		public static readonly Opcode Cos          = new(0x93, &Opcode.Functions.Cos,              "cos"                         );
+		public static readonly Opcode Cosh         = new(0xB3, &Opcode.Functions.Cosh,             "cosh"                        );
 		public static readonly Opcode Cpcj         = new(0xE4, &Opcode.Functions.Cpcj,             "cpcj"                        );
 		public static readonly Opcode Cpco         = new(0xE2, &Opcode.Functions.Cpco,             "cpco"                        );
 		public static readonly Opcode Cpi          = new(0xE8, &Opcode.Functions.Cpi,              "cpi"                         );
@@ -270,5 +272,88 @@
 		public static readonly Opcode Pss          = new(0x3D, &Opcode.Functions.Pss,              "pss"                         );
 		public static readonly Opcode Psx          = new(0x0B, &Opcode.Functions.Psx,              "psx"                         );
 		public static readonly Opcode Psy          = new(0x0C, &Opcode.Functions.Psy,              "psy"                         );
+
+		public static readonly Opcode Rem_obj      = new(0x5C, &Opcode.Functions.Rem,              "rem <obj>"                   );
+		public static readonly Opcode Rem_var      = new(0x6C, &Opcode.Functions.Rem,              "rem <var>"                   );
+		public static readonly Opcode Ret          = new(0x04, &Opcode.Functions.Ret,              "ret"                         );
+		public static readonly Opcode Rge          = new(0x8A, &Opcode.Functions.Rge,              "rge"                         );
+		public static readonly Opcode Rge_obj      = new(0x9A, &Opcode.Functions.Rge,              "rge <obj>"                   );
+		public static readonly Opcode Rge_var      = new(0xAA, &Opcode.Functions.Rge,              "rge <var>"                   );
+		public static readonly Opcode Rgs          = new(0x89, &Opcode.Functions.Rgs,              "rgs"                         );
+		public static readonly Opcode Rgs_obj      = new(0x99, &Opcode.Functions.Rgs,              "rgs <obj>"                   );
+		public static readonly Opcode Rgs_var      = new(0xA9, &Opcode.Functions.Rgs,              "rgs <var>"                   );
+		public static readonly Opcode Rgxf_obj     = new(0x97, &Opcode.Functions.Rgxf,             "rgxf <obj>"                  );
+		public static readonly Opcode Rgxf_var     = new(0xA7, &Opcode.Functions.Rgxf,             "rgxf <var>"                  );
+		public static readonly Opcode Rgxm_obj     = new(0xB1, &Opcode.Functions.Rgxm,             "rgxm <obj>"                  );
+		public static readonly Opcode Rgxm_var     = new(0xA8, &Opcode.Functions.Rgxm,             "rgxm <var>"                  );
+		public static readonly Opcode Rgxs         = new(0xB0, &Opcode.Functions.Rgxs,             "rgxf"                        );
+			public static readonly Opcode Rndb         = new(0x40, &Opcode.Functions.Rndb,         "rndb <arr>"                  );
+			public static readonly Opcode Rndd         = new(0x20, &Opcode.Functions.Rndd,         "rndd"                        );
+			public static readonly Opcode Rndd_obj     = new(0x21, &Opcode.Functions.Rndd,         "rndd <obj>"                  );
+			public static readonly Opcode Rndd_var     = new(0x22, &Opcode.Functions.Rndd,         "rndd <var>"                  );
+			public static readonly Opcode Rndd_obj_obj = new(0x23, &Opcode.Functions.Rndd,         "rndd <obj>, <obj2>"          );
+			public static readonly Opcode Rndd_obj_var = new(0x24, &Opcode.Functions.Rndd,         "rndd <obj>, <var>"           );
+			public static readonly Opcode Rndd_var_obj = new(0x25, &Opcode.Functions.Rndd,         "rndd <var>, <obj>"           );
+			public static readonly Opcode Rndd_var_var = new(0x26, &Opcode.Functions.Rndd,         "rndd <var>, <var2>"          );
+			public static readonly Opcode Rndf         = new(0x10, &Opcode.Functions.Rndf,         "rndf"                        );
+			public static readonly Opcode Rndf_obj     = new(0x11, &Opcode.Functions.Rndf,         "rndf <obj>"                  );
+			public static readonly Opcode Rndf_var     = new(0x12, &Opcode.Functions.Rndf,         "rndf <var>"                  );
+			public static readonly Opcode Rndf_obj_obj = new(0x13, &Opcode.Functions.Rndf,         "rndf <obj>, <obj2>"          );
+			public static readonly Opcode Rndf_obj_var = new(0x14, &Opcode.Functions.Rndf,         "rndf <obj>, <var>"           );
+			public static readonly Opcode Rndf_var_obj = new(0x15, &Opcode.Functions.Rndf,         "rndf <var>, <obj>"           );
+			public static readonly Opcode Rndf_var_var = new(0x16, &Opcode.Functions.Rndf,         "rndf <var>, <var2>"          );
+			public static readonly Opcode Rndi         = new(0x00, &Opcode.Functions.Rndi,         "rndi"                        );
+			public static readonly Opcode Rndi_obj     = new(0x01, &Opcode.Functions.Rndi,         "rndi <obj>"                  );
+			public static readonly Opcode Rndi_var     = new(0x02, &Opcode.Functions.Rndi,         "rndi <var>"                  );
+			public static readonly Opcode Rndi_obj_obj = new(0x03, &Opcode.Functions.Rndi,         "rndi <obj>, <obj2>"          );
+			public static readonly Opcode Rndi_obj_var = new(0x04, &Opcode.Functions.Rndi,         "rndi <obj>, <var>"           );
+			public static readonly Opcode Rndi_var_obj = new(0x05, &Opcode.Functions.Rndi,         "rndi <var>, <obj>"           );
+			public static readonly Opcode Rndi_var_var = new(0x06, &Opcode.Functions.Rndi,         "rndi <var>, <var2>"          );
+			public static readonly Opcode Rndl         = new(0x30, &Opcode.Functions.Rndl,         "rndl"                        );
+			public static readonly Opcode Rndl_obj     = new(0x31, &Opcode.Functions.Rndl,         "rndl <obj>"                  );
+			public static readonly Opcode Rndl_var     = new(0x32, &Opcode.Functions.Rndl,         "rndl <var>"                  );
+			public static readonly Opcode Rndl_obj_obj = new(0x33, &Opcode.Functions.Rndl,         "rndl <obj>, <obj2>"          );
+			public static readonly Opcode Rndl_obj_var = new(0x34, &Opcode.Functions.Rndl,         "rndl <obj>, <var>"           );
+			public static readonly Opcode Rndl_var_obj = new(0x35, &Opcode.Functions.Rndl,         "rndl <var>, <obj>"           );
+			public static readonly Opcode Rndl_var_var = new(0x36, &Opcode.Functions.Rndl,         "rndl <var>, <var2>"          );
+		public static readonly Opcode Rnd          = new(0x4E, &Opcode.Functions.Ext,              "<extended opcode>",
+			Rndb,
+			Rndd, Rndd_obj, Rndd_var, Rndd_obj_obj, Rndd_obj_var, Rndd_var_obj, Rndd_var_var,
+			Rndf, Rndf_obj, Rndf_var, Rndf_obj_obj, Rndf_obj_var, Rndf_var_obj, Rndf_var_var,
+			Rndi, Rndi_obj, Rndi_var, Rndi_obj_obj, Rndi_obj_var, Rndi_var_obj, Rndi_var_var,
+			Rndl, Rndl_obj, Rndl_var, Rndl_obj_obj, Rndl_obj_var, Rndl_var_obj, Rndl_var_var);
+		public static readonly Opcode Rol          = new(0x1D, &Opcode.Functions.Rol,              "rol"                         );
+		public static readonly Opcode Ror          = new(0x1E, &Opcode.Functions.Ror,              "ror"                         );
+
+		public static readonly Opcode Sbs          = new(0x70, &Opcode.Functions.Sbs,              "sbs"                         );
+		public static readonly Opcode Sdiv_obj     = new(0xC1, &Opcode.Functions.Sdiv,             "sdiv <obj>"                  );
+		public static readonly Opcode Sdiv_var     = new(0xD1, &Opcode.Functions.Sdiv,             "sdiv <var>"                  );
+		public static readonly Opcode Shas_obj     = new(0xAB, &Opcode.Functions.Shas,             "shas <obj>"                  );
+		public static readonly Opcode Shas_var     = new(0xBB, &Opcode.Functions.Shas,             "shas <var>"                  );
+		public static readonly Opcode Sin          = new(0x92, &Opcode.Functions.Sin,              "sin"                         );
+		public static readonly Opcode Sinh         = new(0xB2, &Opcode.Functions.Sinh,             "sinh"                        );
+		public static readonly Opcode Sjn_obj      = new(0xC0, &Opcode.Functions.Sjn,              "sjn <obj>"                   );
+		public static readonly Opcode Sjn_var      = new(0xD0, &Opcode.Functions.Sjn,              "sjn <var>"                   );
+		public static readonly Opcode Sqrt         = new(0x77, &Opcode.Functions.Sqrt,             "sqrt"                        );
+		public static readonly Opcode Srep         = new(0xC3, &Opcode.Functions.Srep,             "srep"                        );
+		public static readonly Opcode Srmv_obj     = new(0xC2, &Opcode.Functions.Srmv,             "srmv <obj>"                  );
+		public static readonly Opcode Srmv_var     = new(0xD2, &Opcode.Functions.Srmv,             "srmv <var>"                  );
+		public static readonly Opcode Stc          = new(0x5F, &Opcode.Functions.Stc,              "stc"                         );
+		public static readonly Opcode Stco_obj     = new(0x8E, &Opcode.Functions.Stco,             "stco <obj>"                  );
+		public static readonly Opcode Stco_var     = new(0x9E, &Opcode.Functions.Stco,             "stco <var>"                  );
+		public static readonly Opcode Stdf_obj     = new(0x8F, &Opcode.Functions.Stdf,             "stdf <obj>"                  );
+		public static readonly Opcode Stdf_var     = new(0x9F, &Opcode.Functions.Stdf,             "stdf <var>"                  );
+		public static readonly Opcode Stdj_obj     = new(0x8D, &Opcode.Functions.Stdj,             "stdj <obj>"                  );
+		public static readonly Opcode Stdj_var     = new(0x9D, &Opcode.Functions.Stdj,             "stdj <var>"                  );
+		public static readonly Opcode Stin_obj     = new(0x8C, &Opcode.Functions.Stin,             "stin <obj>"                  );
+		public static readonly Opcode Stin_var     = new(0x9C, &Opcode.Functions.Stin,             "stin <var>"                  );
+		public static readonly Opcode Stp          = new(0x7F, &Opcode.Functions.Stp,              "stp"                         );
+		public static readonly Opcode Stun_obj     = new(0x8B, &Opcode.Functions.Stun,             "stun <obj>"                  );
+		public static readonly Opcode Stun_var     = new(0x9B, &Opcode.Functions.Stun,             "stun <var>"                  );
+		public static readonly Opcode Sub_obj      = new(0x31, &Opcode.Functions.Sub,              "sub <obj>"                   );
+		public static readonly Opcode Sub_var      = new(0x41, &Opcode.Functions.Sub,              "sub <var>"                   );
+		public static readonly Opcode Swap         = new(0x2D, &Opcode.Functions.Swap,             "swap"                        );
+		public static readonly Opcode Sys_obj      = new(0xDF, &Opcode.Functions.Sys,              "sys <obj>"                   );
+		public static readonly Opcode Sys_var      = new(0xEF, &Opcode.Functions.Sys,              "sys <var>"                   );
 	}
 }

@@ -77,5 +77,19 @@ namespace Chips.Core.Utility{
 				Complex_T _ => null,  //Conversion not allowed
 				_ => num
 			};
+
+		internal static object?[] AsObjectArray(object? obj){
+			if(obj is null)
+				return null!;
+
+			if(obj is not Array array)
+				return new object?[]{ obj };
+
+			object?[] arr = new object[array.Length];
+			for(int i = 0; i < array.Length; i++)
+				arr[i] = array.GetValue(i);
+
+			return arr;
+		}
 	}
 }

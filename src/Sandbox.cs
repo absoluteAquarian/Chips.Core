@@ -2,6 +2,8 @@
 
 namespace Chips.Core{
 	public static unsafe class Sandbox{
+		public const string Version = "1.0";
+
 		public const int IO_HANDLES = 8;
 
 		public static int Execute(string[] args, int stackSize, delegate*<void> entryPoint){
