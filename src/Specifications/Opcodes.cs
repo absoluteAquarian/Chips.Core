@@ -135,7 +135,7 @@
 			Dto,
 			Dtt,
 			Dts,
-			Dty                                                                                                             );
+			Dty);
 		public static readonly Opcode Dup              = new(0x4D, &Opcode.Functions.Dup,     "dup"                         );
 		public static readonly Opcode Dupd             = new(0x5D, &Opcode.Functions.Dupd,    "dupd"                        );
 
@@ -194,7 +194,7 @@
 			Ior_obj, Ior_var,
 			Ios_obj_obj_obj, Ios_obj_obj_var, Ios_obj_var_obj, Ios_obj_var_var, Ios_var_obj_obj, Ios_var_obj_var, Ios_var_var_obj, Ios_var_var_var,
 			Ios_obj_obj, Ios_var_obj, Ios_obj_var, Ios_var_var,
-			Iow_obj_obj, Iow_var_obj, Iow_obj_var, Iow_var_var                                                              );
+			Iow_obj_obj, Iow_var_obj, Iow_obj_var, Iow_var_var);
 		public static readonly Opcode Is               = new(0x60, &Opcode.Functions.Is,      "is <type>"                   );
 		public static readonly Opcode Isa              = new(0x62, &Opcode.Functions.Isa,     "isa <type>"                  );
 
@@ -247,7 +247,7 @@
 			New_regex,
 			New_set, New_set_obj, New_set_var,
 			New_time, New_time_obj, New_time_var,
-			New_userdef                                                                                                     );
+			New_userdef);
 		public static readonly Opcode Not              = new(0x02, &Opcode.Functions.Not,     "not"                         );
 
 		public static readonly Opcode Or_obj           = new(0x01, &Opcode.Functions.Or,      "or <obj>"                    );
@@ -321,7 +321,7 @@
 			Rndd, Rndd_obj, Rndd_var, Rndd_obj_obj, Rndd_obj_var, Rndd_var_obj, Rndd_var_var,
 			Rndf, Rndf_obj, Rndf_var, Rndf_obj_obj, Rndf_obj_var, Rndf_var_obj, Rndf_var_var,
 			Rndi, Rndi_obj, Rndi_var, Rndi_obj_obj, Rndi_obj_var, Rndi_var_obj, Rndi_var_var,
-			Rndl, Rndl_obj, Rndl_var, Rndl_obj_obj, Rndl_obj_var, Rndl_var_obj, Rndl_var_var                                );
+			Rndl, Rndl_obj, Rndl_var, Rndl_obj_obj, Rndl_obj_var, Rndl_var_obj, Rndl_var_var);
 		public static readonly Opcode Rol              = new(0x1D, &Opcode.Functions.Rol,     "rol"                         );
 		public static readonly Opcode Ror              = new(0x1E, &Opcode.Functions.Ror,     "ror"                         );
 
@@ -403,7 +403,7 @@
 			Tmth,
 			Tmti,
 			Tmtm,
-			Tmts                                                                                                            );
+			Tmts);
 		public static readonly Opcode Tryc             = new(0x90, &Opcode.Functions.Tryc,    "tryc <label>"                );
 		public static readonly Opcode Tryf             = new(0xA0, &Opcode.Functions.Tryf,    "tryf <label>, <label2>"      );
 		public static readonly Opcode Tryn             = new(0xD3, &Opcode.Functions.Tryn,    "tryn <label>"                );
