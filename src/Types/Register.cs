@@ -32,6 +32,12 @@ namespace Chips.Core.Types{
 			this.acceptValueFunc = acceptValueFunc;
 		}
 
+		public void SetValue(ref object? target, object? value)
+			=> Data = value;
+
+		public object? GetValue(object? target)
+			=> Data;
+
 		public override string ToString() => $"&{name}";
 	}
 }

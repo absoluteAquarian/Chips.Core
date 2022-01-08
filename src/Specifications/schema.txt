@@ -606,10 +606,10 @@ BYTECODE | OPCODE
  24 20   | tmfm ........................... formats A according to S, then puts the result in S.  A must be a <~time> instance
  24 14   | tmt ............................ gets the Ticks value from A and puts it into A.  A must be a <~time> instance
  24 16   | tmtd ........................... gets the TotalDays value from A and puts it into A.  A must be a <~time> instance
- 24 16   | tmth ........................... gets the TotalHours value from A and puts it into A.  A must be a <~time> instance
- 24 17   | tmti ........................... gets the TotalMinutes value from A and puts it into A.  A must be a <~time> instance
- 24 18   | tmtm ........................... gets the TotalMilliseconds value from A and puts it into A.  A must be a <~time> instance
- 24 19   | tmts ........................... gets the TotalSeconds value from A and puts it into A.  A must be a <~time> instance
+ 24 17   | tmth ........................... gets the TotalHours value from A and puts it into A.  A must be a <~time> instance
+ 24 18   | tmti ........................... gets the TotalMinutes value from A and puts it into A.  A must be a <~time> instance
+ 24 19   | tmtm ........................... gets the TotalMilliseconds value from A and puts it into A.  A must be a <~time> instance
+ 24 1A   | tmts ........................... gets the TotalSeconds value from A and puts it into A.  A must be a <~time> instance
  90      | tryc <label> ................... enters a try-clause, where <label> points to the start of the catch-clause
  A0      | tryf <label>, <label2> ......... enters a try-clause, where <label> points to the start of the catch-clause and <label2> points to the start of the finally-clause
  D3      | tryn <label> ................... enters a try-clause, where <label> points to the start of the finally-clause (no catch clause)

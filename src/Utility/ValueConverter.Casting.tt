@@ -8,6 +8,7 @@
 	typeof(Single), typeof(Double), typeof(Decimal)
 }; #>
 using Chips.Core.Types.NumberProcessing;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Chips.Core.Utility{
@@ -16,7 +17,8 @@ namespace Chips.Core.Utility{
 #>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static <#= type.Name #>_T CastTo<#= type.Name #>_T<T>(this T number) where T : INumber
-			=> new(Convert.To<#= type.Name #>(number.Value));
+			=> new(Convert.To<#= type.Name #>(EnsureObjectCanBeCastToIConvertable(number)?.Value
+				?? throw new ArgumentException($"Cannot cast a <~cplx> value to <{TypeTracking.GetChipsType(typeof(<#= type.Name #>_T))}>")));
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static <#= type.Name #>_T CastTo<#= type.Name #>_T(this <#= type.Name #> number)

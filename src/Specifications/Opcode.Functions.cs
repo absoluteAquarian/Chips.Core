@@ -678,9 +678,6 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
-
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddDays((double)ValueConverter.CastToDouble_T(arg).Value);
 			}
@@ -690,9 +687,6 @@ castFail:
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
-
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddHours((double)ValueConverter.CastToDouble_T(arg).Value);
@@ -704,9 +698,6 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
-
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMinutes((double)ValueConverter.CastToDouble_T(arg).Value);
 			}
@@ -716,9 +707,6 @@ castFail:
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
-
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMilliseconds((double)ValueConverter.CastToDouble_T(arg).Value);
@@ -730,9 +718,6 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
-
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddMonths((int)ValueConverter.CastToInt32_T(arg).Value);
 			}
@@ -742,9 +727,6 @@ castFail:
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
-
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddTicks((long)ValueConverter.CastToInt64_T(arg).Value);
@@ -756,9 +738,6 @@ castFail:
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
 
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
-
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddSeconds((double)ValueConverter.CastToDouble_T(arg).Value);
 			}
@@ -768,9 +747,6 @@ castFail:
 					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~date> value", context);
 				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
 					throw new InvalidOpcodeArgumentException(0, "Value was not a number value", context);
-
-				if((arg = ValueConverter.EnsureObjectCanBeCastToIConvertable(arg!)!) is null)
-					throw new InvalidOpcodeArgumentException(0, "Value cannot be a <~cplx> value", context);
 
 				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
 				Metadata.Registers.A.Data = d.AddYears((int)ValueConverter.CastToInt32_T(arg).Value);
@@ -2063,6 +2039,267 @@ castFail:
 					default:
 						throw new InvalidOpcodeArgumentException(0, "Unknown system call ID: " + id, context);
 				}
+			}
+			#endregion
+
+			#region Functions - T
+			public static void Tan(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
+				Metadata.Registers.A.Data = (a.Tan() as INumber)!.Value;
+			}
+
+			public static void Tanh(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IFloat a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a floating-point number value", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckFloats;
+				Metadata.Registers.A.Data = (a.Tanh() as INumber)!.Value;
+			}
+
+			public static void Tas(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
+				Metadata.Registers.S.Data = Metadata.Registers.A.Data;
+			}
+
+			public static void Tax(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.X.Data = Metadata.Registers.A.Data;
+			}
+
+			public static void Tay(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.Y.Data = Metadata.Registers.A.Data;
+			}
+
+			#region Extended Opcodes - TimeSpan
+			public static void Tmad(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromDays((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+
+			public static void Tmah(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromHours((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+
+			public static void Tmai(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromMinutes((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+
+			public static void Tmam(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromMilliseconds((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+
+			public static void Tmas(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromSeconds((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+
+			public static void Tmat(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Add(TimeSpan.FromTicks((long)ValueConverter.CastToInt64_T(arg).Value));
+			}
+
+			public static void Tmcd(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Days;
+			}
+
+			public static void Tmch(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Hours;
+			}
+
+			public static void Tmci(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Minutes;
+			}
+
+			public static void Tmcm(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Milliseconds;
+			}
+
+			public static void Tmcs(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Seconds;
+			}
+
+			public static void Tmfm(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
+				Metadata.Registers.S.Data = time.ToString(Metadata.Registers.S.Data as string);
+			}
+
+			public static void Tmt(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.Ticks;
+			}
+
+			public static void Tmtd(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.TotalDays;
+			}
+
+			public static void Tmth(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.TotalHours;
+			}
+
+			public static void Tmti(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.TotalMinutes;
+			}
+
+			public static void Tmtm(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.TotalMilliseconds;
+			}
+
+			public static void Tmts(FunctionContext context){
+				if(Metadata.Registers.A.Data is not TimeSpan time)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not a <~time> instance", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = time.TotalSeconds;
+			}
+			#endregion
+
+			public static void Tryc(FunctionContext context)
+				=> throw new InvalidOperationException("Tryc opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Tryf(FunctionContext context)
+				=> throw new InvalidOperationException("Tryf opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Tryn(FunctionContext context)
+				=> throw new InvalidOperationException("Tryn opcode should not be called directly"
+					+ ExceptionHelper.GetContextString(context));
+
+			public static void Tsa(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckStrings;
+				Metadata.Registers.A.Data = Metadata.Registers.S.Data;
+			}
+
+			public static void Txa(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = Metadata.Registers.X.Data;
+			}
+
+			public static void Txy(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.Y.Data = Metadata.Registers.X.Data;
+			}
+
+			public static void Tya(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = Metadata.Registers.Y.Data;
+			}
+
+			//Needs a name that isn't "Type" to prevent name clashes
+			public static void Type_fn(FunctionContext context){
+				Metadata.ZeroFlagChecks = 0;
+				Metadata.Registers.S.Data = TypeTracking.GetChipsType(Metadata.Registers.A.Data);
+			}
+
+			public static void Tyx(FunctionContext context){
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.X.Data = Metadata.Registers.Y.Data;
+			}
+			#endregion
+
+			#region Functions - W
+			public static void Wait(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not INumber arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not a number", context);
+
+				Thread.Sleep(TimeSpan.FromMilliseconds((double)ValueConverter.CastToDouble_T(arg).Value));
+			}
+			#endregion
+
+			#region Functions - X
+			public static void Xor(FunctionContext context){
+				if(ValueConverter.BoxToUnderlyingType(Metadata.Registers.A.Data) is not IInteger a)
+					throw new InvalidRegisterTypeException(Metadata.Registers.A.ToString() + " was not an integer value", context);
+				if(ValueConverter.BoxToUnderlyingType(context.args[0]) is not IInteger arg)
+					throw new InvalidOpcodeArgumentException(0, "Value was not an integer", context);
+
+				Metadata.ZeroFlagChecks = Metadata.CheckIntegers;
+				Metadata.Registers.A.Data = (a.Xor(arg) as INumber)!.Value;
 			}
 			#endregion
 		}

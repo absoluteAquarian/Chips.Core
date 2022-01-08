@@ -355,5 +355,69 @@
 		public static readonly Opcode Swap         = new(0x2D, &Opcode.Functions.Swap,             "swap"                        );
 		public static readonly Opcode Sys_obj      = new(0xDF, &Opcode.Functions.Sys,              "sys <obj>"                   );
 		public static readonly Opcode Sys_var      = new(0xEF, &Opcode.Functions.Sys,              "sys <var>"                   );
+
+		public static readonly Opcode Tan          = new(0x94, &Opcode.Functions.Tan,              "tan"                         );
+		public static readonly Opcode Tanh         = new(0xB4, &Opcode.Functions.Tanh,             "tanh"                        );
+		public static readonly Opcode Tas          = new(0x58, &Opcode.Functions.Tas,              "tas"                         );
+		public static readonly Opcode Tax          = new(0x51, &Opcode.Functions.Tax,              "tax"                         );
+		public static readonly Opcode Tay          = new(0x52, &Opcode.Functions.Tay,              "tay"                         );
+			public static readonly Opcode Tmad_obj = new(0x00, &Opcode.Functions.Tmad,             "tmad <obj>"                  );
+			public static readonly Opcode Tmad_var = new(0x01, &Opcode.Functions.Tmad,             "tmad <var>"                  );
+			public static readonly Opcode Tmah_obj = new(0x02, &Opcode.Functions.Tmah,             "tmah <obj>"                  );
+			public static readonly Opcode Tmah_var = new(0x03, &Opcode.Functions.Tmah,             "tmah <var>"                  );
+			public static readonly Opcode Tmai_obj = new(0x04, &Opcode.Functions.Tmai,             "tmai <obj>"                  );
+			public static readonly Opcode Tmai_var = new(0x05, &Opcode.Functions.Tmai,             "tmai <var>"                  );
+			public static readonly Opcode Tmam_obj = new(0x06, &Opcode.Functions.Tmam,             "tmam <obj>"                  );
+			public static readonly Opcode Tmam_var = new(0x07, &Opcode.Functions.Tmam,             "tmam <var>"                  );
+			public static readonly Opcode Tmas_obj = new(0x0A, &Opcode.Functions.Tmas,             "tmas <obj>"                  );
+			public static readonly Opcode Tmas_var = new(0x0B, &Opcode.Functions.Tmas,             "tmas <var>"                  );
+			public static readonly Opcode Tmat_obj = new(0x08, &Opcode.Functions.Tmat,             "tmat <obj>"                  );
+			public static readonly Opcode Tmat_var = new(0x09, &Opcode.Functions.Tmat,             "tmat <var>"                  );
+			public static readonly Opcode Tmcd     = new(0x10, &Opcode.Functions.Tmcd,             "tmcd"                        );
+			public static readonly Opcode Tmch     = new(0x11, &Opcode.Functions.Tmch,             "tmch"                        );
+			public static readonly Opcode Tmci     = new(0x12, &Opcode.Functions.Tmci,             "tmci"                        );
+			public static readonly Opcode Tmcm     = new(0x13, &Opcode.Functions.Tmcm,             "tmcm"                        );
+			public static readonly Opcode Tmcs     = new(0x15, &Opcode.Functions.Tmcs,             "tmcs"                        );
+			public static readonly Opcode Tmfm     = new(0x20, &Opcode.Functions.Tmfm,             "tmfm"                        );
+			public static readonly Opcode Tmt      = new(0x14, &Opcode.Functions.Tmt,              "tmt"                         );
+			public static readonly Opcode Tmtd     = new(0x16, &Opcode.Functions.Tmtd,             "tmtd"                        );
+			public static readonly Opcode Tmth     = new(0x17, &Opcode.Functions.Tmth,             "tmth"                        );
+			public static readonly Opcode Tmti     = new(0x18, &Opcode.Functions.Tmti,             "tmti"                        );
+			public static readonly Opcode Tmtm     = new(0x19, &Opcode.Functions.Tmtm,             "tmtm"                        );
+			public static readonly Opcode Tmts     = new(0x1A, &Opcode.Functions.Tmts,             "tmts"                        );
+		public static readonly Opcode Tm           = new(0x24, &Opcode.Functions.Ext,              "<extended opcode",
+			Tmad_obj, Tmad_var,
+			Tmah_obj, Tmah_var,
+			Tmai_obj, Tmai_var,
+			Tmam_obj, Tmam_var,
+			Tmas_obj, Tmas_var,
+			Tmat_obj, Tmat_var,
+			Tmcd,
+			Tmch,
+			Tmci,
+			Tmcm,
+			Tmcs,
+			Tmfm,
+			Tmt,
+			Tmtd,
+			Tmth,
+			Tmti,
+			Tmtm,
+			Tmts);
+		public static readonly Opcode Tryc         = new(0x90, &Opcode.Functions.Tryc,             "tryc <label>"                );
+		public static readonly Opcode Tryf         = new(0xA0, &Opcode.Functions.Tryf,             "tryf <label>, <label2>"      );
+		public static readonly Opcode Tryn         = new(0xD3, &Opcode.Functions.Tryn,             "tryn <label>"                );
+		public static readonly Opcode Tsa          = new(0x59, &Opcode.Functions.Tsa,              "tsa"                         );
+		public static readonly Opcode Txa          = new(0x53, &Opcode.Functions.Txa,              "txa"                         );
+		public static readonly Opcode Txy          = new(0x54, &Opcode.Functions.Txy,              "txy"                         );
+		public static readonly Opcode Tya          = new(0x55, &Opcode.Functions.Tya,              "tya"                         );
+		public static readonly Opcode Type         = new(0x72, &Opcode.Functions.Type_fn,          "type"                        );
+		public static readonly Opcode Tyx          = new(0x56, &Opcode.Functions.Tyx,              "tyx"                         );
+
+		public static readonly Opcode Wait_obj     = new(0xEE, &Opcode.Functions.Wait,             "wait <obj>"                  );
+		public static readonly Opcode Wait_var     = new(0xFE, &Opcode.Functions.Wait,             "wait <var>"                  );
+
+		public static readonly Opcode Xor_obj      = new(0x03, &Opcode.Functions.Xor,              "xor <obj>"                   );
+		public static readonly Opcode Xor_var      = new(0x23, &Opcode.Functions.Xor,              "xor <var>"                   );
 	}
 }
