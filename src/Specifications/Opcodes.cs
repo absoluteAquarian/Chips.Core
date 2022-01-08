@@ -251,6 +251,24 @@
 		public static readonly Opcode Or_obj       = new(0x01, &Opcode.Functions.Or,               "or <obj>"                    );
 		public static readonly Opcode Or_var       = new(0x21, &Opcode.Functions.Or,               "or <var>"                    );
 
-
+		public static readonly Opcode Pntl         = new(0x4C, &Opcode.Functions.Pntl,             "pntl"                        );
+		public static readonly Opcode Poa          = new(0x2A, &Opcode.Functions.Poa,              "poa"                         );
+		public static readonly Opcode Poev         = new(0x98, &Opcode.Functions.Poev,             "poev <type>"                 );
+		public static readonly Opcode Pop          = new(0x1C, &Opcode.Functions.Pop,              "pop"                         );
+		public static readonly Opcode Pop_var      = new(0x3C, &Opcode.Functions.Pop,              "pop <var>"                   );
+		public static readonly Opcode Pos          = new(0x3E, &Opcode.Functions.Pos,              "pos"                         );
+		public static readonly Opcode Pow_obj      = new(0x34, &Opcode.Functions.Pow,              "pow <obj>"                   );
+		public static readonly Opcode Pow_var      = new(0x44, &Opcode.Functions.Pow,              "pow <var>"                   );
+		public static readonly Opcode Pox          = new(0x2B, &Opcode.Functions.Pox,              "pox"                         );
+		public static readonly Opcode Poy          = new(0x2C, &Opcode.Functions.Poy,              "poy"                         );
+		public static readonly Opcode Prnt         = new(0x4A, &Opcode.Functions.Prnt,             "prnt"                        );
+		public static readonly Opcode Prse         = new(0x64, &Opcode.Functions.Prse,             "prse"                        );
+		public static readonly Opcode Psa          = new(0x0A, &Opcode.Functions.Psa,              "psa"                         );
+		public static readonly Opcode Psev         = new(0x88, &Opcode.Functions.Psev,             "psev <type>"                 );
+		public static readonly Opcode Psh_obj      = new(0x3B, &Opcode.Functions.Psh,              "psh <obj>"                   );
+		public static readonly Opcode Psh_var      = new(0x4B, &Opcode.Functions.Psh,              "psh <var>"                   );
+		public static readonly Opcode Pss          = new(0x3D, &Opcode.Functions.Pss,              "pss"                         );
+		public static readonly Opcode Psx          = new(0x0B, &Opcode.Functions.Psx,              "psx"                         );
+		public static readonly Opcode Psy          = new(0x0C, &Opcode.Functions.Psy,              "psy"                         );
 	}
 }
