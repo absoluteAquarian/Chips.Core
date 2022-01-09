@@ -180,5 +180,124 @@ namespace Chips.Core.Meta{
 				table[opcode.code] = opcode;
 			}
 		}
+
+		public static void SetRegisterValue(ref object? target, object? value){
+			ZeroFlagChecks = CheckIntegers | CheckFloats | CheckCollections | CheckStrings;
+			if(target is Register register)
+				register.Data = value;
+			else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static void SetRegisterValueIndexByX(ref object? target, object? value){
+			if(target is Register register){
+				Registers.X.GetDataAsInt32(out int x);
+
+				var obj = register.Data;
+				if(obj is Array array)
+					array.SetValue(value, x);
+				else if(obj is List list)
+					list[x] = value;
+				else
+					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
+			}else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static void SetRegisterValueIndexByY(ref object? target, object? value){
+			if(target is Register register){
+				Registers.Y.GetDataAsInt32(out int y);
+
+				var obj = register.Data;
+				if(obj is Array array)
+					array.SetValue(value, y);
+				else if(obj is List list)
+					list[y] = value;
+				else
+					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
+			}else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static void SetArrayOrListIndexByX(ref object? target, object? value){
+			Registers.X.GetDataAsInt32(out int x);
+
+			if(target is Array array)
+				array.SetValue(value, x);
+			else if(target is List list)
+				list[x] = value;
+			else
+				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
+		}
+
+		public static void SetArrayOrListIndexByY(ref object? target, object? value){
+			Registers.Y.GetDataAsInt32(out int y);
+
+			if(target is Array array)
+				array.SetValue(value, y);
+			else if(target is List list)
+				list[y] = value;
+			else
+				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
+		}
+
+		public static object? GetRegisterValue(object? target){
+			if(target is Register register)
+				return register.Data;
+			else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static object? GetRegisterValueIndexByX(object? target){
+			if(target is Register register){
+				Registers.X.GetDataAsInt32(out int x);
+
+				var obj = register.Data;
+				if(obj is Array array)
+					return array.GetValue(x);
+				else if(obj is List list)
+					return list[x];
+				else
+					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
+			}else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static object? GetRegisterValueIndexByY(object? target){
+			if(target is Register register){
+				Registers.Y.GetDataAsInt32(out int y);
+
+				var obj = register.Data;
+				if(obj is Array array)
+					return array.GetValue(y);
+				else if(obj is List list)
+					return list[y];
+				else
+					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
+			}else
+				throw new ArgumentException("Target was not a register", nameof(target));
+		}
+
+		public static object? AccessArrayOrListIndexByX(ref object? target){
+			Registers.X.GetDataAsInt32(out int x);
+
+			if(target is Array array)
+				return array.GetValue(x);
+			else if(target is List list)
+				return list[x];
+			else
+				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
+		}
+
+		public static object? AccessArrayOrListIndexByY(ref object? target){
+			Registers.Y.GetDataAsInt32(out int y);
+
+			if(target is Array array)
+				return array.GetValue(y);
+			else if(target is List list)
+				return list[y];
+			else
+				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
+		}
 	}
 }

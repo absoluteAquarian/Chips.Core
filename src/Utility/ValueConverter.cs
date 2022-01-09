@@ -68,6 +68,8 @@ namespace Chips.Core.Utility{
 				float f => new Single_T(f),
 				double d => new Double_T(d),
 				decimal dm => new Decimal_T(dm),
+				Half h => new Half_T(h),
+				Complex c => new Complex_T(c),
 				_ => null  //Unsuccessful boxing should just result in "null", as most checks are usually to see if the result is an IInteger or IFloat
 			};
 

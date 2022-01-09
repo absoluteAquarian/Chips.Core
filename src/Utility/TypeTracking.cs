@@ -84,7 +84,7 @@ namespace Chips.Core.Utility{
 			=> arg is string;
 
 		public static bool IsFloatingPoint(object? arg)
-			=> arg is float or double or decimal;
+			=> arg is float or double or decimal or Half;
 
 		public static string? GetChipsType(object? o, bool throwOnNotFound = true)
 			=> o switch{

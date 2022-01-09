@@ -1,5 +1,6 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Specifications;
+using Chips.Core.Types.NumberProcessing;
 using Chips.Core.Utility;
 using System.Numerics;
 
@@ -32,11 +33,15 @@ namespace Chips.Core.Types{
 			this.acceptValueFunc = acceptValueFunc;
 		}
 
-		public void SetValue(ref object? target, object? value)
-			=> Data = value;
+		public bool GetDataAsInt32(out int value){
+			if(ValueConverter.BoxToUnderlyingType(Data) is INumber num){
+				value = (int)ValueConverter.CastToInt32_T(num).Value;
+				return true;
+			}
 
-		public object? GetValue(object? target)
-			=> Data;
+			value = -1;
+			return false;
+		}
 
 		public override string ToString() => $"&{name}";
 	}
