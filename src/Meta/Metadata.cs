@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Reflection;
 
 namespace Chips.Core.Meta{
-	internal static unsafe class Metadata{
+	public static unsafe class Metadata{
 		public static class Registers{
 			/// <summary>
 			/// The register for arithmetic.  Can contain any type of value
@@ -160,7 +160,7 @@ namespace Chips.Core.Meta{
 		internal static IOHandle[] ioHandles;
 
 		//Used to ensure that no opcode shares the same code
-		internal static readonly OpcodeTable? op;
+		public static readonly OpcodeTable op;
 
 		public static readonly Dictionary<string, Type> userDefinedTypes = new();
 

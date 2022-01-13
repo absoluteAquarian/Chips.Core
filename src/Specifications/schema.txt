@@ -37,10 +37,7 @@ NOTES
   - offset 0: instruction offset
     - 7-bit encoded integer
 - <type> operands are stored as type IDs:
-  - 1 byte (non-array)
-  - N bytes (array)
-    - N = dimension + 1
-  - example:  "is i32"
+  - 1 byte (unless it's a user-defined type), listed below:
   - 00h: i32
     - 32-bit integer
   - 01h: i8
@@ -95,6 +92,8 @@ NOTES
     - System.Complex
   - 1Ah: ~ud:<TYPE_NAME>
     - user-defined types in Chips
+    - offset 1: N bytes
+      - a string representing the type name and file it's from
   - 1Bh: f16
     - 16-bit float
 - "sys" IDs
