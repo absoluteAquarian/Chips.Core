@@ -33,9 +33,10 @@ namespace Chips.Core.Specifications{
 		public readonly byte operandCount;
 
 		public bool IsParent => table is not null;
+		public bool HasParent => Parent is not null && Parent.IsParent && Parent.table![code] == this;
 
 		public readonly OpcodeTable? table;
-		internal Opcode? parent;
+		public Opcode? Parent{ get; private set; }
 
 		internal readonly delegate*<FunctionContext, void> func;
 
@@ -53,7 +54,7 @@ namespace Chips.Core.Specifications{
 
 				foreach(var subCode in derivedCodes){
 					table.table[subCode.code] = subCode;
-					subCode.parent = this;
+					subCode.Parent = this;
 				}
 			}
 		}
