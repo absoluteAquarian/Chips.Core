@@ -32,6 +32,8 @@ namespace Chips.Core.Specifications{
 
 		public readonly byte operandCount;
 
+		public readonly bool hasSmallBodyDefinition;
+
 		public bool IsParent => table is not null;
 		public bool HasParent => Parent is not null && Parent.IsParent && Parent.table![code] == this;
 
@@ -43,10 +45,11 @@ namespace Chips.Core.Specifications{
 		public delegate void SetValueIndirectly(ref object? target, object? value);
 		public delegate object? GetValueIndirectly(object? target);
 
-		public Opcode(byte code, delegate*<FunctionContext, void> func, string descriptor, byte operandCount, params Opcode[] derivedCodes){
+		public Opcode(byte code, delegate*<FunctionContext, void> func, string descriptor, byte operandCount, bool hasSmallBodyDefinition, params Opcode[] derivedCodes){
 			this.code = code;
 			this.descriptor = descriptor;
 			this.operandCount = operandCount;
+			this.hasSmallBodyDefinition = hasSmallBodyDefinition;
 			this.func = func;
 			
 			if(derivedCodes is not null && derivedCodes.Length > 0){
