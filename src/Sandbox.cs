@@ -6,12 +6,15 @@ namespace Chips.Core{
 
 		public const int IO_HANDLES = 8;
 
-		public static int Execute(string[] args, int stackSize, delegate*<void> entryPoint){
+		public static bool AllowStackOverflow;
+
+		public static int Execute(string[] args, int stackSize, bool allowStackOverflow, delegate*<void> entryPoint){
 			//Invoke the static ctors
 			_ = Metadata.Registers.A;
 			_ = Metadata.Flags.Carry;
 			_ = Metadata.stack;
 
+			AllowStackOverflow = allowStackOverflow;
 			Metadata.stack = new(stackSize);
 			Metadata.programArgs = args;
 			Metadata.ioHandles = new IOHandle[IO_HANDLES];

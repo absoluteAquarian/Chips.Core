@@ -25,22 +25,74 @@ namespace Chips.Core.Types{
 		}
 
 		public void Push(object? obj){
-			if(SP >= capacity)
-				throw new Exception("Stack overflow detected. Cannot push more objects to the stack.");
+			int old = SP;
 
-			stack[SP] = obj;
+			if(SP >= capacity){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack overflow detected. Cannot push more objects to the stack.");
+
+				old = capacity - 1;
+				SP = -1;
+			}
+
+			stack[old] = obj;
 			SP++;
 		}
 
 		public object? Pop(){
-			if(SP <= 0)
-				throw new Exception("Stack underflow detected. Cannot pop more objects from the stack.");
+			int old = SP - 1;
 
-			object? obj = stack[SP - 1];
-			stack[SP - 1] = null;
+			if(SP <= 0){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack underflow detected. Cannot pop more objects from the stack.");
+
+				old = 0;
+				SP = capacity;
+			}
+
+			object? obj = stack[old];
+			stack[old] = null;
 			SP--;
 
 			return obj;
+		}
+
+		public void SetIndirect(object? obj, int offset){
+			int sp = SP;
+			if(sp + offset < 0){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack underflow detected.  Indirect set went below index 0");
+
+				offset += sp;
+				sp = capacity + offset;
+			}else if(sp + offset >= capacity){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack overflow detected.  Indirect set went above Stack capacity");
+
+				offset -= capacity - 1 - sp;
+				sp = offset;
+			}
+
+			stack[sp] = obj;
+		}
+
+		public object? GetIndirect(int offset){
+			int sp = SP;
+			if(sp + offset < 0){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack underflow detected.  Indirect get went below index 0");
+
+				offset += sp;
+				sp = capacity + offset;
+			}else if(sp + offset >= capacity){
+				if(!Sandbox.AllowStackOverflow)
+					throw new Exception("Stack overflow detected.  Indirect get went above Stack capacity");
+
+				offset -= capacity - 1 - sp;
+				sp = offset;
+			}
+
+			return stack[sp];
 		}
 
 		public object? Peek() => SP == 0 ? throw new Exception("Stack does not contain any values") : stack[SP - 1];
