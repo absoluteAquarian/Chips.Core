@@ -3,7 +3,7 @@ using System;
 using System.Numerics;
 
 namespace Chips.Core.Utility {
-	internal static partial class ValueConverter {
+	public static partial class ValueConverter {
 		public static class Constants {
 			public static readonly float E_Single = 2.7182818284590451f;
 			public static readonly double E_Double = Math.E;
