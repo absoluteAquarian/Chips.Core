@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Chips.Core.Utility {
-	internal static partial class ValueConverter {
+	public static partial class ValueConverter {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static SByte_T CastToSByte_T<T>(this T number) where T : INumber
 			=> new(Convert.ToSByte(EnsureObjectCanBeCastToIConvertable(number)?.Value

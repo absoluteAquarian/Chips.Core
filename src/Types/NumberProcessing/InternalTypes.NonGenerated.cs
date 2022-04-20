@@ -156,7 +156,7 @@ namespace Chips.Core.Types.NumberProcessing{
 		}
 	}
 
-	internal struct Half_T : INumber, IFloat{
+	public struct Half_T : INumber, IFloat{
 		private Half value;
 		public object Value => value;
 
@@ -337,7 +337,7 @@ namespace Chips.Core.Types.NumberProcessing{
 			=> new Half_T((float)Math.Tanh(ValueF));
 	}
 
-	internal struct Complex_T : INumber, IFloat{
+	public struct Complex_T : INumber, IFloat{
 		private Complex value;
 		public object Value => value;
 

@@ -12,7 +12,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace Chips.Core.Utility {
-	internal static partial class ValueConverter {
+	public static partial class ValueConverter {
 <# foreach (var type in types) {
 #>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
