@@ -1,15 +1,18 @@
 ﻿using Chips.Core.Types.NumberProcessing;
 using Chips.Core.Utility;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Chips.Core.Types{
-	public unsafe struct ArithmeticSet{
+namespace Chips.Core.Types {
+	public unsafe struct ArithmeticSet {
 		[StructLayout(LayoutKind.Explicit, Size = sizeof(double) * 2 + sizeof(Utility.TypeCode))]
-		public struct Number : IComparable<Number>{
+		public struct Number : IComparable<Number> {
 			#region Fields
 			//Signed integers
 			[FieldOffset(0)]
@@ -48,7 +51,7 @@ namespace Chips.Core.Types{
 			public double value_cplx_imaginary;
 
 			[FieldOffset(sizeof(double) * 2)]
-			private Utility.TypeCode typeCode = Utility.TypeCode.Int32;
+			private Utility.TypeCode typeCode;
 
 			//Hash calculating
 			[FieldOffset(0)]
@@ -73,7 +76,7 @@ namespace Chips.Core.Types{
 
 			#region Static Methods
 			public static Number Create(object? value)
-				=> value switch{
+				=> value switch {
 					sbyte s => s,
 					short sh => sh,
 					int i => i,
@@ -101,91 +104,91 @@ namespace Chips.Core.Types{
 
 			#region Implicit Operators
 			//Signed integers
-			public static implicit operator Number(sbyte value) => new(){ value_i8 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(short value) => new(){ value_i16 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(int value) => new(){ value_i32 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(long value) => new(){ value_i64 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(sbyte value) => new() { value_i8 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(short value) => new() { value_i16 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(int value) => new() { value_i32 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(long value) => new() { value_i64 = value, typeCode = TypeTracking.GetTypeCode(value) };
 
 			//Unsigned integers
-			public static implicit operator Number(byte value) => new(){ value_u8 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(ushort value) => new(){ value_u16 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(uint value) => new(){ value_u32 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(ulong value) => new(){ value_u64 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(byte value) => new() { value_u8 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(ushort value) => new() { value_u16 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(uint value) => new() { value_u32 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(ulong value) => new() { value_u64 = value, typeCode = TypeTracking.GetTypeCode(value) };
 
 			//Floating-point numbers
-			public static implicit operator Number(float value) => new(){ value_f32 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(double value) => new(){ value_f64 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(decimal value) => new(){ value_f128 = value, typeCode = TypeTracking.GetTypeCode(value) };
-			public static implicit operator Number(Half value) => new(){ value_f16 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(float value) => new() { value_f32 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(double value) => new() { value_f64 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(decimal value) => new() { value_f128 = value, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(Half value) => new() { value_f16 = value, typeCode = TypeTracking.GetTypeCode(value) };
 
 			//Special numbers
-			public static implicit operator Number(Complex value) => new(){ value_cplx_real = value.Real, value_cplx_imaginary = value.Imaginary, typeCode = TypeTracking.GetTypeCode(value) };
+			public static implicit operator Number(Complex value) => new() { value_cplx_real = value.Real, value_cplx_imaginary = value.Imaginary, typeCode = TypeTracking.GetTypeCode(value) };
 			#endregion
 
 			#region Explicit Operators
 			//Signed integers
-			public static explicit operator sbyte(Number value){
+			public static explicit operator sbyte(Number value) {
 				value.VerifyTypeCodeMatch<sbyte>();
 				return value.value_i8;
 			}
-			public static explicit operator short(Number value){
+			public static explicit operator short(Number value) {
 				value.VerifyTypeCodeMatch<short>();
 				return value.value_i16;
 			}
-			public static explicit operator int(Number value){
+			public static explicit operator int(Number value) {
 				value.VerifyTypeCodeMatch<int>();
 				return value.value_i32;
 			}
-			public static explicit operator long(Number value){
+			public static explicit operator long(Number value) {
 				value.VerifyTypeCodeMatch<long>();
 				return value.value_i64;
 			}
 
 			//Unsigned integers
-			public static explicit operator byte(Number value){
+			public static explicit operator byte(Number value) {
 				value.VerifyTypeCodeMatch<byte>();
 				return value.value_u8;
 			}
-			public static explicit operator ushort(Number value){
+			public static explicit operator ushort(Number value) {
 				value.VerifyTypeCodeMatch<ushort>();
 				return value.value_u16;
 			}
-			public static explicit operator uint(Number value){
+			public static explicit operator uint(Number value) {
 				value.VerifyTypeCodeMatch<uint>();
 				return value.value_u32;
 			}
-			public static explicit operator ulong(Number value){
+			public static explicit operator ulong(Number value) {
 				value.VerifyTypeCodeMatch<ulong>();
 				return value.value_u64;
 			}
 
 			//Floating-point numbers
-			public static explicit operator float(Number value){
+			public static explicit operator float(Number value) {
 				value.VerifyTypeCodeMatch<float>();
 				return value.value_f32;
 			}
-			public static explicit operator double(Number value){
+			public static explicit operator double(Number value) {
 				value.VerifyTypeCodeMatch<double>();
 				return value.value_f32;
 			}
-			public static explicit operator decimal(Number value){
+			public static explicit operator decimal(Number value) {
 				value.VerifyTypeCodeMatch<decimal>();
 				return value.value_f128;
 			}
-			public static explicit operator Half(Number value){
+			public static explicit operator Half(Number value) {
 				value.VerifyTypeCodeMatch<Half>();
 				return value.value_f16;
 			}
 
 			//Special numbers
-			public static explicit operator Complex(Number value){
+			public static explicit operator Complex(Number value) {
 				value.VerifyTypeCodeMatch<Complex>();
 				return new(value.value_cplx_real, value.value_cplx_imaginary);
 			}
 			#endregion
 
 			internal object GetUnderlyingValue()
-				=> typeCode switch{
+				=> typeCode switch {
 					Utility.TypeCode.Int8 => (sbyte)this,
 					Utility.TypeCode.Int16 => (short)this,
 					Utility.TypeCode.Int32 => (int)this,
@@ -202,10 +205,10 @@ namespace Chips.Core.Types{
 					_ => throw new InvalidOperationException("Internal number-type value contained an invalid type code")
 				};
 
-			public override string ToString(){
+			public override string ToString() {
 				object obj = GetUnderlyingValue();
 
-				if(obj is Complex c)
+				if (obj is Complex c)
 					return Formatting.FormatObject(c);
 
 				return obj.ToString()!;
@@ -215,99 +218,99 @@ namespace Chips.Core.Types{
 				=> HashCode.Combine(hash, hash2, (int)typeCode);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			private void VerifyTypeCodeMatch<T>() where T : new(){
-				if(typeCode != TypeTracking.GetTypeCode<T>())
+			private void VerifyTypeCodeMatch<T>() where T : new() {
+				if (typeCode != TypeTracking.GetTypeCode<T>())
 					throw new InvalidOperationException($"Cannot convert the arithmetic set (~set) member to type \"{TypeTracking.GetChipsType<T>()}\"");
 			}
 
-			public int CompareTo(Number other){
+			public int CompareTo(Number other) {
 				object value = GetUnderlyingValue();
 				object otherValue = other.GetUnderlyingValue();
 
-				if(value is Complex complex && otherValue is Complex otherComplex){
+				if (value is Complex complex && otherValue is Complex otherComplex) {
 					//Organize by reals first, then imaginary
-					if(complex.Real != otherComplex.Real)
+					if (complex.Real != otherComplex.Real)
 						return complex.Real.CompareTo(otherComplex.Real);
-					else if(complex.Imaginary != otherComplex.Imaginary)
+					else if (complex.Imaginary != otherComplex.Imaginary)
 						return complex.Imaginary.CompareTo(otherComplex.Imaginary);
 					return 0;
-				}else if(value is Complex complex2){
-					if(ValueConverter.AsSignedInteger(otherValue) is long l)
+				} else if (value is Complex complex2) {
+					if (ValueConverter.AsSignedInteger(otherValue) is long l)
 						return complex2.Real.CompareTo(l);
-					else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul)
+					else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul)
 						return complex2.Real.CompareTo(ul);
-					else if(ValueConverter.AsFloatingPoint(otherValue) is double d)
+					else if (ValueConverter.AsFloatingPoint(otherValue) is double d)
 						return complex2.Real.CompareTo(d);
-					else if(otherValue is decimal dm)
+					else if (otherValue is decimal dm)
 						return -dm.CompareTo((decimal)complex2.Real);
-					else if(otherValue is Half h)
+					else if (otherValue is Half h)
 						return complex2.Real.CompareTo((double)h);
-				}else if(otherValue is Complex complex3){
-					if(ValueConverter.AsSignedInteger(value) is long l)
+				} else if (otherValue is Complex complex3) {
+					if (ValueConverter.AsSignedInteger(value) is long l)
 						return complex3.Real.CompareTo(l);
-					else if(ValueConverter.AsUnsignedInteger(value) is ulong ul)
+					else if (ValueConverter.AsUnsignedInteger(value) is ulong ul)
 						return complex3.Real.CompareTo(ul);
-					else if(ValueConverter.AsFloatingPoint(value) is double d)
+					else if (ValueConverter.AsFloatingPoint(value) is double d)
 						return complex3.Real.CompareTo(d);
-					else if(value is decimal dm)
+					else if (value is decimal dm)
 						return -dm.CompareTo((decimal)complex3.Real);
-					else if(value is Half h)
+					else if (value is Half h)
 						return complex3.Real.CompareTo((double)h);
-				}else{
-					if(ValueConverter.AsSignedInteger(value) is long l){
-						if(ValueConverter.AsSignedInteger(otherValue) is long l2)
+				} else {
+					if (ValueConverter.AsSignedInteger(value) is long l) {
+						if (ValueConverter.AsSignedInteger(otherValue) is long l2)
 							return l.CompareTo(l2);
-						else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul)
+						else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul)
 							return ul > long.MaxValue || l < 0 ? -1 : ((ulong)l).CompareTo(ul);
-						else if(ValueConverter.AsFloatingPoint(otherValue) is double d)
+						else if (ValueConverter.AsFloatingPoint(otherValue) is double d)
 							return ((double)l).CompareTo(d);
-						else if(otherValue is decimal dm)
+						else if (otherValue is decimal dm)
 							return -dm.CompareTo(l);
-						else if(otherValue is Half h)
+						else if (otherValue is Half h)
 							return ((double)l).CompareTo((double)h);
-					}else if(ValueConverter.AsUnsignedInteger(value) is ulong ul){
-						if(ValueConverter.AsSignedInteger(otherValue) is long l2)
+					} else if (ValueConverter.AsUnsignedInteger(value) is ulong ul) {
+						if (ValueConverter.AsSignedInteger(otherValue) is long l2)
 							return ul > long.MaxValue || l2 < 0 ? 1 : ul.CompareTo((ulong)l2);
-						else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
+						else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
 							return ul.CompareTo(ul2);
-						else if(ValueConverter.AsFloatingPoint(otherValue) is double d)
+						else if (ValueConverter.AsFloatingPoint(otherValue) is double d)
 							return ((double)ul).CompareTo(d);
-						else if(otherValue is decimal dm)
+						else if (otherValue is decimal dm)
 							return -dm.CompareTo(ul);
-						else if(otherValue is Half h)
+						else if (otherValue is Half h)
 							return ((double)ul).CompareTo((double)h);
-					}else if(ValueConverter.AsFloatingPoint(value) is double d){
-						if(ValueConverter.AsSignedInteger(otherValue) is long l2)
+					} else if (ValueConverter.AsFloatingPoint(value) is double d) {
+						if (ValueConverter.AsSignedInteger(otherValue) is long l2)
 							return d.CompareTo(l2);
-						else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
+						else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
 							return d.CompareTo(ul2);
-						else if(ValueConverter.AsFloatingPoint(otherValue) is double d2)
+						else if (ValueConverter.AsFloatingPoint(otherValue) is double d2)
 							return d.CompareTo(d2);
-						else if(otherValue is decimal dm)
+						else if (otherValue is decimal dm)
 							return -dm.CompareTo(d);
-						else if(otherValue is Half h)
+						else if (otherValue is Half h)
 							return d.CompareTo((double)h);
-					}else if(value is decimal dm){
-						if(ValueConverter.AsSignedInteger(otherValue) is long l2)
+					} else if (value is decimal dm) {
+						if (ValueConverter.AsSignedInteger(otherValue) is long l2)
 							return dm.CompareTo(l2);
-						else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
+						else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
 							return dm.CompareTo(ul2);
-						else if(ValueConverter.AsFloatingPoint(otherValue) is double d2)
+						else if (ValueConverter.AsFloatingPoint(otherValue) is double d2)
 							return dm.CompareTo((decimal)d2);
-						else if(otherValue is decimal dm2)
+						else if (otherValue is decimal dm2)
 							return dm.CompareTo(dm2);
-						else if(otherValue is Half h)
+						else if (otherValue is Half h)
 							return dm.CompareTo((decimal)(double)h);
-					}else if(value is Half h){
-						if(ValueConverter.AsSignedInteger(otherValue) is long l2)
+					} else if (value is Half h) {
+						if (ValueConverter.AsSignedInteger(otherValue) is long l2)
 							return ((double)h).CompareTo(l2);
-						else if(ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
+						else if (ValueConverter.AsUnsignedInteger(otherValue) is ulong ul2)
 							return ((double)h).CompareTo(ul2);
-						else if(ValueConverter.AsFloatingPoint(otherValue) is double d2)
+						else if (ValueConverter.AsFloatingPoint(otherValue) is double d2)
 							return ((double)h).CompareTo(d2);
-						else if(otherValue is decimal dm2)
+						else if (otherValue is decimal dm2)
 							return -dm2.CompareTo((decimal)(double)h);
-						else if(otherValue is Half h2)
+						else if (otherValue is Half h2)
 							return h.CompareTo(h2);
 					}
 				}
@@ -323,52 +326,52 @@ namespace Chips.Core.Types{
 
 		public int NumberCount => set.Length;
 
-		public ArithmeticSet() : this(Array.Empty<Number>()){ }
+		public ArithmeticSet() : this(Array.Empty<Number>()) { }
 
-		public ArithmeticSet(params Number[] numbers){
-			if(numbers is null)
+		public ArithmeticSet(params Number[] numbers) {
+			if (numbers is null)
 				throw new ArgumentNullException(nameof(numbers));
 
-			if(numbers.Length == 0){
-				if(emptySetInitialized)
+			if (numbers.Length == 0) {
+				if (emptySetInitialized)
 					set = EmptySet.set;
-				else{
+				else {
 					set = Array.Empty<Number>();
 					emptySetInitialized = true;
 				}
-			}else{
+			} else {
 				set = (Number[])numbers.Clone();
 
 				OrganizeSet();
 			}
 		}
 
-		public ArithmeticSet(params object[] numbers) : this(ConvertObjectsToNumbers(numbers)){ }
+		public ArithmeticSet(params object[] numbers) : this(ConvertObjectsToNumbers(numbers)) { }
 
-		public ArithmeticSet(Array array) : this(ConvertObjectsToNumbers(array)){ }
+		public ArithmeticSet(Array array) : this(ConvertObjectsToNumbers(array)) { }
 
-		private static unsafe Number[] ConvertObjectsToNumbers(object[] numbers){
+		private static unsafe Number[] ConvertObjectsToNumbers(object[] numbers) {
 			Number[] arr = new Number[numbers.Length];
 
-			fixed(Number* ptr = arr){
+			fixed (Number* ptr = arr) {
 				Number* nfPtr = ptr;
 
 				object obj;
-				for(int i = 0; i < arr.Length; i++, nfPtr++)
+				for (int i = 0; i < arr.Length; i++, nfPtr++)
 					*nfPtr = (obj = numbers[i]) is Number number ? number : Number.Create(obj);
 			}
 
 			return arr;
 		}
 
-		private static unsafe Number[] ConvertObjectsToNumbers(Array numbers){
+		private static unsafe Number[] ConvertObjectsToNumbers(Array numbers) {
 			Number[] arr = new Number[numbers.Length];
 
-			fixed(Number* ptr = arr){
+			fixed (Number* ptr = arr) {
 				Number* nfPtr = ptr;
 
 				object? obj;
-				for(int i = 0; i < arr.Length; i++, nfPtr++)
+				for (int i = 0; i < arr.Length; i++, nfPtr++)
 					*nfPtr = (obj = numbers.GetValue(i)) is Number number ? number : Number.Create(obj);
 			}
 
@@ -377,15 +380,15 @@ namespace Chips.Core.Types{
 
 		public bool IsEmptySet => set.Length == 0;
 
-		private static Number[] ConcatSets(ArithmeticSet a, ArithmeticSet b){
+		private static Number[] ConcatSets(ArithmeticSet a, ArithmeticSet b) {
 			var concat = new Number[a.set!.Length + b.set!.Length];
 			Array.Copy(a.set, 0, concat, 0, a.set.Length);
 			Array.Copy(b.set, 0, concat, a.set.Length, b.set.Length);
 			return concat;
 		}
 
-		public static ArithmeticSet Union(ArithmeticSet a, ArithmeticSet b){
-			if(b.IsEmptySet)
+		public static ArithmeticSet Union(ArithmeticSet a, ArithmeticSet b) {
+			if (b.IsEmptySet)
 				return new(a.set);
 
 			ArithmeticSet ret = new(ConcatSets(a, b));
@@ -393,19 +396,19 @@ namespace Chips.Core.Types{
 			return ret;
 		}
 
-		public static ArithmeticSet Intersection(ArithmeticSet a, ArithmeticSet b){
-			if(b.IsEmptySet)
+		public static ArithmeticSet Intersection(ArithmeticSet a, ArithmeticSet b) {
+			if (b.IsEmptySet)
 				return new();
 
 			ArithmeticSet ret;
 
-			fixed(Number* ptr = b.set){
+			fixed (Number* ptr = b.set) {
 				Number* nfPtr = ptr;
 
 				HashSet<Number> hashA = new(a.set);
 				HashSet<Number> hash = new();
-				for(int i = 0; i < b.set.Length; i++, nfPtr++){
-					if(hashA.Contains(*nfPtr))
+				for (int i = 0; i < b.set.Length; i++, nfPtr++) {
+					if (hashA.Contains(*nfPtr))
 						hash.Add(*nfPtr);
 				}
 
@@ -415,18 +418,18 @@ namespace Chips.Core.Types{
 			return ret;
 		}
 
-		public static ArithmeticSet Difference(ArithmeticSet a, ArithmeticSet b){
-			if(b.IsEmptySet)
+		public static ArithmeticSet Difference(ArithmeticSet a, ArithmeticSet b) {
+			if (b.IsEmptySet)
 				return new(a.set);
 
 			ArithmeticSet ret;
 
-			fixed(Number* ptr = b.set){
+			fixed (Number* ptr = b.set) {
 				Number* nfPtr = ptr;
 
 				HashSet<Number> hash = new(a.set);
-				for(int i = 0; i < b.set.Length; i++, nfPtr++){
-					if(hash.Contains(*nfPtr))
+				for (int i = 0; i < b.set.Length; i++, nfPtr++) {
+					if (hash.Contains(*nfPtr))
 						hash.Remove(*nfPtr);
 				}
 
@@ -442,39 +445,39 @@ namespace Chips.Core.Types{
 		public static bool AreDisjoint(ArithmeticSet a, ArithmeticSet b)
 			=> Intersection(a, b).IsEmptySet;
 
-		public unsafe object[] ToArray(){
+		public unsafe object[] ToArray() {
 			object[] arr = new object[set.Length];
-			
-			fixed(Number* ptr = set){
+
+			fixed (Number* ptr = set) {
 				Number* nfPtr = ptr;
 
-				for(int i = 0; i < set.Length; i++, nfPtr++)
+				for (int i = 0; i < set.Length; i++, nfPtr++)
 					arr[i] = nfPtr->GetUnderlyingValue();
 			}
 
 			return arr;
 		}
 
-		private void OrganizeSet(){
+		private void OrganizeSet() {
 			Sorting.TimSort(set!);
 		}
 
-		public bool ContainsNumber(object? obj){
+		public bool ContainsNumber(object? obj) {
 			//Performs error checking if "obj" isn't a number
 			Number num = Number.Create(obj);
 
-			if(IsEmptySet)
+			if (IsEmptySet)
 				return false;
 
-			for(int i = 0; i < set.Length; i++)
-				if(set[i].CompareTo(num) == 0)
+			for (int i = 0; i < set.Length; i++)
+				if (set[i].CompareTo(num) == 0)
 					return true;
 
 			return false;
 		}
 
-		public override string ToString(){
-			if(set.Length == 0)
+		public override string ToString() {
+			if (set.Length == 0)
 				return "{ Empty set }";
 
 			StringBuilder sb = new(Formatting.FormatArray(set).Replace('[', '{').Replace(']', '}'));
@@ -488,28 +491,28 @@ namespace Chips.Core.Types{
 		public override int GetHashCode()
 			=> base.GetHashCode();
 
-		public static unsafe bool operator ==(ArithmeticSet set, ArithmeticSet set2){
-			fixed(Number* ptr = set.set) fixed(Number* ptr2 = set2.set){
+		public static unsafe bool operator ==(ArithmeticSet set, ArithmeticSet set2) {
+			fixed (Number* ptr = set.set) fixed (Number* ptr2 = set2.set) {
 				Number* nfPtr = ptr, nfPtr2 = ptr2;
 
 				int length = Math.Min(set.set.Length, set2.set.Length);
 
-				for(int i = 0; i < length; i++, nfPtr++, nfPtr2++)
-					if(!Number.SetUniverseMatches(*nfPtr, *nfPtr2) || nfPtr->CompareTo(*nfPtr2) != 0)
+				for (int i = 0; i < length; i++, nfPtr++, nfPtr2++)
+					if (!Number.SetUniverseMatches(*nfPtr, *nfPtr2) || nfPtr->CompareTo(*nfPtr2) != 0)
 						return false;
 			}
 
 			return true;
 		}
 
-		public static unsafe bool operator !=(ArithmeticSet set, ArithmeticSet set2){
-			fixed(Number* ptr = set.set) fixed(Number* ptr2 = set2.set){
+		public static unsafe bool operator !=(ArithmeticSet set, ArithmeticSet set2) {
+			fixed (Number* ptr = set.set) fixed (Number* ptr2 = set2.set) {
 				Number* nfPtr = ptr, nfPtr2 = ptr2;
 
 				int length = Math.Min(set.set.Length, set2.set.Length);
 
-				for(int i = 0; i < length; i++, nfPtr++, nfPtr2++)
-					if(Number.SetUniverseMatches(*nfPtr, *nfPtr2) && nfPtr->CompareTo(*nfPtr2) == 0)
+				for (int i = 0; i < length; i++, nfPtr++, nfPtr2++)
+					if (Number.SetUniverseMatches(*nfPtr, *nfPtr2) && nfPtr->CompareTo(*nfPtr2) == 0)
 						return false;
 			}
 

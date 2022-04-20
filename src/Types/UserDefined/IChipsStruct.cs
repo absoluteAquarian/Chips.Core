@@ -1,10 +1,10 @@
 ﻿using Chips.Core.Meta;
 
-namespace Chips.Core.Types.UserDefined{
+namespace Chips.Core.Types.UserDefined {
 	/// <summary>
 	/// An interface from which all user-defined Chips structs inherit from
 	/// </summary>
-	public interface IChipsStruct{
+	public interface IChipsStruct {
 		/// <summary>
 		/// Used to make a duplicate of the object.
 		/// If not defined by the user, simply returns <seealso cref="object.MemberwiseClone"/>.

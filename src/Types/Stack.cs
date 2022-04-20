@@ -1,22 +1,23 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Utility;
+using System;
 
-namespace Chips.Core.Types{
-	public class Stack{
+namespace Chips.Core.Types {
+	public class Stack {
 		private readonly object?[] stack;
 
-		public int SP{ get; private set; }
-		
+		public int SP { get; private set; }
+
 		private readonly int capacity;
 
-		public Stack(){
+		public Stack() {
 			capacity = 1000;
 			stack = new object?[1000];
 			SP = 0;
 		}
 
-		public Stack(int capacity){
-			if(capacity <= 0)
+		public Stack(int capacity) {
+			if (capacity <= 0)
 				throw new ArgumentException("Size was too small. Expected a value greater than zero");
 
 			this.capacity = capacity;
@@ -24,11 +25,11 @@ namespace Chips.Core.Types{
 			SP = 0;
 		}
 
-		public void Push(object? obj){
+		public void Push(object? obj) {
 			int old = SP;
 
-			if(SP >= capacity){
-				if(!Sandbox.AllowStackOverflow)
+			if (SP >= capacity) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack overflow detected. Cannot push more objects to the stack.");
 
 				old = capacity - 1;
@@ -39,11 +40,11 @@ namespace Chips.Core.Types{
 			SP++;
 		}
 
-		public object? Pop(){
+		public object? Pop() {
 			int old = SP - 1;
 
-			if(SP <= 0){
-				if(!Sandbox.AllowStackOverflow)
+			if (SP <= 0) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack underflow detected. Cannot pop more objects from the stack.");
 
 				old = 0;
@@ -57,16 +58,16 @@ namespace Chips.Core.Types{
 			return obj;
 		}
 
-		public void SetIndirect(object? obj, int offset){
+		public void SetIndirect(object? obj, int offset) {
 			int sp = SP;
-			if(sp + offset < 0){
-				if(!Sandbox.AllowStackOverflow)
+			if (sp + offset < 0) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack underflow detected.  Indirect set went below index 0");
 
 				offset += sp;
 				sp = capacity + offset;
-			}else if(sp + offset >= capacity){
-				if(!Sandbox.AllowStackOverflow)
+			} else if (sp + offset >= capacity) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack overflow detected.  Indirect set went above Stack capacity");
 
 				offset -= capacity - 1 - sp;
@@ -76,16 +77,16 @@ namespace Chips.Core.Types{
 			stack[sp] = obj;
 		}
 
-		public object? GetIndirect(int offset){
+		public object? GetIndirect(int offset) {
 			int sp = SP;
-			if(sp + offset < 0){
-				if(!Sandbox.AllowStackOverflow)
+			if (sp + offset < 0) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack underflow detected.  Indirect get went below index 0");
 
 				offset += sp;
 				sp = capacity + offset;
-			}else if(sp + offset >= capacity){
-				if(!Sandbox.AllowStackOverflow)
+			} else if (sp + offset >= capacity) {
+				if (!Sandbox.AllowStackOverflow)
 					throw new Exception("Stack overflow detected.  Indirect get went above Stack capacity");
 
 				offset -= capacity - 1 - sp;

@@ -1,33 +1,36 @@
 ﻿using Chips.Core.Specifications;
 using Chips.Core.Types;
 using Chips.Core.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 
-namespace Chips.Core.Meta{
-	public static unsafe class Metadata{
-		public static class Registers{
+namespace Chips.Core.Meta {
+	public static unsafe class Metadata {
+		public static class Registers {
 			/// <summary>
 			/// The register for arithmetic.  Can contain any type of value
 			/// </summary>
-			public static readonly Register A =  new("A", null, null);
+			public static readonly Register A = new("A", null, null);
 			/// <summary>
 			/// The register for storing the current exception
 			/// </summary>
-			public static readonly Register E =  new("E", null, null);
+			public static readonly Register E = new("E", null, null);
 			/// <summary>
 			/// The register for indexing.  Can only contain integers
 			/// </summary>
-			public static readonly Register X =  new("X",    0, &TypeTracking.IsInteger);
+			public static readonly Register X = new("X", 0, &TypeTracking.IsInteger);
 			/// <summary>
 			/// The register for counting.  Can only contain integers
 			/// </summary>
-			public static readonly Register Y =  new("Y",    0, &TypeTracking.IsInteger);
-			public static readonly Register SP = new("SP",   0, &StackPointer_ReadOnly){ getDataOverride = &StackPointer_GetValue };
+			public static readonly Register Y = new("Y", 0, &TypeTracking.IsInteger);
+			public static readonly Register SP = new("SP", 0, &StackPointer_ReadOnly) { getDataOverride = &StackPointer_GetValue };
 			/// <summary>
 			/// The register for string manipulation.  Can only contain strings
 			/// </summary>
-			public static readonly Register S =  new("S", null, &TypeTracking.IsString);
+			public static readonly Register S = new("S", null, &TypeTracking.IsString);
 
 			//Used for checking values popped off of the stack
 			private static readonly Register StackOperations = new("<so>", null, null);
@@ -49,10 +52,10 @@ namespace Chips.Core.Meta{
 			/// Uses <seealso cref="ZeroFlagChecks"/> to parse <paramref name="register"/> for setting the <seealso cref="Flags.Zero"/> flag
 			/// </summary>
 			/// <param name="register">The register to check</param>
-			public static void CheckRegister(Register register){
+			public static void CheckRegister(Register register) {
 				object? obj = register.Data;
 
-				if(obj is null){
+				if (obj is null) {
 					Metadata.Flags.Zero = true;
 					return;
 				}
@@ -76,20 +79,20 @@ namespace Chips.Core.Meta{
 					|| (obj is ArithmeticSet set && set.IsEmptySet));
 				bool zeroFlagSuccess_String = (ZeroFlagChecks & CheckStrings) != 0 && obj is string str && str == "";
 
-				if(zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)
+				if (zeroFlagSuccess_Integer || zeroFlagSucess_Float || zeroFlagSuccess_Collections || zeroFlagSuccess_String)
 					Flags.Zero = true;
 
 				ZeroFlagChecks = 0b0000;
 			}
 		}
 
-		public static class Flags{
+		public static class Flags {
 			private static ushort flags;
 
 			/// <summary>
 			/// Flag $C - carry bit
 			/// </summary>
-			public static bool Carry{
+			public static bool Carry {
 				get => (flags & 0x0001) != 0;
 				set => flags = (byte)(value ? flags | 0x0001 : flags & ~0x0001);
 			}
@@ -97,7 +100,7 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// Flag $N - whether value conversion from a string to some other type was successful
 			/// </summary>
-			public static bool Conversion{
+			public static bool Conversion {
 				get => (flags & 0x0002) != 0;
 				set => flags = (byte)(value ? flags | 0x0002 : flags & ~0x0002);
 			}
@@ -105,7 +108,7 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// Flag $O - value comparison
 			/// </summary>
-			public static bool Comparison{
+			public static bool Comparison {
 				get => (flags & 0x0004) != 0;
 				set => flags = (byte)(value ? flags | 0x0004 : flags & ~0x0004);
 			}
@@ -113,7 +116,7 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// Flag $P - toggles the effect of various instructions from value access to value assignment
 			/// </summary>
-			public static bool PropertyAccess{
+			public static bool PropertyAccess {
 				get => (flags & 0x0008) != 0;
 				set => flags = (byte)(value ? flags | 0x0008 : flags & ~0x0008);
 			}
@@ -121,7 +124,7 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// Flag $R - set when a match is found for a Regex instance
 			/// </summary>
-			public static bool RegexSuccess{
+			public static bool RegexSuccess {
 				get => (flags & 0x0010) != 0;
 				set => flags = (byte)(value ? flags | 0x0010 : flags & ~0x0010);
 			}
@@ -129,7 +132,7 @@ namespace Chips.Core.Meta{
 			/// <summary>
 			/// Flag $Z - set when certain operations result in a zero value
 			/// </summary>
-			public static bool Zero{
+			public static bool Zero {
 				get => (flags & 0x0020) != 0;
 				set => flags = (byte)(value ? flags | 0x0020 : flags & ~0x0020);
 			}
@@ -146,7 +149,7 @@ namespace Chips.Core.Meta{
 		/// </list>
 		/// </para>
 		/// </summary>
-		public static int ZeroFlagChecks{ get; set; }
+		public static int ZeroFlagChecks { get; set; }
 
 		public const byte CheckIntegers = 0b0001;
 		public const byte CheckFloats = 0b0010;
@@ -164,137 +167,137 @@ namespace Chips.Core.Meta{
 
 		public static readonly Dictionary<string, Type> userDefinedTypes = new();
 
-		static Metadata(){
+		static Metadata() {
 			op = new OpcodeTable();
-			
-			foreach(var field in typeof(Opcodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(Opcode))){
+
+			foreach (var field in typeof(Opcodes).GetFields(BindingFlags.Public | BindingFlags.Static).Where(f => f.FieldType == typeof(Opcode))) {
 				Opcode opcode = (field.GetValue(null) as Opcode)!;
 
-				if(opcode.Parent?.table is null && op[opcode.code] is not null)
-					throw new Exception($"Opcode 0x{opcode.code :X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{op[opcode.code].descriptor}\"");
+				if (opcode.Parent?.table is null && op[opcode.code] is not null)
+					throw new Exception($"Opcode 0x{opcode.code:X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{op[opcode.code].descriptor}\"");
 
-				if(opcode.Parent?.table is not null && opcode.Parent.table[opcode.code] is not null)
-					throw new Exception($"Opcode 0x{opcode.Parent.code :X2}{opcode.code :X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{opcode.Parent.table[opcode.code].descriptor}\"");
+				if (opcode.Parent?.table is not null && opcode.Parent.table[opcode.code] is not null)
+					throw new Exception($"Opcode 0x{opcode.Parent.code:X2}{opcode.code:X2} cannot be assigned to the instruction \"{opcode.descriptor}\" since it already assigned to the instruction \"{opcode.Parent.table[opcode.code].descriptor}\"");
 
 				var table = opcode.Parent?.table ?? op;
 				table[opcode.code] = opcode;
 			}
 		}
 
-		public static void SetRegisterValue(ref object? target, object? value){
+		public static void SetRegisterValue(ref object? target, object? value) {
 			ZeroFlagChecks = CheckIntegers | CheckFloats | CheckCollections | CheckStrings;
-			if(target is Register register)
+			if (target is Register register)
 				register.Data = value;
 			else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static void SetRegisterValueIndexByX(ref object? target, object? value){
-			if(target is Register register){
+		public static void SetRegisterValueIndexByX(ref object? target, object? value) {
+			if (target is Register register) {
 				Registers.X.GetDataAsInt32(out int x);
 
 				var obj = register.Data;
-				if(obj is Array array)
+				if (obj is Array array)
 					array.SetValue(value, x);
-				else if(obj is List list)
+				else if (obj is List list)
 					list[x] = value;
 				else
 					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
-			}else
+			} else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static void SetRegisterValueIndexByY(ref object? target, object? value){
-			if(target is Register register){
+		public static void SetRegisterValueIndexByY(ref object? target, object? value) {
+			if (target is Register register) {
 				Registers.Y.GetDataAsInt32(out int y);
 
 				var obj = register.Data;
-				if(obj is Array array)
+				if (obj is Array array)
 					array.SetValue(value, y);
-				else if(obj is List list)
+				else if (obj is List list)
 					list[y] = value;
 				else
 					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
-			}else
+			} else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static void SetArrayOrListIndexByX(ref object? target, object? value){
+		public static void SetArrayOrListIndexByX(ref object? target, object? value) {
 			Registers.X.GetDataAsInt32(out int x);
 
-			if(target is Array array)
+			if (target is Array array)
 				array.SetValue(value, x);
-			else if(target is List list)
+			else if (target is List list)
 				list[x] = value;
 			else
 				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
 		}
 
-		public static void SetArrayOrListIndexByY(ref object? target, object? value){
+		public static void SetArrayOrListIndexByY(ref object? target, object? value) {
 			Registers.Y.GetDataAsInt32(out int y);
 
-			if(target is Array array)
+			if (target is Array array)
 				array.SetValue(value, y);
-			else if(target is List list)
+			else if (target is List list)
 				list[y] = value;
 			else
 				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
 		}
 
-		public static object? GetRegisterValue(object? target){
-			if(target is Register register)
+		public static object? GetRegisterValue(object? target) {
+			if (target is Register register)
 				return register.Data;
 			else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static object? GetRegisterValueIndexByX(object? target){
-			if(target is Register register){
+		public static object? GetRegisterValueIndexByX(object? target) {
+			if (target is Register register) {
 				Registers.X.GetDataAsInt32(out int x);
 
 				var obj = register.Data;
-				if(obj is Array array)
+				if (obj is Array array)
 					return array.GetValue(x);
-				else if(obj is List list)
+				else if (obj is List list)
 					return list[x];
 				else
 					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
-			}else
+			} else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static object? GetRegisterValueIndexByY(object? target){
-			if(target is Register register){
+		public static object? GetRegisterValueIndexByY(object? target) {
+			if (target is Register register) {
 				Registers.Y.GetDataAsInt32(out int y);
 
 				var obj = register.Data;
-				if(obj is Array array)
+				if (obj is Array array)
 					return array.GetValue(y);
-				else if(obj is List list)
+				else if (obj is List list)
 					return list[y];
 				else
 					throw new InvalidRegisterTypeException(register.ToString() + " was not an <~arr> or <~list> instance", Opcode.FunctionContext.NoContext);
-			}else
+			} else
 				throw new ArgumentException("Target was not a register", nameof(target));
 		}
 
-		public static object? AccessArrayOrListIndexByX(ref object? target){
+		public static object? AccessArrayOrListIndexByX(ref object? target) {
 			Registers.X.GetDataAsInt32(out int x);
 
-			if(target is Array array)
+			if (target is Array array)
 				return array.GetValue(x);
-			else if(target is List list)
+			else if (target is List list)
 				return list[x];
 			else
 				throw new ArgumentException("Target was not an <~arr> or <~list> instance");
 		}
 
-		public static object? AccessArrayOrListIndexByY(ref object? target){
+		public static object? AccessArrayOrListIndexByY(ref object? target) {
 			Registers.Y.GetDataAsInt32(out int y);
 
-			if(target is Array array)
+			if (target is Array array)
 				return array.GetValue(y);
-			else if(target is List list)
+			else if (target is List list)
 				return list[y];
 			else
 				throw new ArgumentException("Target was not an <~arr> or <~list> instance");

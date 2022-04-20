@@ -1,10 +1,10 @@
 ﻿using Chips.Core.Meta;
 
-namespace Chips.Core.Types{
+namespace Chips.Core.Types {
 	/// <summary>
 	/// A wrapper class around a <seealso cref="System.Text.RegularExpressions.Regex"/>
 	/// </summary>
-	public class Regex{
+	public class Regex {
 		public readonly string pattern;
 		private readonly System.Text.RegularExpressions.Regex regex;
 
@@ -12,16 +12,16 @@ namespace Chips.Core.Types{
 		private string? lastPatternCheck;
 		internal System.Text.RegularExpressions.MatchCollection? lastMatches;
 
-		public Regex(string pattern){
+		public Regex(string pattern) {
 			this.pattern = pattern;
 			regex = new System.Text.RegularExpressions.Regex(pattern, System.Text.RegularExpressions.RegexOptions.Compiled);
 		}
 
-		public void AttemptToMatch(string str){
-			if(str is null)
+		public void AttemptToMatch(string str) {
+			if (str is null)
 				return;
 
-			if(str == lastPatternCheck)
+			if (str == lastPatternCheck)
 				return;
 
 			lastPatternCheck = str;
@@ -30,20 +30,20 @@ namespace Chips.Core.Types{
 			lastMatches = regex.Matches(str);
 
 			//Accessing the Count property will force the collection to update
-			if(lastMatches.Count > 0)
+			if (lastMatches.Count > 0)
 				Metadata.Flags.RegexSuccess = true;
 		}
 
-		public string? GetMatchString(int index){
+		public string? GetMatchString(int index) {
 			//null == invalid state or no matches found
-			if(lastPatternCheck is null || lastMatches is null || lastMatches.Count == 0)
+			if (lastPatternCheck is null || lastMatches is null || lastMatches.Count == 0)
 				return null;
 
 			return lastMatches[index].Value;
 		}
 
-		public string ReplaceString(string original, string replace){
-			if(lastPatternCheck is null || lastMatches is null || lastMatches.Count == 0)
+		public string ReplaceString(string original, string replace) {
+			if (lastPatternCheck is null || lastMatches is null || lastMatches.Count == 0)
 				return original;
 
 			return regex.Replace(original, replace);

@@ -1,12 +1,14 @@
 ﻿using Chips.Core.Meta;
 using Chips.Core.Types;
 using Chips.Core.Types.UserDefined;
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Chips.Core.Utility{
-	public static class TypeTracking{
+namespace Chips.Core.Utility {
+	public static class TypeTracking {
 		private static readonly Dictionary<Type, object> cachedObjects = new();
 		private static readonly Dictionary<Type, ChipsGeneratedAttribute?> cachedGeneratedAttribute = new();
 		private static readonly Dictionary<Type, Type> cachedArrayTypes = new();
@@ -22,7 +24,7 @@ namespace Chips.Core.Utility{
 				return success;
 			};
 
-		internal static readonly Dictionary<string, ParseValue> cachedParseFuncs = new(){
+		internal static readonly Dictionary<string, ParseValue> cachedParseFuncs = new() {
 			["i32"] = CreateParseValueDelegate<int>(int.TryParse),
 			["i8"] = CreateParseValueDelegate<sbyte>(sbyte.TryParse),
 			["i16"] = CreateParseValueDelegate<short>(short.TryParse),
@@ -40,13 +42,13 @@ namespace Chips.Core.Utility{
 			["~range"] = CreateParseValueDelegate<Types.Range>(Types.Range.TryParse),
 			["bool"] = CreateParseValueDelegate<bool>(bool.TryParse),
 			["~cplx"] = (string? str, out object? result) => {
-				if(str is null){
+				if (str is null) {
 					result = Complex.Zero;
 					return false;
 				}
 
 				//Real only
-				if(double.TryParse(str, out double d)){
+				if (double.TryParse(str, out double d)) {
 					result = new Complex(d, 0);
 					return true;
 				}
@@ -54,18 +56,18 @@ namespace Chips.Core.Utility{
 				ReadOnlySpan<char> span = str.AsSpan(), a, b;
 
 				//Imaginary only
-				if(span[^1] == 'i' && double.TryParse(span[..^1], out d)){
+				if (span[^1] == 'i' && double.TryParse(span[..^1], out d)) {
 					result = new Complex(0, d);
 					return true;
 				}
 
 				int opIndex;
-				if((opIndex = span.LastIndexOf('+')) > 0 || (opIndex = span.LastIndexOf('-')) > 0){
+				if ((opIndex = span.LastIndexOf('+')) > 0 || (opIndex = span.LastIndexOf('-')) > 0) {
 					//Both real and imaginary
 					a = span[..opIndex];
 					b = span[opIndex..];
 
-					if(double.TryParse(a.TrimEnd(), out double real) && b[^1] == 'i' && double.TryParse(b[..^1].TrimStart(), out double imag)){
+					if (double.TryParse(a.TrimEnd(), out double real) && b[^1] == 'i' && double.TryParse(b[..^1].TrimStart(), out double imag)) {
 						result = new Complex(real, imag);
 						return true;
 					}
@@ -87,7 +89,7 @@ namespace Chips.Core.Utility{
 			=> arg is float or double or decimal or Half;
 
 		public static string? GetChipsType(object? o, bool throwOnNotFound = true)
-			=> o switch{
+			=> o switch {
 				int _ => "i32",
 				sbyte _ => "i8",
 				short _ => "i16",
@@ -121,7 +123,7 @@ namespace Chips.Core.Utility{
 			};
 
 		public static Type? GetCSharpType(string chipsType)
-			=> chipsType switch{
+			=> chipsType switch {
 				"i32" => typeof(int),
 				"i8" => typeof(sbyte),
 				"i16" => typeof(short),
@@ -157,7 +159,7 @@ namespace Chips.Core.Utility{
 			};
 
 		public static Type? GetCSharpType(TypeCode code)
-			=> code switch{
+			=> code switch {
 				TypeCode.Null => null,
 				TypeCode.Int32 => typeof(int),
 				TypeCode.Int8 => typeof(sbyte),
@@ -190,23 +192,23 @@ namespace Chips.Core.Utility{
 				_ => throw new ArgumentException("Unknown type code: " + code)
 			};
 
-		public static string? GetChipsType(Type t, bool throwOnNotFound = true){
-			if(!cachedObjects.TryGetValue(t, out object? obj))
+		public static string? GetChipsType(Type t, bool throwOnNotFound = true) {
+			if (!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = Activator.CreateInstance(t)!);
 
 			return GetChipsType(obj, throwOnNotFound);
 		}
 
-		public static string? GetChipsType<T>(bool throwOnNotFound = true) where T : new(){
+		public static string? GetChipsType<T>(bool throwOnNotFound = true) where T : new() {
 			Type t = typeof(T);
-			if(!cachedObjects.TryGetValue(t, out object? obj))
+			if (!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = new T());
 
 			return GetChipsType(obj, throwOnNotFound);
 		}
 
 		public static TypeCode GetTypeCode(object? o)
-			=> o switch{
+			=> o switch {
 				int _ => TypeCode.Int32,
 				sbyte _ => TypeCode.Int8,
 				short _ => TypeCode.Int16,
@@ -239,82 +241,82 @@ namespace Chips.Core.Utility{
 				_ => throw new ArgumentException($"Type \"{o.GetType().FullName}\" does not have a defined Chips type code")
 			};
 
-		public static TypeCode GetTypeCode(Type t){
-			if(!cachedObjects.TryGetValue(t, out object? obj))
+		public static TypeCode GetTypeCode(Type t) {
+			if (!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = Activator.CreateInstance(t)!);
 
 			return GetTypeCode(obj);
 		}
 
-		public static TypeCode GetTypeCode<T>() where T : new(){
+		public static TypeCode GetTypeCode<T>() where T : new() {
 			Type t = typeof(T);
-			if(!cachedObjects.TryGetValue(t, out object? obj))
+			if (!cachedObjects.TryGetValue(t, out object? obj))
 				cachedObjects.Add(t, obj = new T());
 
 			return GetTypeCode(obj);
 		}
 
-		private static Type GetArrayType(Type elementType){
-			if(!cachedArrayTypes.TryGetValue(elementType, out Type? type))
+		private static Type GetArrayType(Type elementType) {
+			if (!cachedArrayTypes.TryGetValue(elementType, out Type? type))
 				cachedArrayTypes.Add(elementType, type = Array.CreateInstance(elementType, 0).GetType());
 
 			return type;
 		}
 
-		private static ChipsGeneratedAttribute? GetChipsGeneratedAttribute(this object o){
+		private static ChipsGeneratedAttribute? GetChipsGeneratedAttribute(this object o) {
 			Type t = o.GetType();
-			if(!cachedGeneratedAttribute.TryGetValue(t, out ChipsGeneratedAttribute? attr))
+			if (!cachedGeneratedAttribute.TryGetValue(t, out ChipsGeneratedAttribute? attr))
 				cachedGeneratedAttribute.Add(t, attr = Attribute.GetCustomAttribute(t, typeof(ChipsGeneratedAttribute)) as ChipsGeneratedAttribute);
 
 			return attr;
 		}
 
-		internal static int GetSizeFromNumericType(Type t){
-			if(t == typeof(sbyte) || t == typeof(byte))
+		internal static int GetSizeFromNumericType(Type t) {
+			if (t == typeof(sbyte) || t == typeof(byte))
 				return 1;
-			if(t == typeof(short) || t == typeof(ushort) || t == typeof(Half))
+			if (t == typeof(short) || t == typeof(ushort) || t == typeof(Half))
 				return 2;
-			if(t == typeof(int) || t == typeof(uint) || t == typeof(float))
+			if (t == typeof(int) || t == typeof(uint) || t == typeof(float))
 				return 4;
-			if(t == typeof(long) || t == typeof(ulong) || t == typeof(double))
+			if (t == typeof(long) || t == typeof(ulong) || t == typeof(double))
 				return 8;
-			if(t == typeof(decimal) || t == typeof(Complex))
+			if (t == typeof(decimal) || t == typeof(Complex))
 				return 16;
-			if(t == typeof(BigInteger))
+			if (t == typeof(BigInteger))
 				return 32;  //Just need to make sure it's "larger" than ulong and long
 
 			throw new Exception($"Internal Chips Exception -- Invalid Type for {nameof(TypeTracking)}.{nameof(GetSizeFromNumericType)}: {t.FullName}");
 		}
 
-		internal static Type? GetTypeFromAnyAssembly(string name, bool throwOnNotFound = true){
+		internal static Type? GetTypeFromAnyAssembly(string name, bool throwOnNotFound = true) {
 			Type? search = null;
 			string? generatedKey = null;
-			foreach(var asm in AppDomain.CurrentDomain.GetAssemblies()){
-				if(asm.IsDynamic)
+			foreach (var asm in AppDomain.CurrentDomain.GetAssemblies()) {
+				if (asm.IsDynamic)
 					continue;
 
 				search = GetType(name, asm, out generatedKey, throwOnNotFound: false);
-				if(search is not null)
+				if (search is not null)
 					break;
 			}
 
-			if(throwOnNotFound && search is null)
+			if (throwOnNotFound && search is null)
 				throw new ArgumentException($"Type \"{generatedKey ?? name}\" could not be found");
 
 			return search;
 		}
 
-		internal static Type? GetType(string name, Assembly? assembly, out string generatedKey, bool throwOnNotFound = true){
+		internal static Type? GetType(string name, Assembly? assembly, out string generatedKey, bool throwOnNotFound = true) {
 			string? asm = assembly?.GetName().Name;
 			generatedKey = name = (asm is null ? "" : asm + "::") + name;
 
-			if(!cachedNameToTypes.TryGetValue(name, out Type? type)){
+			if (!cachedNameToTypes.TryGetValue(name, out Type? type)) {
 				type = assembly?.GetType(name) ?? Type.GetType(name);
 
-				if(type is not null)
+				if (type is not null)
 					cachedNameToTypes.Add(name, type!);
 
-				if(throwOnNotFound && type is null)
+				if (throwOnNotFound && type is null)
 					throw new ArgumentException($"Type \"{name}\" could not be found");
 			}
 

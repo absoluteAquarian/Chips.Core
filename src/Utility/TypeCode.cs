@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
-namespace Chips.Core.Utility{
-	public enum TypeCode{
+namespace Chips.Core.Utility {
+	public enum TypeCode {
 		Null = 255,
 		/// <summary>
 		/// i32 - signed 32bit integer

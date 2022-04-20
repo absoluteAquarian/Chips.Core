@@ -119,9 +119,9 @@ _______|__x0__|__x1__|__x2__|__x3__|__x4__|__x5__|__x6__|__x7__|__x8__|__x9__|__
 |  8x  |  inx |  dex |  iny |  dey |  bfp |  idx |  mov | idxv | psev |  rgs |  rge | stun | stin | stdj | stco | stdf |
 |  9x  | tryc | flor |  sin |  cos |  tan | asnh |  mov | rgxf | poev |  rgs |  rge | stun | stin | stdj | stco | stdf |
 |  Ax  | tryf | ceil | asin | acos | atan | acsh |  mov | rgxf | rgxm |  rgs |  rge | shas | aems |      |      |      |
-|  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      |      |      |      | shas |      |      |      |      |
-|  Cx  |  sjn | sdiv | srmv | srep | atnt |      |      |      |      |      |      |      |      |      |      |      |
-|  Dx  |  sjn | sdiv | srmv | tryn | atnt |      |      |      |      |      |      |      |      |      |      |  sys |
+|  Bx  | rgxs | rgxm | sinh | cosh | tanh | atnh |  mov |      | poed |      |      | shas |      |      |      |      |
+|  Cx  |  sjn | sdiv | srmv | srep | atnt |      |  mov |      |      |      |      |      |      |      |      |      |
+|  Dx  |  sjn | sdiv | srmv | tryn | atnt |      |  mov |      |      |      |      |      |      |      |      |  sys |
 |  Ex  |  cpz | cpro | cpco |  cpo | cpcj | cprv | cpnr |  cpr |  cpi |      |      |      |      | csrv | wait |  sys |
 |  Fx  | conw | conh | cont | csrx | csry | cclb | cclf | caps | cnww | cnwh | conr | cnrf | cnrb |  cls | wait | halt |
 ------------------------------------------------------------------------------------------------------------------------
@@ -455,6 +455,8 @@ BYTECODE | OPCODE
  96      | mov <var>, [<arr>, &Y] ......... moves <arr>, indexed with Y, into <var>
  A6      | mov [<arr>, &X], <var> ......... moves <var> into <arr>, indexed with X
  B6      | mov [<arr>, &Y], <var> ......... moves <var> into <arr>, indexed with Y
+ C6      | mov [<arr>, &X], [<arr2>, &Y] .. moves <arr2>, indexed with Y, into <arr>, indexed with X
+ D6      | mov [<arr>, &Y], [<arr2>, &X] .. moves <arr2>, indexed with X, into <arr>, indexed with Y
  32      | mul <obj> ...................... performs A = A * <obj>
  42      | mul <var> ...................... performs A = A * <var>
 
@@ -484,6 +486,7 @@ BYTECODE | OPCODE
  
  4C      | pntl ........................... prints A with a newline
  2A      | poa ............................ pops a value from the Stack and puts it into A
+ B8      | poed ........................... pops a value from the Evaluation Stack (internal mechanism in C#) and discards the value
  98      | poev <type> .................... pops a value from the Evaluation Stack (internal mechanism in C#), unboxes the value to <type> and sets the result to A
  1C      | pop ............................ pops a value from the Stack
  3C      | pop <var> ...................... pops a value from the Stack and puts it into <var>

@@ -1,5 +1,5 @@
-﻿namespace Chips.Core.Types.NumberProcessing{
-	public interface IFloat{
+﻿namespace Chips.Core.Types.NumberProcessing {
+	public interface IFloat {
 		IFloat Acos();
 
 		IFloat Acosh();

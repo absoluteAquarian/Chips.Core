@@ -1,9 +1,10 @@
 ﻿using Chips.Core.Types.NumberProcessing;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Chips.Core.Utility{
-	internal static partial class ValueConverter{
+namespace Chips.Core.Utility {
+	internal static partial class ValueConverter {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static BigInteger_T CastToBigInteger_T<T>(this T number) where T : INumber
 			=> new(Convert.ToUInt64(EnsureObjectCanBeCastToIConvertable(number)?.Value

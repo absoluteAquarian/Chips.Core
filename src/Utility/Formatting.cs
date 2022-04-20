@@ -1,25 +1,26 @@
 ﻿using Chips.Core.Types;
+using System;
 using System.Numerics;
 using System.Text;
 
-namespace Chips.Core.Utility{
-	public static class Formatting{
-		public static string FormatArray(Array? a){
-			if(a is null)
+namespace Chips.Core.Utility {
+	public static class Formatting {
+		public static string FormatArray(Array? a) {
+			if (a is null)
 				return "null";
 
-			if(a.Length == 0)
+			if (a.Length == 0)
 				return "[ <empty> ]";
 
-			if(a.Length == 1)
+			if (a.Length == 1)
 				return $"[ {FormatObject(a.GetValue(0))} ]";
 
 			StringBuilder ret = new("[ ");
 
-			for(int i = 0; i < a.Length; i++){
+			for (int i = 0; i < a.Length; i++) {
 				var elem = a.GetValue(i);
 
-				if(i > 0)
+				if (i > 0)
 					ret.Append(", ");
 
 				ret.Append(FormatObject(elem));
@@ -30,7 +31,7 @@ namespace Chips.Core.Utility{
 		}
 
 		public static string FormatObject(object? o)
-			=> o switch{
+			=> o switch {
 				string s => $"\"{s}\"",
 				char c => $"'{c}'",
 				Array a => FormatArray(a),

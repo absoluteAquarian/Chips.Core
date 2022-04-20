@@ -1,5 +1,5 @@
-﻿namespace Chips.Core.Types.NumberProcessing{
-	public interface IInteger{
+﻿namespace Chips.Core.Types.NumberProcessing {
+	public interface IInteger {
 		IInteger And(IInteger number);
 
 		IInteger ArithmeticShiftLeft();

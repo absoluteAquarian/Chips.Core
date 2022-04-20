@@ -1,10 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
-namespace Chips.Core.Types{
-	public struct Indexer{
+namespace Chips.Core.Types {
+	public struct Indexer {
 		public readonly int value;
 
-		public Indexer(int value){
+		public Indexer(int value) {
 			this.value = value;
 		}
 
@@ -14,15 +15,15 @@ namespace Chips.Core.Types{
 
 		public override string ToString() => value >= 0 ? value.ToString() : $"^{-value}";
 
-		public static bool TryParse(string? str, out Indexer indexer){
-			if(uint.TryParse(str, out uint typedResult) && typedResult <= int.MaxValue){
+		public static bool TryParse(string? str, out Indexer indexer) {
+			if (uint.TryParse(str, out uint typedResult) && typedResult <= int.MaxValue) {
 				indexer = new((int)typedResult);
 				return true;
 			}
 
 			ReadOnlySpan<char> span = str.AsSpan();
 
-			if(str is not null && str.Length > 1 && span[0] == '^' && uint.TryParse(span[1..], out typedResult) && typedResult <= int.MaxValue - 1){
+			if (str is not null && str.Length > 1 && span[0] == '^' && uint.TryParse(span[1..], out typedResult) && typedResult <= int.MaxValue - 1) {
 				indexer = new(-(int)typedResult);
 				return true;
 			}

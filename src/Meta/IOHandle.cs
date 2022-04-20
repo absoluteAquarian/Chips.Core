@@ -2,15 +2,17 @@
 using Chips.Core.Types;
 using Chips.Core.Types.UserDefined;
 using Chips.Core.Utility;
+using System;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
 
-namespace Chips.Core.Meta{
-	internal class IOHandle{
-		private static class ReflectionGetters{
+namespace Chips.Core.Meta {
+	internal class IOHandle {
+		private static class ReflectionGetters {
 			public static readonly ReflectionHelper<Random>.MethodPackage Random_SeedArray = new("SeedArray");
-			public static readonly ReflectionHelper<Random>.MethodPackage Random_inext     = new("inext");
-			public static readonly ReflectionHelper<Random>.MethodPackage Random_inextp    = new("inextp");
+			public static readonly ReflectionHelper<Random>.MethodPackage Random_inext = new("inext");
+			public static readonly ReflectionHelper<Random>.MethodPackage Random_inextp = new("inextp");
 		}
 
 		public const int SETTING_BINARY = 0;
@@ -28,10 +30,10 @@ namespace Chips.Core.Meta{
 		/// <summary>
 		/// Whether the I/O handle reads/writes binary data (<see langword="true"/>) or strings/characters (<see langword="false"/>) from/to the file
 		/// </summary>
-		public bool BinaryModeActive{
+		public bool BinaryModeActive {
 			get => (settings & 0x01) != 0;
-			set{
-				if(HandleIsActive)
+			set {
+				if (HandleIsActive)
 					throw new InvalidOperationException("Binary/Stream setting can only be modified while an I/O handle is inactive");
 
 				settings = (byte)(value ? settings | 0x01 : settings & ~0x01);
@@ -41,7 +43,7 @@ namespace Chips.Core.Meta{
 		/// <summary>
 		/// Whether the I/O handle writes newlines to the file.  Only valid if <seealso cref="BinaryModeActive"/> is <see langword="false"/>
 		/// </summary>
-		public bool WriteNewlines{
+		public bool WriteNewlines {
 			get => (settings & 0x02) != 0;
 			set => settings = (byte)(value ? settings | 0x02 : settings & ~0x02);
 		}
@@ -49,10 +51,10 @@ namespace Chips.Core.Meta{
 		/// <summary>
 		/// Whether the I/O handle writes to (<see langword="true"/>) or reads from (<see langword="false"/>) the file
 		/// </summary>
-		public bool WriteToStream{
+		public bool WriteToStream {
 			get => (settings & 0x04) != 0;
-			set{
-				if(HandleIsActive)
+			set {
+				if (HandleIsActive)
 					throw new InvalidOperationException("Reading/Writing setting can only be modified while an I/O handle is inactive");
 
 				settings = (byte)(value ? settings | 0x04 : settings & ~0x04);
@@ -61,47 +63,47 @@ namespace Chips.Core.Meta{
 
 		public bool HandleIsActive => handle is not null;
 
-		public void Begin(Opcode.FunctionContext context){
-			if(HandleIsActive)
+		public void Begin(Opcode.FunctionContext context) {
+			if (HandleIsActive)
 				throw new InvalidOperationException("I/O handle was already active");
 
-			if(file is null)
+			if (file is null)
 				throw new InvalidOperationException("I/O handle does not have a destination file set"
 					+ ExceptionHelper.GetContextString(context));
 
-			if(mode is not FileMode fMode)
+			if (mode is not FileMode fMode)
 				throw new InvalidOperationException("I/O handle did not have a file access mode set"
 					+ ExceptionHelper.GetContextString(context));
 
 			Stream stream = File.Open(file, fMode);
 
-			if(BinaryModeActive){
-				if(WriteToStream)
+			if (BinaryModeActive) {
+				if (WriteToStream)
 					handle = new BinaryWriter(stream);
 				else
 					handle = new BinaryReader(stream);
-			}else{
-				if(WriteToStream)
+			} else {
+				if (WriteToStream)
 					handle = new StreamWriter(stream);
 				else
 					handle = new StreamReader(stream);
 			}
 		}
 
-		public void Close(Opcode.FunctionContext context){
-			if(HandleIsActive)
+		public void Close(Opcode.FunctionContext context) {
+			if (HandleIsActive)
 				throw new InvalidOperationException("I/O handle is already deactivated");
 
 			(handle as IDisposable)?.Dispose();  //Calls Close() on the used stream/binary reader/writer types
 			handle = null;
 		}
 
-		public void Seek(long offset, SeekOrigin origin, Opcode.FunctionContext context){
-			if(!HandleIsActive)
+		public void Seek(long offset, SeekOrigin origin, Opcode.FunctionContext context) {
+			if (!HandleIsActive)
 				throw new InvalidOperationException("I/O handle was not active"
 					+ ExceptionHelper.GetContextString(context));
 
-			switch(handle){
+			switch (handle) {
 				case BinaryWriter bw:
 					bw.BaseStream.Seek(offset, origin);
 					break;
@@ -120,27 +122,27 @@ namespace Chips.Core.Meta{
 			}
 		}
 
-		public object? Read(string chipsType, Opcode.FunctionContext context){
-			if(!HandleIsActive)
+		public object? Read(string chipsType, Opcode.FunctionContext context) {
+			if (!HandleIsActive)
 				throw new InvalidOperationException("I/O handle was not active"
 					+ ExceptionHelper.GetContextString(context));
 
-			if(chipsType == "null")
+			if (chipsType == "null")
 				throw new InvalidOperationException("Null cannot be used as a type in this context"
 					+ ExceptionHelper.GetContextString(context));
 
-			if(BinaryModeActive){
-				if(handle is not BinaryReader br)
+			if (BinaryModeActive) {
+				if (handle is not BinaryReader br)
 					throw new InvalidOperationException("I/O stream was not set to \"binary reading\""
 						+ ExceptionHelper.GetContextString(context));
 
 				//Read using the byte representations
 				return ReadObject(br, TypeTracking.GetTypeCode(TypeTracking.GetCSharpType(chipsType)!), context);
-			}else{
-				if(handle is not StreamReader sr)
+			} else {
+				if (handle is not StreamReader sr)
 					throw new InvalidOperationException("I/O stream was not set to \"stream reading\""
 						+ ExceptionHelper.GetContextString(context));
-				
+
 				//Read strings/chars
 				int cRead;
 				return chipsType switch {
@@ -151,33 +153,33 @@ namespace Chips.Core.Meta{
 			}
 		}
 
-		public void Write(object? obj, Opcode.FunctionContext context){
-			if(!HandleIsActive)
+		public void Write(object? obj, Opcode.FunctionContext context) {
+			if (!HandleIsActive)
 				throw new InvalidOperationException("I/O handle was not active"
 					+ ExceptionHelper.GetContextString(context));
 
-			if(BinaryModeActive){
-				if(handle is not BinaryWriter bw)
+			if (BinaryModeActive) {
+				if (handle is not BinaryWriter bw)
 					throw new InvalidOperationException("I/O stream was not set to \"binary writing\""
 						+ ExceptionHelper.GetContextString(context));
 
 				WriteObject(bw, obj, context);
-			}else{
-				if(handle is not StreamWriter sr)
+			} else {
+				if (handle is not StreamWriter sr)
 					throw new InvalidOperationException("I/O stream was not set to \"stream writing\""
 						+ ExceptionHelper.GetContextString(context));
 
 				string str = obj?.ToString() ?? "";
 
-				if(WriteNewlines)
+				if (WriteNewlines)
 					sr.WriteLine(str);
 				else
 					sr.WriteLine(str);
 			}
 		}
 
-		private object? ReadObject(BinaryReader br, Utility.TypeCode code, Opcode.FunctionContext context){
-			switch(code){
+		private object? ReadObject(BinaryReader br, Utility.TypeCode code, Opcode.FunctionContext context) {
+			switch (code) {
 				case Utility.TypeCode.Null:
 					return null;
 				case Utility.TypeCode.Int32:
@@ -219,16 +221,16 @@ namespace Chips.Core.Meta{
 					int count = br.Read7BitEncodedInt();
 
 					Type? elemType = TypeTracking.GetCSharpType(elemCode);
-					while(jaggedNestDepth-->0)
+					while (jaggedNestDepth-- > 0)
 						elemType = elemType!.MakeArrayType();
 
 					Array arr = Array.CreateInstance(elemType!, count);
 
-					for(int i = 0; i < count; i++){
+					for (int i = 0; i < count; i++) {
 						object? obj = ReadObject(br, elemCode, context);
 						arr.SetValue(obj, i);
 					}
-					
+
 					return arr;
 				case Utility.TypeCode.Range:
 					int start = br.ReadInt32();
@@ -239,9 +241,9 @@ namespace Chips.Core.Meta{
 					int capacity = br.Read7BitEncodedInt();
 
 					List list = new(capacity);
-					for(int i = 0; i < capacity; i++)
+					for (int i = 0; i < capacity; i++)
 						list[i] = ReadObject(br, (Utility.TypeCode)br.ReadByte(), context);
-					
+
 					return list;
 				case Utility.TypeCode.Time:
 					return new TimeSpan(br.ReadInt64());
@@ -249,7 +251,7 @@ namespace Chips.Core.Meta{
 					int setCount = br.Read7BitEncodedInt();
 					object[] setArr = new object[setCount];
 
-					for(int i = 0; i < setCount; i++)
+					for (int i = 0; i < setCount; i++)
 						setArr[i] = ReadObject(br, (Utility.TypeCode)br.ReadByte(), context)!;
 
 					return new ArithmeticSet(setArr);
@@ -263,7 +265,7 @@ namespace Chips.Core.Meta{
 					int randCount = br.Read7BitEncodedInt();
 					int[] randArr = new int[randCount];
 
-					for(int i = 0; i < randCount; i++)
+					for (int i = 0; i < randCount; i++)
 						randArr[i] = br.ReadInt32();
 
 					Random rand = new();
@@ -271,13 +273,13 @@ namespace Chips.Core.Meta{
 					ReflectionGetters.Random_SeedArray[rand] = randArr;
 					ReflectionGetters.Random_inext[rand] = br.ReadInt32();
 					ReflectionGetters.Random_inextp[rand] = br.ReadInt32();
-					
+
 					return rand;
 				case Utility.TypeCode.Complex:
 					return new Complex(br.ReadDouble(), br.ReadDouble());
 				case Utility.TypeCode.UserDefined:
 					string asmAndType = br.ReadString();
-					if(!asmAndType.Contains("::"))
+					if (!asmAndType.Contains("::"))
 						throw new InvalidOperationException($"Unkown user-defined type: \"{asmAndType}\""
 							+ ExceptionHelper.GetContextString(context));
 
@@ -300,14 +302,14 @@ namespace Chips.Core.Meta{
 			}
 		}
 
-		private void WriteObject(BinaryWriter bw, object? obj, Opcode.FunctionContext context){
+		private void WriteObject(BinaryWriter bw, object? obj, Opcode.FunctionContext context) {
 			var code = TypeTracking.GetTypeCode(obj);
 			bw.Write((byte)code);
 
-			if(code == Utility.TypeCode.Null)
+			if (code == Utility.TypeCode.Null)
 				return;
 
-			switch(obj){
+			switch (obj) {
 				case int i:
 					bw.Write(i);
 					break;
@@ -358,11 +360,11 @@ namespace Chips.Core.Meta{
 
 					//Record the jagged array depth - 1 and the innermost type
 					int jaggedNestDepth = 0;
-					while(type?.GetElementType()?.IsArray ?? false){
+					while (type?.GetElementType()?.IsArray ?? false) {
 						jaggedNestDepth++;
 						type = type.GetElementType();
 
-						if(type is not null)
+						if (type is not null)
 							lastValidType = type;
 					}
 					bw.Write((byte)TypeTracking.GetTypeCode(lastValidType!));
@@ -370,7 +372,7 @@ namespace Chips.Core.Meta{
 
 					bw.Write7BitEncodedInt(arr.Length);
 
-					for(int i = 0; i < arr.Length; i++)
+					for (int i = 0; i < arr.Length; i++)
 						WriteObject(bw, arr.GetValue(i), context);
 					break;
 				case Types.Range range:
@@ -380,7 +382,7 @@ namespace Chips.Core.Meta{
 				case List list:
 					bw.Write7BitEncodedInt(list.Capacity);
 
-					for(int i = 0; i < list.Capacity; i++)
+					for (int i = 0; i < list.Capacity; i++)
 						WriteObject(bw, list[i], context);
 					break;
 				case TimeSpan time:
@@ -391,7 +393,7 @@ namespace Chips.Core.Meta{
 
 					bw.Write7BitEncodedInt(setArr.Length);
 
-					for(int i = 0; i < setArr.Length; i++)
+					for (int i = 0; i < setArr.Length; i++)
 						WriteObject(bw, setArr[i], context);
 					break;
 				case DateTime date:
@@ -407,9 +409,9 @@ namespace Chips.Core.Meta{
 					var seedArr = (ReflectionGetters.Random_SeedArray[r] as int[])!;
 
 					bw.Write7BitEncodedInt(seedArr.Length);
-					for(int i = 0; i < seedArr.Length; i++)
+					for (int i = 0; i < seedArr.Length; i++)
 						bw.Write(seedArr[i]);
-					
+
 					bw.Write((int)ReflectionGetters.Random_inext[r]!);
 					bw.Write((int)ReflectionGetters.Random_inextp[r]!);
 					break;
@@ -430,7 +432,7 @@ namespace Chips.Core.Meta{
 					bw.Write(h);
 					break;
 				default:
-					if(code == Utility.TypeCode.Obj)
+					if (code == Utility.TypeCode.Obj)
 						throw new InvalidOperationException("Type \"obj\" cannot be serlialized"
 							+ ExceptionHelper.GetContextString(context));
 					throw new InvalidOperationException("Unknown typecode: " + code

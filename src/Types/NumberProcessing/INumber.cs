@@ -1,6 +1,6 @@
-﻿namespace Chips.Core.Types.NumberProcessing{
-	public interface INumber{
-		object Value{ get; }
+﻿namespace Chips.Core.Types.NumberProcessing {
+	public interface INumber {
+		object Value { get; }
 
 		INumber Abs();
 

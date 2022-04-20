@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chips.Core.Meta{
+namespace Chips.Core.Meta {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ChipsGeneratedAttribute : Attribute{ }
+	public class ChipsGeneratedAttribute : Attribute { }
 }

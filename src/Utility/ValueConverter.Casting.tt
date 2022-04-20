@@ -11,9 +11,9 @@ using Chips.Core.Types.NumberProcessing;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Chips.Core.Utility{
-	internal static partial class ValueConverter{
-<# foreach (var type in types){ 
+namespace Chips.Core.Utility {
+	internal static partial class ValueConverter {
+<# foreach (var type in types) {
 #>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static <#= type.Name #>_T CastTo<#= type.Name #>_T<T>(this T number) where T : INumber

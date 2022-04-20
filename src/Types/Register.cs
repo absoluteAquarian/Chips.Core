@@ -4,13 +4,13 @@ using Chips.Core.Types.NumberProcessing;
 using Chips.Core.Utility;
 using System.Numerics;
 
-namespace Chips.Core.Types{
-	public unsafe class Register{
+namespace Chips.Core.Types {
+	public unsafe class Register {
 		private object? data;
-		public object? Data{
+		public object? Data {
 			get => getDataOverride is not null ? getDataOverride() : data;
-			set{
-				if(acceptValueFunc is not null && !acceptValueFunc(value))
+			set {
+				if (acceptValueFunc is not null && !acceptValueFunc(value))
 					throw new RegisterAssignmentException($"{Formatting.FormatObject(this)} cannot accept values of type \"{TypeTracking.GetChipsType(value)}\"", globalContext);
 
 				data = value;
@@ -27,14 +27,14 @@ namespace Chips.Core.Types{
 
 		internal static Opcode.FunctionContext globalContext;
 
-		internal Register(string name, object? initialValue, delegate*<object?, bool> acceptValueFunc){
+		internal Register(string name, object? initialValue, delegate*<object?, bool> acceptValueFunc) {
 			this.name = name;
 			Data = initialValue;
 			this.acceptValueFunc = acceptValueFunc;
 		}
 
-		public bool GetDataAsInt32(out int value){
-			if(ValueConverter.BoxToUnderlyingType(Data) is INumber num){
+		public bool GetDataAsInt32(out int value) {
+			if (ValueConverter.BoxToUnderlyingType(Data) is INumber num) {
 				value = (int)ValueConverter.CastToInt32_T(num).Value;
 				return true;
 			}
